@@ -98,11 +98,20 @@ boolean VarioManager::init()
     //     }
     // }
 
+<<<<<<< HEAD
     // démarrage de l'ecoute des boutons
     // varioButton->startTask();
     // VARIO_PROG_DEBUG_PRINTLN("Démarrage boutons"); 
 
     // setCurrentPage(STATE_PAGE_INIT_DONE);
+=======
+    // //démarrage de l'ecoute des boutons
+    // varioButton->startTask();
+    // VARIO_PROG_DEBUG_PRINTLN("Démarrage boutons");
+
+    // setCurrentPage(STATE_PAGE_INIT_DONE);
+
+>>>>>>> 4cc2a87 (add files to be able to compile)
     vTaskDelay(pdMS_TO_TICKS(2000));
 
     // variometer = new Variometer(varioBeeper);
@@ -127,6 +136,7 @@ void VarioManager::vmTask()
         /* launch interrupt */
         xSemaphoreTake(vmMutex, portMAX_DELAY);
 
+<<<<<<< HEAD
         switch (currentStatePage)
         {
         case STATE_PAGE_INIT:
@@ -161,6 +171,42 @@ void VarioManager::vmTask()
 
             break;
         }
+=======
+        // switch (currentStatePage)
+        // {
+        // case STATE_PAGE_INIT:
+        //     VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_INIT");
+        //     varioDisplay->displayPageInit(true);
+        //     break;
+        // case STATE_PAGE_INIT_DONE:
+        //     VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_INIT_DONE");
+        //     varioDisplay->displayPageInit(false);
+        //     break;
+        // case STATE_PAGE_WEBSERV:
+        //     // demarrage du wifi
+        //     VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_WEBSERV");
+        //     currentMode = MODE_WIFI;
+        //     varioDisplay->displayPageWifi("", "");
+        //     varioWifi = new VarioWifi(this);
+        //     varioWifi->startTask();
+        //     break;
+        // case STATE_PAGE_REBOOT:
+        //     VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_REBOOT");
+        //     varioDisplay->displayPageReboot("");
+        //     vTaskDelay(delayT100 * 10);
+        //     ESP.restart();
+        // case STATE_PAGE_CALIBRATION:
+        //     VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_CALIBRATION");
+        //     currentMode = MODE_CALIBRATION;
+        //     varioBeeper->unMute();
+        //     varioDisplay->displayPageMessage(varioLanguage->getText(TITRE_CALIBR).c_str());
+        //     varioCalibration = new VarioCalibration();
+        //     /* @TODO doit etre mis dans une tache pour ne pas bloquer le manager */
+        //     varioCalibration->begin(varioBeeper);
+
+        //     break;
+        // }
+>>>>>>> 4cc2a87 (add files to be able to compile)
         xSemaphoreGive(vmMutex);
     }
 }
@@ -270,4 +316,7 @@ void VarioManager::setPowerDataToFC()
     fc.power.tension = varioPower->getTension();
     fc.power.capacite = varioPower->getCapacite();
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4cc2a87 (add files to be able to compile)
