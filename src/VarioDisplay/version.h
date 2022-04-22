@@ -1,0 +1,7 @@
+#pragma once
+
+#define VERSION 0
+#define SUB_VERSION 8
+#define BETA_CODE 6
+#define DEVNAME "JPG63/MICHELPA/RATAMUSE"
+#define AUTHOR "M" //J=JPG63  P=PRUNKDUMP  M=MICHELPA    R=RATAMUSE
