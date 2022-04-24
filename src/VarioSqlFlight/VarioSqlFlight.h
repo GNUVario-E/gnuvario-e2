@@ -1,9 +1,9 @@
 #ifndef VARIO_SQL_FLIGHT_H
 #define VARIO_SQL_FLIGHT_H
 
-#include "varioSqlFlight/RingBuf.h"
-#include <vario_esp32_arduino_sqlite3_lib/src/sqlite3.h>
-#include <varioIgcParser/igcdata.h>
+#include "VarioSqlFlight/RingBuf.h"
+#include "vario_esp32_arduino_sqlite3_lib/src/sqlite3.h"
+#include "VarioIgcParser/igcdata.h"
 
 class VarioSqlFlight
 {

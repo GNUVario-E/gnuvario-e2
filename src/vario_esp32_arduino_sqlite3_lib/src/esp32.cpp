@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <time.h>
-#include "vario_esp32_arduino_sqlite3_lib\src/sqlite3.h"
+#include <sqlite3.h>
 #include <Arduino.h>
 #include <esp_spi_flash.h>
 #include <sys/stat.h>
