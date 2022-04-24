@@ -6,7 +6,7 @@
 #include "esp32FOTA2/src/esp32fota2.h"
 #include <ArduinoJson.h>
 
-#include "varioIgcParser/igcdata.h"
+#include "VarioIgcParser/igcdata.h"
 #include "VarioIgcParser/VarioIgcParser.h"
 #include "VarioSqlFlight/VarioSqlFlight.h"
 #include "VarioSqlFlight/VarioSqlFlightHelper.h"

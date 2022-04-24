@@ -2,8 +2,8 @@
 #define VARIO_SQL_FLIGHT_HELPER_H
 
 #include <Arduino.h>
-#include <varioSqlFlight/RingBuf.h>
-#include <varioSqlFlight/VarioSqlFlight.h>
+#include "VarioSqlFlight/RingBuf.h"
+#include "VarioSqlFlight/VarioSqlFlight.h"
 
 class VarioSqlFlightHelper
 {

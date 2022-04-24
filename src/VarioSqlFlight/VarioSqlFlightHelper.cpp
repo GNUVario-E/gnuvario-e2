@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "varioSqlFlight/VarioSqlFlightHelper.h"
+#include "VarioSqlFlight/VarioSqlFlightHelper.h"
 
 VarioSqlFlightHelper::VarioSqlFlightHelper()
 {
