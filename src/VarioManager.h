@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-
+#include "Observer/Observer.h"
 #include "FC.h"
 #include "VarioFSM/VarioFSM.h"
 #include "VarioSettings/VarioSettings.h"
@@ -43,7 +43,7 @@
 // #define BTN_SHORT_C 5U
 // #define BTN_LONG_C 6U
 
-class VarioManager
+class VarioManager : public Observer
 {
 private:
     // static void startTaskImpl(void *);
@@ -74,6 +74,7 @@ public:
     // uint8_t getCurrentPageState();
     // void handleButton(uint8_t btn);
     boolean init();
+    void update(uint8_t _val);
 };
 
 extern fcdata_t fc;

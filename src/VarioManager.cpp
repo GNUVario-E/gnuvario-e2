@@ -2,7 +2,7 @@
 
 #include "VarioManager.h"
 #include "VarioDebug/VarioDebug.h"
-
+#include "event.h"
 // TaskHandle_t VarioManager::vmTaskHandler;
 // SemaphoreHandle_t VarioManager::vmMutex;
 
@@ -68,6 +68,8 @@ boolean VarioManager::init()
     varioDisplay->init(varioLanguage);
 
     fsm.initfsm(varioDisplay);
+
+    fsm.registerObserver(this);
 
     // if (esp32FOTA.isArchWwwExist())
     // {
@@ -253,4 +255,23 @@ void VarioManager::setPowerDataToFC()
 {
     fc.power.tension = varioPower->getTension();
     fc.power.capacite = varioPower->getCapacitePct();
+}
+
+void VarioManager::update(uint8_t _val)
+{
+    switch (_val)
+    {
+        {
+        case WIFI_START_ASKED:
+            VARIO_WIFI_DEBUG_PRINTLN("Démarrage du wifi");
+            varioWifi = new VarioWifi();
+            varioWifi->startTask();
+            break;
+        case CALIBRATION_START_ASKED:
+            Serial.println("Démarrage de la calibration");
+            break;
+        default:
+            break;
+        }
+    }
 }

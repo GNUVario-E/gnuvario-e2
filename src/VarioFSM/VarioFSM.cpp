@@ -48,6 +48,7 @@ void VarioFSM::calibration_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("calibration_on_enter");
     varioDisplay->displayScreen(varioDisplay->calibrationScreen);
+    _notifyObserver(CALIBRATION_START_ASKED);
 }
 
 void VarioFSM::calibration_on()
@@ -64,6 +65,7 @@ void VarioFSM::wifi_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("wifi_on_enter");
     varioDisplay->displayScreen(varioDisplay->wifiScreen);
+    _notifyObserver(WIFI_START_ASKED);
 }
 
 void VarioFSM::wifi_on()
