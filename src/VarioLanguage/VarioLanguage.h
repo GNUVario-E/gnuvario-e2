@@ -1,5 +1,4 @@
-#ifndef VARIO_LANGUAGE_H
-#define VARIO_LANGUAGE_H
+#pragma once
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -83,5 +82,3 @@ private:
 	boolean setParameterFromJsonObject(JsonObject *section, const char *key, uint8_t index, uint8_t maxSize);
 	void saveConfigurationVario(const char *version, const char *filename);
 };
-
-#endif //VARIO_LANGUAGE_H
