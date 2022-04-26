@@ -17,9 +17,8 @@ WiFiMulti wifiMulti;
 AsyncWebServer server(80);
 VarioWebHandler varioWebHandler;
 
-VarioWifi::VarioWifi(VarioManager *_vm)
+VarioWifi::VarioWifi()
 {
-    vm = _vm;
 }
 
 void VarioWifi::startTask()
@@ -162,7 +161,7 @@ bool VarioWifi::connectToWifi()
     VARIO_WIFI_DEBUG_PRINT("Use IP address :");
     VARIO_WIFI_DEBUG_PRINTLN(WiFi.localIP().toString());
 
-//    vm->varioDisplay->displayPageWifi(WiFi.SSID().substring(0, 12).c_str(), WiFi.localIP().toString().c_str());
+    //    vm->varioDisplay->displayPageWifi(WiFi.SSID().substring(0, 12).c_str(), WiFi.localIP().toString().c_str());
 
     return true;
 }
@@ -245,7 +244,7 @@ bool VarioWifi::isIndexFileExist()
 {
     File dataFile;
 
-    //test présence fichier index
+    // test présence fichier index
     if (SD.exists("/www/index.htm"))
     {
         VARIO_WIFI_DEBUG_PRINTLN("SD Card: initialized, index.htm found");
@@ -315,11 +314,11 @@ void VarioWifi::startWebServer()
     server.on("/flights", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleListFlights(request)); });
 
-    //récupération de la liste du contenu de la carte SD
+    // récupération de la liste du contenu de la carte SD
     server.on("/list", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handlePrintDirectory(request)); });
 
-    //récupération du contenu du fichier param
+    // récupération du contenu du fichier param
     server.on("/params", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleParams(request)); });
 
@@ -334,11 +333,11 @@ void VarioWifi::startWebServer()
         "/fupdate", HTTP_POST, [](AsyncWebServerRequest *request) {},
         varioWebHandler.handleOtaUpdate);
 
-    //telechargement d'un fichier dont le nom complet avec chemin se trouve en param
+    // telechargement d'un fichier dont le nom complet avec chemin se trouve en param
     server.on("/file", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleFileDownload(request)); });
 
-    //suppression d'un fichier dont le nom complet avec chemin se trouve en param
+    // suppression d'un fichier dont le nom complet avec chemin se trouve en param
     server.on("/file", HTTP_DELETE, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleFileDelete(request)); });
 
@@ -354,17 +353,17 @@ void VarioWifi::startWebServer()
         "/wifi", HTTP_POST, [](AsyncWebServerRequest *request) {},
         NULL, varioWebHandler.handleSaveWifi);
 
-    //creation d'un fichier ou d'un repertoire
-    // le reponse est envoyé par le handler sur le upload
+    // creation d'un fichier ou d'un repertoire
+    //  le reponse est envoyé par le handler sur le upload
     server.on(
         "/create", HTTP_PUT, [](AsyncWebServerRequest *request) {},
         NULL, varioWebHandler.handleFileCreate);
 
-    //récupération du contenu du fichier wifi
+    // récupération du contenu du fichier wifi
     server.on("/wifi", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleWifi(request)); });
 
-    //récupération du contenu du fichier preference
+    // récupération du contenu du fichier preference
     server.on("/webconfig", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleWebConfig(request)); });
 
@@ -392,11 +391,11 @@ void VarioWifi::startWebServer()
     server.on("/flightsbdd", HTTP_DELETE, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleDelFlight(request)); });
 
-    //recuperation des versions de firmware
+    // recuperation des versions de firmware
     server.on("/firmwareversion", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleFirmwareVersion(request)); });
 
-    //Mise à jour via internet
+    // Mise à jour via internet
     server.on("/upgradeweb", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleUpgradeWeb(request)); });
 
@@ -418,7 +417,7 @@ void VarioWifi::startWebServer()
     server.on("/flightsshort", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.getFlightsShort(request)); });
 
-    //default web dir "/www"
+    // default web dir "/www"
     server.serveStatic("/", SD, "/www/").setDefaultFile("index.htm");
 
     server.onNotFound([](AsyncWebServerRequest *request)
@@ -481,8 +480,7 @@ void VarioWifi::startWebServer()
                           else
                           {
                               request->send(404);
-                          }
-                      });
+                          } });
 
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "*");

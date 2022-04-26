@@ -1,8 +1,8 @@
 #pragma once
 #include "Button.h"
 #include "HardwareConfig/HardwareConfig.h"
-#include "Observer/Subject.h"
 #include "VarioDebug/VarioDebug.h"
+#include "Observer/Subject.h"
 #include "event.h"
 
 #define DEBOUNCE_MS 30

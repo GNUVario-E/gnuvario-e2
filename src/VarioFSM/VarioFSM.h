@@ -4,9 +4,11 @@
 #include <FunctionFSM.h>
 #include "VarioDisplay/VarioDisplay.h"
 #include "Observer/Observer.h"
+#include "Observer/Subject.h"
+#include "event.h"
 
 // template <typename Self, typename Finished>
-class VarioFSM : public Observer
+class VarioFSM : public Observer, public Subject
 {
 private:
     FunctionState _state_boot;

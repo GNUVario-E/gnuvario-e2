@@ -210,16 +210,16 @@ void VarioDisplay::screenTask(void *parameter)
         /* launch interrupt */
         if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
         {
-            d = millis();
-            Serial.println(millis());
+            // d = millis();
+            // Serial.println(millis());
             VARIO_PROG_DEBUG_PRINTLN("screen refresh");
             display.setFullWindow();
             display.display(true); // partial update
 
             display.powerOff();
             xSemaphoreGive(screenMutex);
-            Serial.print("duration: ");
-            Serial.println(millis() - d);
+            // Serial.print("duration: ");
+            // Serial.println(millis() - d);
         }
     }
 }
@@ -255,8 +255,6 @@ void VarioDisplay::bufferTask()
                     {
                         if (_currentScreen->tabWidgets[i]->getIsActif() && _currentScreen->tabWidgets[i]->isRefreshNeeded())
                         {
-                            Serial.print("needRefresh");
-                            Serial.println(i);
                             _currentScreen->tabWidgets[i]->addToBuffer(display);
                         }
                     }
@@ -278,7 +276,7 @@ void VarioDisplay::bufferTask()
  */
 void VarioDisplay::updateScreen(void)
 {
-    Serial.println("updateScreen");
+    // Serial.println("updateScreen");
     xTaskNotify(VarioDisplay::screenTaskHandler, 0, eNoAction);
 }
 
@@ -288,7 +286,7 @@ void VarioDisplay::updateScreen(void)
 
 void VarioDisplay::displayScreen(VarioScreen *screen)
 {
-    Serial.println("displayScreen");
+    // Serial.println("displayScreen");
     stopDisplay();
 
     _currentScreen = screen;
@@ -300,7 +298,7 @@ void VarioDisplay::displayScreen(VarioScreen *screen)
     }
     if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
     {
-        Serial.println("mutex displayScreen");
+        // Serial.println("mutex displayScreen");
         display.fillScreen(GxEPD_WHITE);
         xSemaphoreGive(screenMutex);
         _doDisplay = true;
@@ -311,7 +309,7 @@ void VarioDisplay::displayScreen(VarioScreen *screen)
 
 void VarioDisplay::stopDisplay()
 {
-    Serial.println("stopDisplay");
+    // Serial.println("stopDisplay");
     _doDisplay = false;
     if (bufferTaskHandler != NULL)
     {

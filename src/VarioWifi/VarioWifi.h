@@ -18,8 +18,7 @@ class VarioManager;
 class VarioWifi
 {
 private:
-    VarioManager *vm;
-//    static VarioWebHandler *varioWebHandler;
+    //    static VarioWebHandler *varioWebHandler;
     const TickType_t delayT50 = pdMS_TO_TICKS(50); //(1) / portTICK_PERIOD_MS;
     TaskHandle_t _taskVarioWifiHandle = NULL;
     static void startTaskImpl(void *);
@@ -32,9 +31,9 @@ private:
     void startWebServer();
 
 public:
-    VarioWifi(VarioManager *_vm);
+    VarioWifi();
     void startTask();
     bool begin();
 };
 
-#endif //VARIO_WIFI_H
+#endif // VARIO_WIFI_H
