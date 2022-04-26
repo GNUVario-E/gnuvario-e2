@@ -2,6 +2,8 @@
 
 bool AltWidget::isRefreshNeeded()
 {
+    
+    // title = variol
     if (fc.alt != oldAlt)
     {
         // sprintf(localText, "Alt : %d", fc.alt);

@@ -3,6 +3,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
+#include "VarioLanguage/VarioLanguage.h"
 #include "VarioDisplay/VarioScreen/VarioScreen.h"
 #include "VarioDisplay/VarioScreen/ScreenData.h"
 
@@ -19,13 +20,15 @@ private:
     static void startTaskBuffer(void *);
     void bufferTask();
     const TickType_t delayT100 = pdMS_TO_TICKS(100);
+    void buildScreens();
     void updateScreen(void);
     bool _doDisplay = false;
+    VarioLanguage *varioLanguage;
 
 public:
     VarioDisplay();
     static SemaphoreHandle_t screenMutex;
-    void init();
+    void init(VarioLanguage *varioLanguage);
     void displayScreen(VarioScreen *screen);
     void stopDisplay();
     VarioScreen *_currentScreen;

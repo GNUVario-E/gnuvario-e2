@@ -12,6 +12,7 @@ private:
 
 protected:
     char *text;
+    char title[25];
 
 public:
     TextWidget(int16_t topx, int16_t topy, int16_t width, int16_t height) : Widget(topx, topy, width, height)
@@ -19,6 +20,7 @@ public:
     }
     void addToBuffer(GxEPD2_GFX &_display);
     void setText(char *text);
+    void setTitle(char *title);
     void setBlinkFreq(uint8_t freq);
     bool isRefreshNeeded();
 };

@@ -54,18 +54,18 @@ ScreenData bootScreenData = {
 };
 
 ScreenData vario1ScreenData = {
-    logo : {true, true, 0, 0, 128, 91, 94, 74},
-    txt1 : {true, true, 0, 90, 128, 41},
-    txt2 : {true, true, 20, 130, 100, 41},
-    txt3 : {false, true, 20, 130, 100, 41},
+    logo : {false, true, 0, 0, 128, 91, 94, 74},
+    txt1 : {true, true, 0, 146, 128, 51},
+    txt2 : {true, true, 0, 196, 128, 51},
+    txt3 : {true, true, 0, 246, 128, 50},
     txt4 : {false, true, 20, 130, 100, 41},
     txt5 : {false, true, 20, 130, 100, 41},
     txt6 : {false, true, 20, 130, 100, 41},
     txt7 : {false, true, 20, 130, 100, 41},
     txt8 : {false, true, 20, 130, 100, 41},
-    alt : {true, true, 0, 170, 65, 41},
-    vario : {true, true, 64, 170, 64, 41},
-    toolbar : {true, true, 0, 210, 128, 98}
+    alt : {true, true, 0, 46, 128, 51},
+    vario : {true, true, 0, 96, 128, 51},
+    toolbar : {true, true, 0, 0, 128, 47}
 };
 
 ScreenData vario2ScreenData = {
@@ -137,37 +137,17 @@ TaskHandle_t VarioDisplay::bufferTaskHandler;
  */
 VarioDisplay::VarioDisplay()
 {
-    char *boot = "Booting ...";
-    char *wifi = "WIFI ...";
-    char *calibration = "CALIBRATION ...";
-    char *sound = "SOUND ...";
-    char *statistic = "STATISTIC ...";
-
-    wifiScreen = new VarioScreen(wifiScreenData);
-    wifiScreen->getTextWidget1()->setText(wifi);
-
-    calibrationScreen = new VarioScreen(calibrationScreenData);
-    calibrationScreen->getTextWidget1()->setText(calibration);
-
-    bootScreen = new VarioScreen(bootScreenData);
-    bootScreen->getTextWidget1()->setText(boot);
-
-    vario1Screen = new VarioScreen(vario1ScreenData);
-    vario2Screen = new VarioScreen(vario2ScreenData);
-    vario3Screen = new VarioScreen(vario3ScreenData);
-
-    soundScreen = new VarioScreen(soundScreenData);
-    soundScreen->getTextWidget1()->setText(sound);
-
-    statisticScreen = new VarioScreen(statisticScreenData);
-    statisticScreen->getTextWidget1()->setText(statistic);
 }
 
 /**
  * Initialisation de l'affichage
  */
-void VarioDisplay::init()
+void VarioDisplay::init(VarioLanguage *_varioLanguage)
 {
+    varioLanguage = _varioLanguage;
+
+    buildScreens();
+
     screenMutex = xSemaphoreCreateBinary();
     xSemaphoreGive(VarioDisplay::screenMutex);
 
@@ -189,6 +169,34 @@ void VarioDisplay::init()
     } while (display.nextPage());
 }
 
+void VarioDisplay::buildScreens()
+{
+    char *boot = "Booting ...";
+    char *wifi = "WIFI ...";
+    char *calibration = "CALIBRATION ...";
+    char *sound = "SOUND ...";
+    char *statistic = "STATISTIC ...";
+
+    wifiScreen = new VarioScreen(wifiScreenData, varioLanguage);
+    wifiScreen->getTextWidget1()->setText(wifi);
+
+    calibrationScreen = new VarioScreen(calibrationScreenData, varioLanguage);
+    calibrationScreen->getTextWidget1()->setText(calibration);
+
+    bootScreen = new VarioScreen(bootScreenData, varioLanguage);
+    bootScreen->getTextWidget1()->setText(boot);
+
+    vario1Screen = new VarioScreen(vario1ScreenData, varioLanguage);
+    vario2Screen = new VarioScreen(vario2ScreenData, varioLanguage);
+    vario3Screen = new VarioScreen(vario3ScreenData, varioLanguage);
+
+    soundScreen = new VarioScreen(soundScreenData, varioLanguage);
+    soundScreen->getTextWidget1()->setText(sound);
+
+    statisticScreen = new VarioScreen(statisticScreenData, varioLanguage);
+    statisticScreen->getTextWidget1()->setText(statistic);
+}
+
 /**
  * Tache d'affichage
  */
@@ -199,18 +207,20 @@ void VarioDisplay::screenTask(void *parameter)
     {
         /* wait */
         xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
-        d = millis();
-        Serial.println(millis());
         /* launch interrupt */
-        xSemaphoreTake(screenMutex, portMAX_DELAY);
-        VARIO_PROG_DEBUG_PRINTLN("screen refresh");
-        display.setFullWindow();
-        display.display(true); // partial update
+        if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
+        {
+            d = millis();
+            Serial.println(millis());
+            VARIO_PROG_DEBUG_PRINTLN("screen refresh");
+            display.setFullWindow();
+            display.display(true); // partial update
 
-        display.powerOff();
-        xSemaphoreGive(screenMutex);
-        Serial.print("duration: ");
-        Serial.println(millis() - d);
+            display.powerOff();
+            xSemaphoreGive(screenMutex);
+            Serial.print("duration: ");
+            Serial.println(millis() - d);
+        }
     }
 }
 
@@ -245,6 +255,8 @@ void VarioDisplay::bufferTask()
                     {
                         if (_currentScreen->tabWidgets[i]->getIsActif() && _currentScreen->tabWidgets[i]->isRefreshNeeded())
                         {
+                            Serial.print("needRefresh");
+                            Serial.println(i);
                             _currentScreen->tabWidgets[i]->addToBuffer(display);
                         }
                     }
@@ -257,7 +269,7 @@ void VarioDisplay::bufferTask()
 
             // xSemaphoreGive(screenMutex);
         }
-        vTaskDelay(pdMS_TO_TICKS(1));
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
 

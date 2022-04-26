@@ -9,9 +9,14 @@ Widget::Widget(int16_t _topx, int16_t _topy, int16_t _width, int16_t _height)
     isFirstRefreshDone = false;
 }
 
+void Widget::setVarioLangage(VarioLanguage *_varioLanguage)
+{
+    varioLanguage = _varioLanguage;
+}
+
 void Widget::setIsActif(bool _isactif)
 {
-    isactif = _isactif;
+    isActif = _isactif;
 }
 
 void Widget::setForceRefresh()
@@ -29,7 +34,7 @@ void Widget::setPosition(int16_t _topx, int16_t _topy, int16_t _width, int16_t _
 
 void Widget::storeLastDiplayZone(GxEPD2_GFX &_display, int16_t w, int16_t h)
 {
-    if (isborder)
+    if (isBorder)
     {
         lastDisplayZone.topx = topx + 1;
         lastDisplayZone.topy = topy + 1;
@@ -60,12 +65,12 @@ void Widget::drawborder(GxEPD2_GFX &_display)
 
 bool Widget::getIsActif()
 {
-    return isactif;
+    return isActif;
 }
 
 void Widget::setIsborder(bool _isborder)
 {
-    isborder = _isborder;
+    isBorder = _isborder;
 }
 
 // void Widget::addToBuffer(GxEPD2_GFX &_display)

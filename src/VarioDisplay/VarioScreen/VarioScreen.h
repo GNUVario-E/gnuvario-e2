@@ -11,7 +11,7 @@
 #include "VarioDisplay/Widget/AltWidget.h"
 #include "VarioDisplay/Widget/VarioWidget.h"
 #include "VarioDisplay/Widget/ToolbarWidget.h"
-
+#include "VarioLanguage/VarioLanguage.h"
 #include <VarioDisplay/VarioScreen/ScreenData.h>
 
 #define NB_WIDGETS 20
@@ -36,7 +36,7 @@ private:
 protected:
 public:
     Widget *tabWidgets[NB_WIDGETS];
-    VarioScreen(ScreenData data);
+    VarioScreen(ScreenData data, VarioLanguage *varioLanguage);
     // void addWidget(LogoWidget *widget);
     // void addWidget(TextWidget *widget);
     // void addWidget(AltWidget *widget);
