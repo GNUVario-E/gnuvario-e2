@@ -2,10 +2,10 @@
 
 #include "VarioDebug/ArduinoTrace.h"
 
-#define VARIO_DEBUG //activate desactivate debuging
+#define VARIO_DEBUG // activate desactivate debuging
 
 //              DEBUGING MODE
-#define PROG_DEBUG //debug principal program
+#define PROG_DEBUG // debug principal program
 //#define BTN_DEBUG  //Boutons
 //#define HARDWARE_DEBUG
 //#define IMU_DEBUG			  //debug IMU
@@ -34,7 +34,7 @@
 //#define TWOWIRESCH_DEBUG
 //#define POWER_DEBUG
 //#define MEMORY_DEBUG
-#define FSM_DEBUG
+// #define FSM_DEBUG
 
 #if !defined(VARIO_DEBUG) || !defined(PROG_DEBUG)
 #define VARIO_PROG_DEBUG_PRINTLN(x)
@@ -131,6 +131,9 @@
 #define VARIO_GPS_DEBUG_PRINTLN2(x, y)
 #define VARIO_GPS_DEBUG_PRINT(x)
 #define VARIO_GPS_DEBUG_PRINT2(x, y)
+#define VARIO_GPS_DEBUG_DUMP(x)
+#define VARIO_GPS_DEBUG_DUMP2(x, y)
+#define VARIO_GPS_DEBUG_TRACE()
 #endif
 
 #if !defined(VARIO_DEBUG) || !defined(NMEAPARSER_DEBUG)
@@ -138,6 +141,9 @@
 #define VARIO_NMEAPARSER_DEBUG_PRINTLN2(x, y)
 #define VARIO_NMEAPARSER_DEBUG_PRINT(x)
 #define VARIO_NMEAPARSER_DEBUG_PRINT2(x, y)
+#define VARIO_NMEAPARSER_DEBUG_DUMP(x)
+#define VARIO_NMEAPARSER_DEBUG_DUMP2(x, y)
+#define VARIO_NMEAPARSER_DEBUG_TRACE()
 #endif
 
 #if !defined(VARIO_DEBUG) || !defined(FSM_DEBUG)
@@ -145,6 +151,9 @@
 #define VARIO_FSM_DEBUG_PRINTLN2(x, y)
 #define VARIO_FSM_DEBUG_PRINT(x)
 #define VARIO_FSM_DEBUG_PRINT2(x, y)
+#define VARIO_FSM_DEBUG_DUMP(x)
+#define VARIO_FSM_DEBUG_DUMP2(x, y)
+#define VARIO_FSM_DEBUG_TRACE()
 #endif
 /*************************************************/
 
@@ -154,7 +163,7 @@
 #define VARIO_PROG_DEBUG_PRINT(x) Serial.print(x)
 #define VARIO_PROG_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_PROG_DEBUG_DUMP(x) DUMP(x)
-#define VARIO_PROG_DEBUG_DUMP2(x,y) DUMP2(x,y)
+#define VARIO_PROG_DEBUG_DUMP2(x, y) DUMP2(x, y)
 #define VARIO_PROG_DEBUG_TRACE(x) TRACE()
 #endif
 
@@ -243,6 +252,9 @@
 #define VARIO_GPS_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
 #define VARIO_GPS_DEBUG_PRINT(x) Serial.print(x)
 #define VARIO_GPS_DEBUG_PRINT2(x, y) Serial.print(x, y)
+#define VARIO_GPS_DEBUG_DUMP(x) DUMP(x)
+#define VARIO_GPS_DEBUG_DUMP2(x, y) DUMP2(x, y)
+#define VARIO_GPS_DEBUG_TRACE(x) TRACE()
 #endif
 
 #if defined(VARIO_DEBUG) && defined(NMEAPARSER_DEBUG)
@@ -250,11 +262,17 @@
 #define VARIO_NMEAPARSER_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
 #define VARIO_NMEAPARSER_DEBUG_PRINT(x) Serial.print(x)
 #define VARIO_NMEAPARSER_DEBUG_PRINT2(x, y) Serial.print(x, y)
+#define VARIO_NMEAPARSER_DEBUG_DUMP(x) DUMP(x)
+#define VARIO_NMEAPARSER_DEBUG_DUMP2(x, y) DUMP2(x, y)
+#define VARIO_NMEAPARSER_DEBUG_TRACE(x) TRACE()
 #endif
 
 #if defined(VARIO_DEBUG) && defined(FSM_DEBUG)
-#define VARIO_FSM_DEBUG_PRINTLN(x)
-#define VARIO_FSM_DEBUG_PRINTLN2(x, y)
-#define VARIO_FSM_DEBUG_PRINT(x)
-#define VARIO_FSM_DEBUG_PRINT2(x, y)
+#define VARIO_FSM_DEBUG_PRINTLN(x) Serial.println(x)
+#define VARIO_FSM_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
+#define VARIO_FSM_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_FSM_DEBUG_PRINT2(x, y) Serial.print(x, y)
+#define VARIO_FSM_DEBUG_DUMP(x) DUMP(x)
+#define VARIO_FSM_DEBUG_DUMP2(x, y) DUMP2(x, y)
+#define VARIO_FSM_DEBUG_TRACE(x) TRACE()
 #endif
