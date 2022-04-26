@@ -1,7 +1,5 @@
 #include "VarioWidget.h"
 
-
-
 bool VarioWidget::isRefreshNeeded()
 {
     // if (fc.vario != oldVario)
@@ -12,6 +10,7 @@ bool VarioWidget::isRefreshNeeded()
 
     //     return true;
     // }
+    // char *_title = (char *)varioLanguage->getText(TITRE_VARIO).c_str();
 
     if (fc.power.tension != oldVario)
     {

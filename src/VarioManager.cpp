@@ -21,15 +21,17 @@ boolean VarioManager::init()
     VARIO_PROG_DEBUG_PRINTLN("vm init");
     VARIO_PROG_DEBUG_TRACE();
 
-    VARIO_PROG_DEBUG_PRINTLN("vm init task");
-    vmMutex = xSemaphoreCreateBinary();
-    xSemaphoreGive(vmMutex);
-    xTaskCreate(this->startTaskImpl, "TaskManager", 4000, this, 10, &vmTaskHandler);
+    // VARIO_PROG_DEBUG_PRINTLN("vm init task");
+    // vmMutex = xSemaphoreCreateBinary();
+    // xSemaphoreGive(vmMutex);
+    // xTaskCreate(this->startTaskImpl, "TaskManager", 4000, this, 10, &vmTaskHandler);
 
     varioBeeper->init(5);
     varioBeeper->generateToneSuccess();
 
+    // init mesure tension
     varioPower->init();
+    // inscription des valeurs mesurées dans FC
     setPowerDataToFC();
 
     if (!varioSD->init())
@@ -54,18 +56,18 @@ boolean VarioManager::init()
         return false;
     }
 
-    // initialisation de l'affichage
-    varioDisplay->init();
-
-    varioButton->registerObserver(&fsm);
-    varioButton->startTask();
-
-    fsm.initfsm(varioDisplay);
-
     /***** Affiche parametre  ***/
     VARIO_PROG_DEBUG_DUMP(varioData.getParam(PARAM_PILOT_NAME)->getValueChar());
 
     varioLanguage->init(varioData.getParam(PARAM_LANGUAGE)->getValueUInt8());
+
+    varioButton->registerObserver(&fsm);
+    varioButton->startTask();
+
+    // initialisation de l'affichage
+    varioDisplay->init(varioLanguage);
+
+    fsm.initfsm(varioDisplay);
 
     // if (esp32FOTA.isArchWwwExist())
     // {
@@ -98,133 +100,133 @@ boolean VarioManager::init()
     return true;
 }
 
-void VarioManager::startTaskImpl(void *parm)
-{
-    // wrapper for task
-    static_cast<VarioManager *>(parm)->vmTask();
-}
+// void VarioManager::startTaskImpl(void *parm)
+// {
+//     // wrapper for task
+//     static_cast<VarioManager *>(parm)->vmTask();
+// }
 
-void VarioManager::vmTask()
-{
-    while (true)
-    {
-        /* wait */
-        xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
+// void VarioManager::vmTask()
+// {
+//     while (true)
+//     {
+//         /* wait */
+//         xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
 
-        /* launch interrupt */
-        xSemaphoreTake(vmMutex, portMAX_DELAY);
+//         /* launch interrupt */
+//         xSemaphoreTake(vmMutex, portMAX_DELAY);
 
-        switch (currentStatePage)
-        {
-        case STATE_PAGE_INIT:
-            VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_INIT");
-            //            varioDisplay->displayPageInit(true);
-            break;
-        case STATE_PAGE_INIT_DONE:
-            VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_INIT_DONE");
-            //            varioDisplay->displayPageInit(false);
-            break;
-        case STATE_PAGE_WEBSERV:
-            // demarrage du wifi
-            VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_WEBSERV");
-            //     currentMode = MODE_WIFI;
-            //            varioDisplay->displayPageWifi("", "");
-            //            varioWifi = new VarioWifi(this);
-            varioWifi->startTask();
-            break;
-        case STATE_PAGE_REBOOT:
-            VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_REBOOT");
-            //            varioDisplay->displayPageReboot("");
-            vTaskDelay(delayT100 * 10);
-            ESP.restart();
-        case STATE_PAGE_CALIBRATION:
-            VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_CALIBRATION");
-            //     currentMode = MODE_CALIBRATION;
-            varioBeeper->unMute();
-            //            varioDisplay->displayPageMessage(varioLanguage->getText(TITRE_CALIBR).c_str());
-            varioCalibration = new VarioCalibration();
-            // @TODO doit etre mis dans une tache pour ne pas bloquer le manager
-            varioCalibration->begin(varioBeeper);
+//         switch (currentStatePage)
+//         {
+//         case STATE_PAGE_INIT:
+//             VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_INIT");
+//             //            varioDisplay->displayPageInit(true);
+//             break;
+//         case STATE_PAGE_INIT_DONE:
+//             VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_INIT_DONE");
+//             //            varioDisplay->displayPageInit(false);
+//             break;
+//         case STATE_PAGE_WEBSERV:
+//             // demarrage du wifi
+//             VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_WEBSERV");
+//             //     currentMode = MODE_WIFI;
+//             //            varioDisplay->displayPageWifi("", "");
+//             //            varioWifi = new VarioWifi(this);
+//             varioWifi->startTask();
+//             break;
+//         case STATE_PAGE_REBOOT:
+//             VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_REBOOT");
+//             //            varioDisplay->displayPageReboot("");
+//             vTaskDelay(delayT100 * 10);
+//             ESP.restart();
+//         case STATE_PAGE_CALIBRATION:
+//             VARIO_PROG_DEBUG_PRINTLN("STATE_PAGE_CALIBRATION");
+//             //     currentMode = MODE_CALIBRATION;
+//             varioBeeper->unMute();
+//             //            varioDisplay->displayPageMessage(varioLanguage->getText(TITRE_CALIBR).c_str());
+//             varioCalibration = new VarioCalibration();
+//             // @TODO doit etre mis dans une tache pour ne pas bloquer le manager
+//             varioCalibration->begin(varioBeeper);
 
-            break;
-        }
-        xSemaphoreGive(vmMutex);
-    }
-}
+//             break;
+//         }
+//         xSemaphoreGive(vmMutex);
+//     }
+// }
 
-void VarioManager::setCurrentPage(uint8_t page)
-{
-    if (page == currentStatePage)
-    {
-        return;
-    }
+// void VarioManager::setCurrentPage(uint8_t page)
+// {
+//     if (page == currentStatePage)
+//     {
+//         return;
+//     }
 
-    currentStatePage = page;
+//     currentStatePage = page;
 
-    if (xSemaphoreTake(vmMutex, portMAX_DELAY) == pdTRUE)
-    {
-        xSemaphoreGive(vmMutex);
-        xTaskNotify(vmTaskHandler, 0, eNoAction);
-    }
-}
+//     if (xSemaphoreTake(vmMutex, portMAX_DELAY) == pdTRUE)
+//     {
+//         xSemaphoreGive(vmMutex);
+//         xTaskNotify(vmTaskHandler, 0, eNoAction);
+//     }
+// }
 
-uint8_t VarioManager::getCurrentPageState()
-{
-    return currentStatePage;
-}
+// uint8_t VarioManager::getCurrentPageState()
+// {
+//     return currentStatePage;
+// }
 
-void VarioManager::handleButton(uint8_t btn)
-{
-    varioBeeper->generateTone(500, 150);
-    switch (btn)
-    {
-    case BTN_SHORT_A:
-        VARIO_BTN_DEBUG_PRINTLN("Appui court BTN A");
-        if (currentStatePage == STATE_PAGE_INIT_DONE)
-        {
-            // demarrage du wifi
-            setCurrentPage(STATE_PAGE_WEBSERV);
-        }
-        else if (currentStatePage == STATE_PAGE_WEBSERV)
-        {
-            // redemarrage du vario
-            setCurrentPage(STATE_PAGE_REBOOT);
-        }
-        break;
-    case BTN_SHORT_B:
-        VARIO_BTN_DEBUG_PRINTLN("Appui court BTN B");
-        break;
-    case BTN_SHORT_C:
-        VARIO_BTN_DEBUG_PRINTLN("Appui court BTN C");
-        if (currentStatePage == STATE_PAGE_INIT_DONE)
-        {
-            // demarrage du wifi
-            setCurrentPage(STATE_PAGE_CALIBRATION);
-        }
-        break;
-    case BTN_LONG_A:
-        VARIO_BTN_DEBUG_PRINTLN("Appui long BTN A");
-        if (currentStatePage == STATE_PAGE_CALIBRATION)
-        {
-            // redemarrage du vario
-            setCurrentPage(STATE_PAGE_REBOOT);
-        }
-        break;
-    case BTN_LONG_B:
-        VARIO_BTN_DEBUG_PRINTLN("Appui long BTN B");
-        break;
-    case BTN_LONG_C:
-        VARIO_BTN_DEBUG_PRINTLN("Appui long BTN C");
-        break;
-    }
-}
+// void VarioManager::handleButton(uint8_t btn)
+// {
+//     varioBeeper->generateTone(500, 150);
+//     switch (btn)
+//     {
+//     case BTN_SHORT_A:
+//         VARIO_BTN_DEBUG_PRINTLN("Appui court BTN A");
+//         if (currentStatePage == STATE_PAGE_INIT_DONE)
+//         {
+//             // demarrage du wifi
+//             setCurrentPage(STATE_PAGE_WEBSERV);
+//         }
+//         else if (currentStatePage == STATE_PAGE_WEBSERV)
+//         {
+//             // redemarrage du vario
+//             setCurrentPage(STATE_PAGE_REBOOT);
+//         }
+//         break;
+//     case BTN_SHORT_B:
+//         VARIO_BTN_DEBUG_PRINTLN("Appui court BTN B");
+//         break;
+//     case BTN_SHORT_C:
+//         VARIO_BTN_DEBUG_PRINTLN("Appui court BTN C");
+//         if (currentStatePage == STATE_PAGE_INIT_DONE)
+//         {
+//             // demarrage du wifi
+//             setCurrentPage(STATE_PAGE_CALIBRATION);
+//         }
+//         break;
+//     case BTN_LONG_A:
+//         VARIO_BTN_DEBUG_PRINTLN("Appui long BTN A");
+//         if (currentStatePage == STATE_PAGE_CALIBRATION)
+//         {
+//             // redemarrage du vario
+//             setCurrentPage(STATE_PAGE_REBOOT);
+//         }
+//         break;
+//     case BTN_LONG_B:
+//         VARIO_BTN_DEBUG_PRINTLN("Appui long BTN B");
+//         break;
+//     case BTN_LONG_C:
+//         VARIO_BTN_DEBUG_PRINTLN("Appui long BTN C");
+//         break;
+//     }
+// }
 
 void VarioManager::launchTimers()
 {
     TimerHandle_t timerHndl10Sec;
     timerHndl10Sec = xTimerCreate(
         "timer10Sec",              /* name */
-        pdMS_TO_TICKS(1000),       /* period/time */
+        pdMS_TO_TICKS(10000),      /* period/time */
         pdTRUE,                    /* auto reload */
         static_cast<void *>(this), /* timer ID */
         startTimers10sImpl);       /* callback */

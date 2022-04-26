@@ -50,7 +50,7 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
     // _display.drawInvertedBitmap(topx + imgWidth * 2, topy + imgHeight * 2, satfixicons, imgWidth, imgHeight, GxEPD_BLACK);
 
     storeLastDiplayZone(_display, width, height);
-    if (isborder)
+    if (isBorder)
     {
         drawborder(_display);
     }

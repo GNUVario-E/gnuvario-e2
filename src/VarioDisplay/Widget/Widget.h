@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "GxEPD2_GFX.h"
 #include <glcdfont.c>
+#include "VarioLanguage/VarioLanguage.h"
 #include <Fonts/FreeMono9pt7b.h>
 #include <Fonts/FreeSansBold9pt7b.h>
 #include <Fonts/FreeSansBold12pt7b.h>
@@ -28,17 +29,20 @@ protected:
     int16_t topy;
     int16_t width;
     int16_t height;
-    bool isactif;
-    bool isborder;
+    bool isActif;
+    bool isBorder;
     bool hasBeenModified = false;
     bool isFirstRefreshDone = false;
     DisplayZone lastDisplayZone = {0, 0, 0, 0};
     void storeLastDiplayZone(GxEPD2_GFX &_display, int16_t w, int16_t h);
     void clearLastDiplayZone(GxEPD2_GFX &_display);
     void drawborder(GxEPD2_GFX &_display);
+    VarioLanguage *varioLanguage;
+    uint8_t TITLE_NAME_INDEX = 99;
 
 public:
     Widget(int16_t topx, int16_t topy, int16_t width, int16_t height);
+    void setVarioLangage(VarioLanguage *varioLanguage);
     void setPosition(int16_t _topx, int16_t _topy, int16_t _width, int16_t _height);
     virtual void addToBuffer(GxEPD2_GFX &_display) = 0;
     virtual bool isRefreshNeeded() = 0;
