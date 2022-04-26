@@ -1,4 +1,5 @@
 #include "VarioLanguage.h"
+
 #include <SD.h>
 #include "VarioDebug/VarioDebug.h"
 #include "VarioTool/VarioTool.h"
@@ -70,7 +71,7 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 		VARIO_SDCARD_DEBUG_PRINTLN("Failed to read file");
 		isFileLangOK = false;
 
-		//création du fichier
+		// création du fichier
 		saveConfigurationVario(PARAMS_VERSION_LANGUE, filename);
 		return;
 	}
@@ -158,7 +159,7 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 	// Close the file (Curiously, File's destructor doesn't close the file)
 	file.close();
 
-	//Mise à jour du fichier de langue
+	// Mise à jour du fichier de langue
 	if (!isFileLangOK)
 	{
 		VARIO_SDCARD_DEBUG_PRINTLN("Sauvegarde de nouveaux paramètres");
@@ -212,7 +213,6 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 
 	//*****    Message *****
 
-//	Serial.println("****** Message *******");
 	VARIO_SDCARD_DEBUG_PRINTLN("****** Message *******");
 
 	JsonObject Message = VarioTool::jsonDoc.createNestedObject("message");
@@ -232,7 +232,7 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 	Message["CHARGER"] = TITRE_TAB[TITRE_CHARGER];
 	Message["BATTERIE"] = TITRE_TAB[TITRE_BATTERIE];
 	Message["UPDATEWWW"] = TITRE_TAB[TITRE_UPDATEWWW];
-	
+
 	//*****    Stat *****
 
 	VARIO_SDCARD_DEBUG_PRINTLN("****** Stat *******");
@@ -245,7 +245,6 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 	// Serialize JSON to file
 	if (serializeJson(VarioTool::jsonDoc, file) == 0)
 	{
-//		Serial.println(F("Failed to write to file"));
 		VARIO_SDCARD_DEBUG_PRINTLN("Failed to write to file");
 	}
 
@@ -255,10 +254,8 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 	VarioTool::jsonDoc.clear();
 }
 
-//**********************************************************
 String VarioLanguage::getText(uint8_t value)
 {
-	//**********************************************************
 	return TITRE_TAB[value];
 }
 
@@ -328,14 +325,14 @@ bool VarioLanguage::setParameterFromJsonObject(JsonObject *section, const char *
 /*
 
 {
-    "gnuvarioe": {
-        "version": "1.0"
-    },
+	"gnuvarioe": {
+		"version": "1.0"
+	},
 		"language": {
 				"id": 0,
 				"text": "Français"
 		},
-    "titre": {
+	"titre": {
 				"TIME":  "Heure",
 				"TDV":   "Temps de vol",
 				"ALTI":  "Alti",
@@ -348,8 +345,8 @@ bool VarioLanguage::setParameterFromJsonObject(JsonObject *section, const char *
 				"LAT": "Lat",
 				"LONG": "Long",
 				"COMPAS": "Compas"
-    },
-    "message": {
+	},
+	"message": {
 				"STAT": "Statistique",
 				"DATE": "Date",
 				"HEURE":"Heure",
@@ -359,7 +356,7 @@ bool VarioLanguage::setParameterFromJsonObject(JsonObject *section, const char *
 				"CONNECTA": "Connection a ",
 				"DEMAR": "Demarrage",
 				"REDEMAR": "Redemarrage",
-				"ENCOURS": "en cours",		
+				"ENCOURS": "en cours",
 				"CALIBR": "Calibration",
 				"VEILLE": "En veille",
 				"CHARGE": "En Charge",
