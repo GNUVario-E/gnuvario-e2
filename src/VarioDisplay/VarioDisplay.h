@@ -14,12 +14,12 @@
 class VarioDisplay
 {
 private:
+    const TickType_t delayT100 = pdMS_TO_TICKS(100);
     static TaskHandle_t screenTaskHandler;
     static TaskHandle_t bufferTaskHandler;
     static void screenTask(void *parameter);
     static void startTaskBuffer(void *);
     void bufferTask();
-    const TickType_t delayT100 = pdMS_TO_TICKS(100);
     void buildScreens();
     void updateScreen(void);
     bool _doDisplay = false;
@@ -31,6 +31,7 @@ public:
     void init(VarioLanguage *varioLanguage);
     void displayScreen(VarioScreen *screen);
     void stopDisplay();
+
     VarioScreen *_currentScreen;
     VarioScreen *wifiScreen;
     VarioScreen *calibrationScreen;
