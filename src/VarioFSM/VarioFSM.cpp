@@ -140,6 +140,7 @@ void VarioFSM::sound_on()
 void VarioFSM::sound_on_exit()
 {
     VARIO_FSM_DEBUG_PRINTLN("sound_on_exit");
+    _notifyObserver(VOLUME_SAVE_ASKED);
 }
 
 void VarioFSM::statistic_on_enter()
@@ -181,6 +182,25 @@ void VarioFSM::update(uint8_t _val)
     {
         // toggle mute
         VARIO_FSM_DEBUG_PRINTLN("toggle mute");
+        _notifyObserver(VOLUME_TOGGLE_MUTE_ASKED);
+    }
+    else if (fsm.is_in_state(_state_sound_edit))
+    {
+        // gestion de l'edition du son
+        VARIO_FSM_DEBUG_PRINTLN("sound edit");
+        switch (_val)
+        {
+        case BTN_SHORT_A:
+            // volume down
+            _notifyObserver(VOLUME_DOWN_ASKED);
+            break;
+        case BTN_SHORT_C:
+            // volume up
+            _notifyObserver(VOLUME_UP_ASKED);
+            break;
+        default:
+            break;
+        }
     }
     else
     {
