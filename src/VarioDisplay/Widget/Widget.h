@@ -29,26 +29,29 @@ protected:
     int16_t topy;
     int16_t width;
     int16_t height;
+
     bool isActif;
     bool isBorder;
+
     bool hasBeenModified = false;
-    bool isFirstRefreshDone = false;
+
     DisplayZone lastDisplayZone = {0, 0, 0, 0};
+
     void storeLastDiplayZone(GxEPD2_GFX &_display, int16_t w, int16_t h);
     void clearLastDiplayZone(GxEPD2_GFX &_display);
+
     void drawborder(GxEPD2_GFX &_display);
     VarioLanguage *varioLanguage;
     uint8_t TITLE_NAME_INDEX = 99;
 
 public:
-    Widget(int16_t topx, int16_t topy, int16_t width, int16_t height);
-    void setVarioLangage(VarioLanguage *varioLanguage);
+    Widget(VarioLanguage *_variolanguage, int16_t topx, int16_t topy, int16_t width, int16_t height);
     void setPosition(int16_t _topx, int16_t _topy, int16_t _width, int16_t _height);
     virtual void addToBuffer(GxEPD2_GFX &_display) = 0;
-    virtual bool isRefreshNeeded() = 0;
+    virtual bool isRefreshNeeded(uint32_t lastDisplayTime) = 0;
     void setForceRefresh();
     void setIsActif(bool _isactif);
-    void setIsborder(bool _isborder);
+    void setIsBorder(bool _isborder);
     bool getIsActif();
 };
 

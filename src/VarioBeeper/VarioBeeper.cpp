@@ -1,6 +1,7 @@
 
 #include "VarioBeeper.h"
 #include "VarioDebug/VarioDebug.h"
+#include "event.h"
 
 VarioBeeper::VarioBeeper()
 {
@@ -101,7 +102,6 @@ void VarioBeeper::task()
 
     while (1)
     {
-
         // play beep based on climb rate
         if (vario.msIs > vario.msShould)
         {
@@ -138,7 +138,7 @@ void VarioBeeper::task()
         {
             if (_withZerotage && _isPreviousToneIsZerotage && !isZerotage(vario.msIs))
             {
-                //on sort de la zone de zerotage, ce doit etre immédiat
+                // on sort de la zone de zerotage, ce doit etre immédiat
                 enableAmp();
                 vario.timeToneOn = 0;
             }
@@ -166,16 +166,16 @@ void VarioBeeper::startTone(float_t frequency, float_t cycle, float_t duty)
 
     if (vario.timeToneOn == 0 && vario.duty > 0)
     {
-        //demarrage du cycle
+        // demarrage du cycle
         enableAmp();
         vario.cycleIsOn = true;
         vario.duttyIsOn = false;
-        vario.timeToneOn = now; //date de demarrage du cycle
+        vario.timeToneOn = now; // date de demarrage du cycle
         toneAC(vario.frequency, getVolume());
     }
     else if (vario.cycleIsOn)
     {
-        //si le cycle est terminé
+        // si le cycle est terminé
         if ((now - vario.timeToneOn) >= vario.cycle)
         {
             vario.timeToneOn = 0;
@@ -184,12 +184,12 @@ void VarioBeeper::startTone(float_t frequency, float_t cycle, float_t duty)
         }
         else
         {
-            //si la partie jouée du cycle est terminée
+            // si la partie jouée du cycle est terminée
             if ((now - vario.timeToneOn) >= (vario.cycle * vario.duty / 100.00))
             {
                 if (vario.duttyIsOn)
                 {
-                    //redemarrage de l'ampli pour le prochain cycle
+                    // redemarrage de l'ampli pour le prochain cycle
                     if ((vario.cycle - (now - vario.timeToneOn)) < 80)
                     {
                         enableAmp();
@@ -222,7 +222,7 @@ void VarioBeeper::stopTone()
     vario.timeToneOn = 0;
     // pour supprimer le "tac"
     toneAC(30000, getVolume());
-    
+
     noToneAC();
     disableAmp();
 }
@@ -249,4 +249,34 @@ void VarioBeeper::toggleZerotage()
 bool VarioBeeper::isWithZerotage()
 {
     return _withZerotage;
+}
+
+void VarioBeeper::onSignalReceived(uint8_t _val)
+{
+    switch (_val)
+    {
+        {
+        case VOLUME_TOGGLE_MUTE_ASKED:
+            VARIO_SDCARD_DEBUG_PRINTLN("Demande de bascule du mute");
+            if (isMute())
+            {
+                unMute();
+            }
+            else
+            {
+                mute();
+            }
+            break;
+        case VOLUME_DOWN_ASKED:
+            VARIO_SDCARD_DEBUG_PRINTLN("Demande baisse du volume");
+            decreaseVolume();
+            break;
+        case VOLUME_UP_ASKED:
+            VARIO_SDCARD_DEBUG_PRINTLN("Demande augmentation du volume");
+            increaseVolume();
+            break;
+        default:
+            break;
+        }
+    }
 }

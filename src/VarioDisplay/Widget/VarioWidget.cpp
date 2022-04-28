@@ -1,6 +1,6 @@
 #include "VarioWidget.h"
 
-bool VarioWidget::isRefreshNeeded()
+bool VarioWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
     // if (fc.vario != oldVario)
     // {
@@ -21,7 +21,7 @@ bool VarioWidget::isRefreshNeeded()
         return true;
     }
 
-    if (!isFirstRefreshDone)
+    if (hasBeenModified)
     {
         return true;
     }

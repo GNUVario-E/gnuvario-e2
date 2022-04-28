@@ -73,7 +73,7 @@ class VarioLanguage
 public:
 	void init(uint8_t language = 0);
 	void loadConfigurationLangue(const char *filename);
-	String getText(uint8_t value);
+	char *getText(uint8_t value);
 
 private:
 	uint8_t langue = 0;

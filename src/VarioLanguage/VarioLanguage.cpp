@@ -254,7 +254,7 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 	VarioTool::jsonDoc.clear();
 }
 
-String VarioLanguage::getText(uint8_t value)
+char *VarioLanguage::getText(uint8_t value)
 {
 	return TITRE_TAB[value];
 }
@@ -301,8 +301,9 @@ bool VarioLanguage::setParameterFromJsonObject(JsonObject *section, const char *
 	{
 		if ((tVal = section->getMember(key).as<const char *>()) != NULL)
 		{
+			// uint8_t s = sizeof(tVal);
 			strncpy(TITRE_TAB[index], tVal, maxSize);
-			TITRE_TAB[index][maxSize] = 0;
+			// TITRE_TAB[index][maxSize] = 0;
 			isFromJson = true;
 		}
 	}
@@ -311,8 +312,9 @@ bool VarioLanguage::setParameterFromJsonObject(JsonObject *section, const char *
 	{
 		VARIO_SDCARD_DEBUG_PRINT("Json Recup - ");
 		VARIO_SDCARD_DEBUG_PRINT(key);
-		VARIO_SDCARD_DEBUG_PRINT(" : ");
-		VARIO_SDCARD_DEBUG_PRINTLN(tVal);
+		VARIO_SDCARD_DEBUG_PRINT(" : <");
+		VARIO_SDCARD_DEBUG_PRINT(tVal);
+		VARIO_SDCARD_DEBUG_PRINTLN(">");
 	}
 	else
 	{

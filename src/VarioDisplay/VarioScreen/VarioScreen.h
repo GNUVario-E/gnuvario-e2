@@ -32,17 +32,15 @@ private:
     AltWidget *altWidget;
     VarioWidget *varioWidget;
     ToolbarWidget *toolbarWidget;
+    // SoundeditWidget *soundEditWidget;
 
 protected:
 public:
     Widget *tabWidgets[NB_WIDGETS];
     VarioScreen(ScreenData data, VarioLanguage *varioLanguage);
-    // void addWidget(LogoWidget *widget);
-    // void addWidget(TextWidget *widget);
-    // void addWidget(AltWidget *widget);
-    // void addWidget(VarioWidget *widget);
+
     uint8_t getNbWidgets();
-    bool isRefreshNeeded();
+    bool isRefreshNeeded(uint32_t lastDisplayTime);
     void display();
     LogoWidget *getLogoWidget();
     TextWidget *getTextWidget1();

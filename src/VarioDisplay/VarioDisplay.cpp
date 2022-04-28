@@ -8,6 +8,21 @@
 #include "version.h"
 #include "VarioDebug/VarioDebug.h"
 
+ScreenData bootScreenData = {
+    logo : {true, false, 0, 0, 128, 130, 94, 74},
+    txt1 : {true, false, 0, 120, 128, 21},
+    txt2 : {true, false, 0, 160, 128, 21},
+    txt3 : {true, false, 0, 180, 128, 21},
+    txt4 : {true, false, 0, 230, 128, 41},
+    txt5 : {true, false, 0, 270, 128, 41},
+    txt6 : {false, true, 20, 130, 100, 41},
+    txt7 : {false, true, 20, 130, 100, 41},
+    txt8 : {false, true, 20, 130, 100, 41},
+    alt : {false, true, 0, 170, 65, 40},
+    vario : {false, true, 64, 170, 64, 40},
+    toolbar : {false, true, 0, 210, 128, 98}
+};
+
 ScreenData wifiScreenData = {
     logo : {true, true, 0, 0, 128, 296, 94, 74},
     txt1 : {true, false, 0, 230, 128, 41},
@@ -24,21 +39,6 @@ ScreenData wifiScreenData = {
 };
 
 ScreenData calibrationScreenData = {
-    logo : {true, true, 0, 0, 128, 296, 94, 74},
-    txt1 : {true, false, 0, 230, 128, 41},
-    txt2 : {false, true, 20, 130, 100, 41},
-    txt3 : {false, true, 20, 130, 100, 41},
-    txt4 : {false, true, 20, 130, 100, 41},
-    txt5 : {false, true, 20, 130, 100, 41},
-    txt6 : {false, true, 20, 130, 100, 41},
-    txt7 : {false, true, 20, 130, 100, 41},
-    txt8 : {false, true, 20, 130, 100, 41},
-    alt : {false, true, 0, 170, 65, 40},
-    vario : {false, true, 64, 170, 64, 40},
-    toolbar : {false, true, 0, 210, 128, 98}
-};
-
-ScreenData bootScreenData = {
     logo : {true, true, 0, 0, 128, 296, 94, 74},
     txt1 : {true, false, 0, 230, 128, 41},
     txt2 : {false, true, 20, 130, 100, 41},
@@ -132,6 +132,8 @@ SemaphoreHandle_t VarioDisplay::screenMutex;
 TaskHandle_t VarioDisplay::screenTaskHandler;
 TaskHandle_t VarioDisplay::bufferTaskHandler;
 
+uint32_t VarioDisplay::lastDisplayTime = 0;
+
 /**
  * Initialisetion des différents objets
  */
@@ -171,20 +173,39 @@ void VarioDisplay::init(VarioLanguage *_varioLanguage)
 
 void VarioDisplay::buildScreens()
 {
-    char *boot = "Booting ...";
-    char *wifi = "WIFI ...";
-    char *calibration = "CALIBRATION ...";
-    char *sound = "SOUND ...";
-    char *statistic = "STATISTIC ...";
+    char wifi[] = "WIFI ...";
+    char calibration[] = "CALIBRATION ...";
+    char sound[] = "SOUND ...";
+    char statistic[] = "STATISTIC ...";
 
+    // construction de l'écran de démarrage
+    char tmpbuffer[50];
+    bootScreen = new VarioScreen(bootScreenData, varioLanguage);
+    bootScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_DEMAR));
+
+    bootScreen->getTextWidget2()->setText("GNUVARIO-E2");
+
+    sprintf(tmpbuffer, "v%d.%02d", VERSION, SUB_VERSION);
+    if (BETA_CODE > 0)
+    {
+        sprintf(tmpbuffer + strlen(tmpbuffer), " - b%01d", BETA_CODE);
+    }
+    bootScreen->getTextWidget3()->setText(tmpbuffer);
+    bootScreen->getTextWidget3()->setTextSize(1);
+
+    sprintf(tmpbuffer, "%s", __DATE__);
+    bootScreen->getTextWidget4()->setText(tmpbuffer);
+    bootScreen->getTextWidget4()->setTextSize(1);
+
+    sprintf(tmpbuffer, "%d%% (%.2fV)", fc.power.capacite, fc.power.tension);
+    bootScreen->getTextWidget5()->setText(tmpbuffer);
+
+    // construction de l'écran WIFI
     wifiScreen = new VarioScreen(wifiScreenData, varioLanguage);
     wifiScreen->getTextWidget1()->setText(wifi);
 
     calibrationScreen = new VarioScreen(calibrationScreenData, varioLanguage);
     calibrationScreen->getTextWidget1()->setText(calibration);
-
-    bootScreen = new VarioScreen(bootScreenData, varioLanguage);
-    bootScreen->getTextWidget1()->setText(boot);
 
     vario1Screen = new VarioScreen(vario1ScreenData, varioLanguage);
     vario2Screen = new VarioScreen(vario2ScreenData, varioLanguage);
@@ -202,7 +223,6 @@ void VarioDisplay::buildScreens()
  */
 void VarioDisplay::screenTask(void *parameter)
 {
-    int32_t d;
     while (true)
     {
         /* wait */
@@ -217,6 +237,7 @@ void VarioDisplay::screenTask(void *parameter)
             display.display(true); // partial update
 
             display.powerOff();
+            lastDisplayTime = millis();
             xSemaphoreGive(screenMutex);
             // Serial.print("duration: ");
             // Serial.println(millis() - d);
@@ -246,14 +267,14 @@ void VarioDisplay::bufferTask()
 
             // VARIO_PROG_DEBUG_PRINTLN("bufferTask");
 
-            if (_currentScreen->isRefreshNeeded())
+            if (_currentScreen->isRefreshNeeded(lastDisplayTime))
             {
                 if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
                 {
                     // loop over widgets
                     for (uint8_t i = 0; i < _currentScreen->getNbWidgets(); i++)
                     {
-                        if (_currentScreen->tabWidgets[i]->getIsActif() && _currentScreen->tabWidgets[i]->isRefreshNeeded())
+                        if (_currentScreen->tabWidgets[i]->getIsActif() && _currentScreen->tabWidgets[i]->isRefreshNeeded(lastDisplayTime))
                         {
                             _currentScreen->tabWidgets[i]->addToBuffer(display);
                         }

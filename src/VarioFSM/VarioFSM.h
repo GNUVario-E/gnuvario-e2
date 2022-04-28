@@ -139,6 +139,6 @@ public:
     }
 
     void initfsm(VarioDisplay *_varioDisplay);
-    void update(uint8_t _val);
+    void onSignalReceived(uint8_t _val);
     void run();
 };

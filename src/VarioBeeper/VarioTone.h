@@ -2,6 +2,7 @@
 
 #include "Arduino.h"
 #include "toneAC.h"
+#include "VarioDebug/VarioDebug.h"
 #include "FC.h"
 
 #define BEEP_DEFAULT_VOLUME 5
@@ -29,6 +30,8 @@ public:
     void generateToneSuccess();
     void generateToneFailure();
     void setVolume(uint8_t newVolume = BEEP_DEFAULT_VOLUME);
+    void increaseVolume();
+    void decreaseVolume();
     uint8_t getVolume();
     void mute();
     void unMute();

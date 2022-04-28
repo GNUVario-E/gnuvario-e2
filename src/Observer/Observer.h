@@ -4,5 +4,5 @@ class Observer
 {
 public:
     virtual ~Observer(){};
-    virtual void update(uint8_t _val) = 0;
+    virtual void onSignalReceived(uint8_t _val) = 0;
 };

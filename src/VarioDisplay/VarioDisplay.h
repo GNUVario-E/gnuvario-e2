@@ -5,7 +5,7 @@
 #include "freertos/task.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include "VarioDisplay/VarioScreen/VarioScreen.h"
-#include "VarioDisplay/VarioScreen/ScreenData.h"
+
 
 #define SCREEN_STACK_SIZE 2000
 #define SCREEN_CORE 1
@@ -19,6 +19,7 @@ private:
     static TaskHandle_t bufferTaskHandler;
     static void screenTask(void *parameter);
     static void startTaskBuffer(void *);
+    static uint32_t lastDisplayTime;
     void bufferTask();
     void buildScreens();
     void updateScreen(void);
