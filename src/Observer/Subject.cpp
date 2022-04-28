@@ -36,6 +36,6 @@ void Subject::_notifyObserver(uint8_t _val)
 {
     for (uint8_t i = 0; i < observerIndex; i++)
     {
-        mObserver[i]->update(_val);
+        mObserver[i]->onSignalReceived(_val);
     }
 }

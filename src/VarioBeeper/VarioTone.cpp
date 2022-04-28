@@ -15,9 +15,8 @@ void VarioTone::generateTone(uint32_t fHz, int ms)
     if (_taskVarioBeeperHandle != NULL)
     {
         vTaskSuspend(_taskVarioBeeperHandle);
-#ifdef SOUND_DEBUG
-        SerialPort.println("suspend task");
-#endif // SOUND_DEBUG
+
+        VARIO_SOUND_DEBUG_PRINTLN("suspend task");
     }
     enableAmp();
     vTaskDelay(delayT10 * 5); // time for amp to get on
@@ -34,9 +33,8 @@ void VarioTone::generateTone(uint32_t fHz, int ms, uint8_t volume)
     if (_taskVarioBeeperHandle != NULL)
     {
         vTaskSuspend(_taskVarioBeeperHandle);
-#ifdef SOUND_DEBUG
-        SerialPort.println("suspend task");
-#endif // SOUND_DEBUG
+
+        VARIO_SOUND_DEBUG_PRINTLN("suspend task");
     }
     enableAmp();
     vTaskDelay(delayT10 * 5); // time for amp to get on
@@ -53,9 +51,8 @@ void VarioTone::generateToneSuccess()
     if (_taskVarioBeeperHandle != NULL)
     {
         vTaskSuspend(_taskVarioBeeperHandle);
-#ifdef SOUND_DEBUG
-        SerialPort.println("suspend task");
-#endif // SOUND_DEBUG
+
+        VARIO_SOUND_DEBUG_PRINTLN("suspend task");
     }
     generateTone(440, 100);
     delay(100);
@@ -71,9 +68,8 @@ void VarioTone::generateToneFailure()
     if (_taskVarioBeeperHandle != NULL)
     {
         vTaskSuspend(_taskVarioBeeperHandle);
-#ifdef SOUND_DEBUG
-        SerialPort.println("suspend task");
-#endif // SOUND_DEBUG
+
+        VARIO_SOUND_DEBUG_PRINTLN("suspend task");
     }
 
     uint16_t fHz = 300;
@@ -97,8 +93,30 @@ void VarioTone::generateToneFailure()
 
 void VarioTone::setVolume(uint8_t newVolume)
 {
-    _volume = newVolume;
+    if (_volume < 0)
+    {
+        _volume = 0;
+    }
+    else if (_volume > 10)
+    {
+        _volume = 10;
+    }
+    else
+    {
+        _volume = newVolume;
+    }
+
     fc.sound.volume = _volume;
+}
+
+void VarioTone::increaseVolume()
+{
+    setVolume(_volume + 1);
+}
+
+void VarioTone::decreaseVolume()
+{
+    setVolume(_volume - 1);
 }
 
 uint8_t VarioTone::getVolume()

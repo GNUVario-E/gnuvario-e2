@@ -3,7 +3,7 @@
 #include "Arduino.h"
 #include "toneAC.h"
 #include "VarioTone.h"
-
+#include "Observer/Observer.h"
 
 #define BEEPER_SIZE 12
 struct VARIOCYCLE
@@ -28,7 +28,7 @@ struct VARIOBEEP
     bool duttyIsOn = false; // currently in dutty part of cycle
 };
 
-class VarioBeeper : public VarioTone
+class VarioBeeper : public VarioTone, public Observer
 {
 private:
     VARIOBEEP vario;
@@ -81,6 +81,7 @@ public:
 
     void setGlidingAlarmState(bool state);
     void setGlidingBeepState(bool state);
+    void onSignalReceived(uint8_t _val);
 };
 
 extern VarioBeeper beeper;

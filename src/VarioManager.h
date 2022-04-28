@@ -74,7 +74,7 @@ public:
     // uint8_t getCurrentPageState();
     // void handleButton(uint8_t btn);
     boolean init();
-    void update(uint8_t _val);
+    void onSignalReceived(uint8_t _val);
 };
 
 extern fcdata_t fc;

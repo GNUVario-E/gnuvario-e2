@@ -176,7 +176,7 @@ void VarioFSM::soundedit_on_exit()
     // sauvegarde du volume
 }
 
-void VarioFSM::update(uint8_t _val)
+void VarioFSM::onSignalReceived(uint8_t _val)
 {
     if ((fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)) && _val == BTN_SHORT_B)
     {

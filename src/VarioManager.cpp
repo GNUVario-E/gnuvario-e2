@@ -60,7 +60,7 @@ boolean VarioManager::init()
     VARIO_PROG_DEBUG_DUMP(varioData.getParam(PARAM_PILOT_NAME)->getValueChar());
 
     varioLanguage->init(varioData.getParam(PARAM_LANGUAGE)->getValueUInt8());
-
+    
     varioButton->registerObserver(&fsm);
     varioButton->startTask();
 
@@ -70,6 +70,7 @@ boolean VarioManager::init()
     fsm.initfsm(varioDisplay);
 
     fsm.registerObserver(this);
+    fsm.registerObserver(varioBeeper);
 
     // if (esp32FOTA.isArchWwwExist())
     // {
@@ -257,7 +258,7 @@ void VarioManager::setPowerDataToFC()
     fc.power.capacite = varioPower->getCapacitePct();
 }
 
-void VarioManager::update(uint8_t _val)
+void VarioManager::onSignalReceived(uint8_t _val)
 {
     switch (_val)
     {

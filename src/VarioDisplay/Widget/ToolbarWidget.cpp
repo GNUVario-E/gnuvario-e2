@@ -55,25 +55,13 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
         drawborder(_display);
     }
 
-    if (!isFirstRefreshDone)
-    {
-        isFirstRefreshDone = true;
-    }
-
-    // topy++;
+    hasBeenModified = false;
 }
 
-bool ToolbarWidget::isRefreshNeeded()
+bool ToolbarWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
     bool hasChange = false;
-    // if (fc.vario != oldVario)
-    // {
-    //     sprintf(localText, "V:  %d.%02d ", (int)fc.vario, (int)(fabsf(fc.vario) * 100) % 100);
-    //     setText(localText);
-    //     oldVario = fc.vario;
 
-    //     return true;
-    // }
     if (fc.power.capacite >= 75)
     {
         batIcon = bat4icons;
@@ -122,7 +110,7 @@ bool ToolbarWidget::isRefreshNeeded()
         return true;
     }
 
-    if (!isFirstRefreshDone)
+    if (hasBeenModified)
     {
         return true;
     }

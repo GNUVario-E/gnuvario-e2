@@ -13,10 +13,11 @@ private:
     int16_t oldAlt = -999;
 
 public:
-    AltWidget(int16_t topx, int16_t topy, int16_t width, int16_t height) : TextWidget(topx, topy, width, height)
+    AltWidget(VarioLanguage *_variolanguage, int16_t topx, int16_t topy, int16_t width, int16_t height) : TextWidget(_variolanguage, topx, topy, width, height)
     {
         TITLE_NAME_INDEX = TITRE_ALTI;
+        initAutoTitleFromIndex();
     }
 
-    bool isRefreshNeeded();
+    bool isRefreshNeeded(uint32_t lastDisplayTime);
 };

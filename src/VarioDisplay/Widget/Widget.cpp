@@ -1,17 +1,13 @@
 #include "Widget.h"
 
-Widget::Widget(int16_t _topx, int16_t _topy, int16_t _width, int16_t _height)
+Widget::Widget(VarioLanguage *_variolanguage, int16_t _topx, int16_t _topy, int16_t _width, int16_t _height)
 {
+    varioLanguage = _variolanguage;
     topx = _topx;
     topy = _topy;
     width = _width;
     height = _height;
-    isFirstRefreshDone = false;
-}
-
-void Widget::setVarioLangage(VarioLanguage *_varioLanguage)
-{
-    varioLanguage = _varioLanguage;
+    hasBeenModified = true;
 }
 
 void Widget::setIsActif(bool _isactif)
@@ -21,7 +17,7 @@ void Widget::setIsActif(bool _isactif)
 
 void Widget::setForceRefresh()
 {
-    isFirstRefreshDone = false;
+    hasBeenModified = true;
 }
 
 void Widget::setPosition(int16_t _topx, int16_t _topy, int16_t _width, int16_t _height)
@@ -34,6 +30,7 @@ void Widget::setPosition(int16_t _topx, int16_t _topy, int16_t _width, int16_t _
 
 void Widget::storeLastDiplayZone(GxEPD2_GFX &_display, int16_t w, int16_t h)
 {
+    // display zone without border
     if (isBorder)
     {
         lastDisplayZone.topx = topx + 1;
@@ -68,11 +65,7 @@ bool Widget::getIsActif()
     return isActif;
 }
 
-void Widget::setIsborder(bool _isborder)
+void Widget::setIsBorder(bool _isborder)
 {
     isBorder = _isborder;
 }
-
-// void Widget::addToBuffer(GxEPD2_GFX &_display)
-// {
-// }
