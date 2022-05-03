@@ -141,12 +141,43 @@ void VarioDisplay::startTaskBuffer(void *parm)
  */
 void VarioDisplay::bufferTask()
 {
+    bool firstRun = true;
+    uint8_t nbToggle = 0;
+    uint8_t tabToggle[10][2];
     while (true)
     {
         bool notifyTask = true;
         // /* wait */
         xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
 
+        if (!firstRun)
+        {
+            nbToggle = 0;
+            // toggle to next widget if necessary
+            for (uint8_t i = 0; i < _currentScreen->getNbWidgets(); i++)
+            {
+                if (_currentScreen->tabWidgets[i]->getIsActif())
+                {
+                    uint8_t altWidgetIndex = _currentScreen->tabWidgets[i]->getAltWidgetIndex();
+                    if (altWidgetIndex != 99)
+                    {
+                        Serial.println("Activation du widget " + String(altWidgetIndex) + " avec ancien wigdet =" + String(i));
+                        tabToggle[nbToggle][0] = i;
+                        tabToggle[nbToggle][1] = altWidgetIndex;
+                        nbToggle++;
+                    }
+                }
+            }
+            for (uint8_t i = 0; i < nbToggle; i++)
+            {
+                _currentScreen->tabWidgets[tabToggle[i][0]]->setIsActif(false);
+                _currentScreen->tabWidgets[tabToggle[i][0]]->setForceRefresh();
+
+                _currentScreen->tabWidgets[tabToggle[i][1]]->setIsActif(true);
+                _currentScreen->tabWidgets[tabToggle[i][1]]->setForceRefresh();
+                _currentScreen->tabWidgets[tabToggle[i][1]]->setForceClearZone();
+            }
+        }
         /* launch interrupt */
 
         // VARIO_PROG_DEBUG_PRINTLN("bufferTask");
@@ -168,6 +199,22 @@ void VarioDisplay::bufferTask()
                 updateScreen();
                 notifyTask = false; // task will be notified at the end of the screen refresh
             }
+        }
+        if (firstRun)
+        {
+            // toggle to next widget if necessary
+            for (uint8_t i = 0; i < _currentScreen->getNbWidgets(); i++)
+            {
+                if (_currentScreen->tabWidgets[i]->getIsActif())
+                {
+                    uint8_t altWidgetIndex = _currentScreen->tabWidgets[i]->getAltWidgetIndex();
+                    if (altWidgetIndex != 99)
+                    {
+                        _currentScreen->tabWidgets[i]->setForceRefresh();
+                    }
+                }
+            }
+            firstRun = false;
         }
         vTaskDelay(pdMS_TO_TICKS(50));
         if (notifyTask)

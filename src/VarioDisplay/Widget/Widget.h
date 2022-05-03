@@ -33,6 +33,7 @@ protected:
 
     bool isActif;
     bool isBorder;
+    bool forceClear = false;
 
     bool hasBeenModified = false;
 
@@ -44,16 +45,19 @@ protected:
     void drawborder(GxEPD2_GFX &_display);
     VarioLanguage *varioLanguage;
     uint8_t TITLE_NAME_INDEX = 99;
+    uint8_t altWidgetIndex = 99;
 
 public:
-    Widget(VarioLanguage *_variolanguage, int16_t topx, int16_t topy, int16_t width, int16_t height);
+    Widget(VarioLanguage *_variolanguage, uint8_t altWidgetIndex, int16_t topx, int16_t topy, int16_t width, int16_t height);
     void setPosition(int16_t _topx, int16_t _topy, int16_t _width, int16_t _height);
     virtual void addToBuffer(GxEPD2_GFX &_display) = 0;
     virtual bool isRefreshNeeded(uint32_t lastDisplayTime) = 0;
     void setForceRefresh();
+    void setForceClearZone();
     void setIsActif(bool _isactif);
     void setIsBorder(bool _isborder);
     bool getIsActif();
+    uint8_t getAltWidgetIndex();
 };
 
 extern fcdata_t fc;

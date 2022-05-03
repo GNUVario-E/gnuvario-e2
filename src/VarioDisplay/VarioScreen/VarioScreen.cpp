@@ -2,71 +2,71 @@
 
 VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
 {
-    logoWidget = new LogoWidget(_varioLanguage, data.logo.x, data.logo.y, data.logo.w, data.logo.h, data.logo.iw, data.logo.ih);
+    logoWidget = new LogoWidget(_varioLanguage, data.logo.altWidgetIndex, data.logo.x, data.logo.y, data.logo.w, data.logo.h, data.logo.iw, data.logo.ih);
     logoWidget->setIsActif(data.logo.isactif);
     logoWidget->setIsBorder(data.logo.isborder);
 
-    textWidget1 = new TextWidget(_varioLanguage, data.txt1.x, data.txt1.y, data.txt1.w, data.txt1.h);
+    textWidget1 = new TextWidget(_varioLanguage, data.txt1.altWidgetIndex, data.txt1.x, data.txt1.y, data.txt1.w, data.txt1.h);
     textWidget1->setIsActif(data.txt1.isactif);
     textWidget1->setIsBorder(data.txt1.isborder);
     textWidget1->setText("TEXTE 1");
     // textWidget1->setBlinkFreq(1);
 
-    textWidget2 = new TextWidget(_varioLanguage, data.txt2.x, data.txt2.y, data.txt2.w, data.txt2.h);
+    textWidget2 = new TextWidget(_varioLanguage, data.txt2.altWidgetIndex, data.txt2.x, data.txt2.y, data.txt2.w, data.txt2.h);
     textWidget2->setIsActif(data.txt2.isactif);
     textWidget2->setIsBorder(data.txt2.isborder);
     textWidget2->setText("TEXTE 2");
     // textWidget2->setBlinkFreq(2);
 
-    textWidget3 = new TextWidget(_varioLanguage, data.txt3.x, data.txt3.y, data.txt3.w, data.txt3.h);
+    textWidget3 = new TextWidget(_varioLanguage, data.txt3.altWidgetIndex, data.txt3.x, data.txt3.y, data.txt3.w, data.txt3.h);
     textWidget3->setIsActif(data.txt3.isactif);
     textWidget3->setIsBorder(data.txt3.isborder);
     textWidget3->setText("TEXTE 3");
     // textWidget3->setBlinkFreq(2);
 
-    textWidget4 = new TextWidget(_varioLanguage, data.txt4.x, data.txt4.y, data.txt4.w, data.txt4.h);
+    textWidget4 = new TextWidget(_varioLanguage, data.txt4.altWidgetIndex, data.txt4.x, data.txt4.y, data.txt4.w, data.txt4.h);
     textWidget4->setIsActif(data.txt4.isactif);
     textWidget4->setIsBorder(data.txt4.isborder);
     textWidget4->setText("TEXTE 4");
     // textWidget4->setBlinkFreq(2);
 
-    textWidget5 = new TextWidget(_varioLanguage, data.txt5.x, data.txt5.y, data.txt5.w, data.txt5.h);
+    textWidget5 = new TextWidget(_varioLanguage, data.txt5.altWidgetIndex, data.txt5.x, data.txt5.y, data.txt5.w, data.txt5.h);
     textWidget5->setIsActif(data.txt5.isactif);
     textWidget5->setIsBorder(data.txt5.isborder);
     textWidget5->setText("TEXTE 5");
     // textWidget5->setBlinkFreq(2);
 
-    textWidget6 = new TextWidget(_varioLanguage, data.txt6.x, data.txt6.y, data.txt6.w, data.txt6.h);
+    textWidget6 = new TextWidget(_varioLanguage, data.txt6.altWidgetIndex, data.txt6.x, data.txt6.y, data.txt6.w, data.txt6.h);
     textWidget6->setIsActif(data.txt6.isactif);
     textWidget6->setIsBorder(data.txt6.isborder);
     textWidget6->setText("TEXTE 6");
     // textWidget6->setBlinkFreq(2);
 
-    textWidget7 = new TextWidget(_varioLanguage, data.txt7.x, data.txt7.y, data.txt7.w, data.txt7.h);
+    textWidget7 = new TextWidget(_varioLanguage, data.txt7.altWidgetIndex, data.txt7.x, data.txt7.y, data.txt7.w, data.txt7.h);
     textWidget7->setIsActif(data.txt7.isactif);
     textWidget7->setIsBorder(data.txt7.isborder);
     textWidget7->setText("TEXTE 7");
     // textWidget7->setBlinkFreq(2);
 
-    textWidget8 = new TextWidget(_varioLanguage, data.txt8.x, data.txt8.y, data.txt8.w, data.txt8.h);
+    textWidget8 = new TextWidget(_varioLanguage, data.txt8.altWidgetIndex, data.txt8.x, data.txt8.y, data.txt8.w, data.txt8.h);
     textWidget8->setIsActif(data.txt8.isactif);
     textWidget8->setIsBorder(data.txt8.isborder);
     textWidget8->setText("TEXTE 8");
     // textWidget8->setBlinkFreq(2);
 
-    altWidget = new AltWidget(_varioLanguage, data.alt.x, data.alt.y, data.alt.w, data.alt.h);
+    altWidget = new AltWidget(_varioLanguage, data.alt.altWidgetIndex, data.alt.x, data.alt.y, data.alt.w, data.alt.h);
     altWidget->setIsActif(data.alt.isactif);
     altWidget->setIsBorder(data.alt.isborder);
 
-    varioWidget = new VarioWidget(_varioLanguage, data.vario.x, data.vario.y, data.vario.w, data.vario.h);
+    varioWidget = new VarioWidget(_varioLanguage, data.vario.altWidgetIndex, data.vario.x, data.vario.y, data.vario.w, data.vario.h);
     varioWidget->setIsActif(data.vario.isactif);
     varioWidget->setIsBorder(data.vario.isborder);
 
-    toolbarWidget = new ToolbarWidget(_varioLanguage, data.toolbar.x, data.toolbar.y, data.toolbar.w, data.toolbar.h);
+    toolbarWidget = new ToolbarWidget(_varioLanguage, data.toolbar.altWidgetIndex, data.toolbar.x, data.toolbar.y, data.toolbar.w, data.toolbar.h);
     toolbarWidget->setIsActif(data.toolbar.isactif);
     toolbarWidget->setIsBorder(data.toolbar.isborder);
 
-    speedWidget = new SpeedWidget(_varioLanguage, data.speed.x, data.speed.y, data.speed.w, data.speed.h);
+    speedWidget = new SpeedWidget(_varioLanguage, data.speed.altWidgetIndex, data.speed.x, data.speed.y, data.speed.w, data.speed.h);
     speedWidget->setIsActif(data.speed.isactif);
     speedWidget->setIsBorder(data.speed.isborder);
 

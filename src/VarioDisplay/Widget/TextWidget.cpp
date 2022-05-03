@@ -2,6 +2,12 @@
 
 void TextWidget::addToBuffer(GxEPD2_GFX &_display)
 {
+    if (forceClear)
+    {
+        _display.fillRect(topx, topy, width, height, GxEPD_WHITE);
+        forceClear = false;
+    }
+
     _display.setTextSize(1);
 
     if (blinkFreq == 0 || isText == false)
