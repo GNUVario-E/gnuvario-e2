@@ -16,7 +16,7 @@ protected:
     char *title = nullptr;
 
 public:
-    TextWidget(VarioLanguage *_variolanguage, int16_t topx, int16_t topy, int16_t width, int16_t height) : Widget(_variolanguage, topx, topy, width, height)
+    TextWidget(VarioLanguage *_variolanguage, uint8_t altWidgetIndex, int16_t topx, int16_t topy, int16_t width, int16_t height) : Widget(_variolanguage, altWidgetIndex, topx, topy, width, height)
     {
     }
     void addToBuffer(GxEPD2_GFX &_display);

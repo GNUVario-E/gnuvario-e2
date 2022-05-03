@@ -11,7 +11,7 @@ private:
     float oldSpeed = -999.0;
 
 public:
-    SpeedWidget(VarioLanguage *_variolanguage, int16_t topx, int16_t topy, int16_t width, int16_t height) : TextWidget(_variolanguage, topx, topy, width, height)
+    SpeedWidget(VarioLanguage *_variolanguage, uint8_t altWidgetIndex, int16_t topx, int16_t topy, int16_t width, int16_t height) : TextWidget(_variolanguage, altWidgetIndex, topx, topy, width, height)
     {
         TITLE_NAME_INDEX = TITRE_SPEED;
         initAutoTitleFromIndex();

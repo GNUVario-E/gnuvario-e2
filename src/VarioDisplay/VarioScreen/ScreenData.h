@@ -12,6 +12,7 @@ struct S_LOGO
     uint16_t h;
     uint16_t iw;
     uint16_t ih;
+    uint8_t altWidgetIndex;
 };
 
 struct S_TXT
@@ -22,6 +23,7 @@ struct S_TXT
     uint16_t y;
     uint16_t w;
     uint16_t h;
+    uint8_t altWidgetIndex;
 };
 
 struct S_ALT
@@ -32,6 +34,7 @@ struct S_ALT
     uint16_t y;
     uint16_t w;
     uint16_t h;
+    uint8_t altWidgetIndex;
 };
 
 struct S_VARIO
@@ -42,6 +45,7 @@ struct S_VARIO
     uint16_t y;
     uint16_t w;
     uint16_t h;
+    uint8_t altWidgetIndex;
 };
 
 struct S_TOOLBAR
@@ -52,6 +56,7 @@ struct S_TOOLBAR
     uint16_t y;
     uint16_t w;
     uint16_t h;
+    uint8_t altWidgetIndex;
 };
 
 struct S_SPEED
@@ -62,6 +67,7 @@ struct S_SPEED
     uint16_t y;
     uint16_t w;
     uint16_t h;
+    uint8_t altWidgetIndex;
 };
 
 struct ScreenData
