@@ -42,8 +42,6 @@ boolean VarioData::applySettingParam(const char *settingName, const char *settin
 
   VARIO_SDCARD_DEBUG_PRINTLN("Param introuvable :");
   VARIO_SDCARD_DEBUG_DUMP(settingName);
-  //Serial.print("Param introuvable :");
-  //Serial.println(settingName);
 
   return false;
 }
@@ -73,8 +71,6 @@ boolean VarioData::setData(const char *dataName, const char *dataValue)
     return vdata->setValue(dataValue);
   }
 
-//  Serial.print("Param introuvable :");
-//  Serial.println(dataName);
   VARIO_SDCARD_DEBUG_PRINTLN("Param introuvable :");
   VARIO_SDCARD_DEBUG_DUMP(dataName);
 

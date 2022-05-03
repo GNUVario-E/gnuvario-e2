@@ -17,6 +17,7 @@ struct sound_data
 struct fcdata_t
 {
     int16_t alt;
+    double_t speed;
     float vario;
     bool isFixed;
     power_data power;

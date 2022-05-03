@@ -23,7 +23,6 @@ private:
     void bufferTask();
     void buildScreens();
     void updateScreen(void);
-    bool _doDisplay = false;
     VarioLanguage *varioLanguage;
 
 public:

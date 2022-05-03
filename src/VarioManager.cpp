@@ -60,7 +60,7 @@ boolean VarioManager::init()
     VARIO_PROG_DEBUG_DUMP(varioData.getParam(PARAM_PILOT_NAME)->getValueChar());
 
     varioLanguage->init(varioData.getParam(PARAM_LANGUAGE)->getValueUInt8());
-    
+
     varioButton->registerObserver(&fsm);
     varioButton->startTask();
 
@@ -269,7 +269,7 @@ void VarioManager::onSignalReceived(uint8_t _val)
             varioWifi->startTask();
             break;
         case CALIBRATION_START_ASKED:
-            Serial.println("Démarrage de la calibration");
+            VARIO_CAL_DEBUG_PRINTLN("Démarrage de la calibration");
             break;
         default:
             break;

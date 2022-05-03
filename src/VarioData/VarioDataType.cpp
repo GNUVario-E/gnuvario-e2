@@ -101,8 +101,6 @@ T VarioDataType::getValue()
     case TYPE_BOOL:
         return boolValue;
     default:
-        //Serial.print("Bad type: ");
-        //Serial.println(*constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return false;
@@ -118,8 +116,6 @@ int8_t VarioDataType::getValueInt8()
     }
     else
     {
- //       Serial.print("Bad type: ");
- //       Serial.println(constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return NULL;
@@ -134,8 +130,6 @@ uint8_t VarioDataType::getValueUInt8()
     }
     else
     {
-//        Serial.print("Bad type: ");
-//        Serial.println(constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return NULL;
@@ -149,8 +143,6 @@ int16_t VarioDataType::getValueInt16()
     }
     else
     {
-//        Serial.print("Bad type: ");
-//        Serial.println(constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return NULL;
@@ -164,8 +156,6 @@ uint16_t VarioDataType::getValueUInt16()
     }
     else
     {
-//        Serial.print("Bad type: ");
-//        Serial.println(constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return NULL;
@@ -179,8 +169,6 @@ float VarioDataType::getValueFloat()
     }
     else
     {
-//        Serial.print("Bad type: ");
-//        Serial.println(constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return NULL;
@@ -195,8 +183,6 @@ bool VarioDataType::getValueBool()
     }
     else
     {
-//        Serial.print("Bad type: ");
-//        Serial.println(constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return NULL;
@@ -211,8 +197,6 @@ double VarioDataType::getValueDouble()
     }
     else
     {
-//        Serial.print("Bad type: ");
-//        Serial.println(constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return NULL;
@@ -227,8 +211,6 @@ char *VarioDataType::getValueChar()
     }
     else
     {
-//        Serial.print("Bad type: ");
-//        Serial.println(*constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return nullptr;
@@ -271,8 +253,6 @@ bool VarioDataType::setValue(const char *_value)
         }
         break;
     default:
-//        Serial.print("Bad type: ");
-//        Serial.println(*constName);
         VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
         VARIO_DATA_DEBUG_DUMP(*constName);
         return false;
@@ -287,8 +267,6 @@ bool VarioDataType::setValue(int8_t _value)
         int8Value = _value;
         return true;
     }
-//    Serial.print("Bad type: ");
-//    Serial.println(*constName);
     VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
     VARIO_DATA_DEBUG_DUMP(*constName);
     return false;
@@ -301,8 +279,6 @@ bool VarioDataType::setValue(int16_t _value)
         int16Value = _value;
         return true;
     }
-//    Serial.print("Bad type: ");
-//    Serial.println(*constName);
     VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
     VARIO_DATA_DEBUG_DUMP(*constName);
     return false;
@@ -315,8 +291,6 @@ bool VarioDataType::setValue(uint8_t _value)
         uint8Value = _value;
         return true;
     }
-//    Serial.print("Bad type: ");
-//    Serial.println(*constName);
     VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
     VARIO_DATA_DEBUG_DUMP(*constName);
     return false;
@@ -329,8 +303,6 @@ bool VarioDataType::setValue(uint16_t _value)
         uint16Value = _value;
         return true;
     }
-//    Serial.print("Bad type: ");
-//    Serial.println(*constName);
     VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
     VARIO_DATA_DEBUG_DUMP(*constName);
     return false;
@@ -343,8 +315,6 @@ bool VarioDataType::setValue(float _value)
         floatValue = _value;
         return true;
     }
-//    Serial.print("Bad type: ");
-//    Serial.println(*constName);
     VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
     VARIO_DATA_DEBUG_DUMP(*constName);
     return false;
@@ -357,8 +327,6 @@ bool VarioDataType::setValue(double _value)
         doubleValue = _value;
         return true;
     }
-//    Serial.print("Bad type: ");
-//    Serial.println(*constName);
     VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
     VARIO_DATA_DEBUG_DUMP(*constName);
     return false;
@@ -371,8 +339,6 @@ bool VarioDataType::setValue(bool _value)
         boolValue = _value;
         return true;
     }
-//    Serial.print("Bad type: ");
-//    Serial.println(*constName);
     VARIO_DATA_DEBUG_PRINTLN("Bad type: ");
     VARIO_DATA_DEBUG_DUMP(*constName);
     return false;
@@ -402,41 +368,41 @@ bool VarioDataType::setParameterFromJsonObject(JsonObject *section, const char *
 #ifdef SDCARD_DEBUG
     if (isFromJson)
     {
-        Serial.print("Json Recup - ");
-        Serial.print(key);
-        Serial.print(" : ");
+        VARIO_DATA_DEBUG_PRINT("Json Recup - ");
+        VARIO_DATA_DEBUG_PRINT(key);
+        VARIO_DATA_DEBUG_PRINT(" : ");
 
         switch (dataType)
         {
         case TYPE_CHAR:
-            Serial.println(charValue);
+            VARIO_DATA_DEBUG_PRINTLN(charValue);
             break;
         case TYPE_INT8:
-            Serial.println(int8Value);
+            VARIO_DATA_DEBUG_PRINTLN(int8Value);
             break;
         case TYPE_INT16:
-            Serial.println(int16Value);
+            VARIO_DATA_DEBUG_PRINTLN(int16Value);
             break;
         case TYPE_UINT8:
-            Serial.println(uint8Value);
+            VARIO_DATA_DEBUG_PRINTLN(uint8Value);
             break;
         case TYPE_UINT16:
-            Serial.println(uint16Value);
+            VARIO_DATA_DEBUG_PRINTLN(uint16Value);
             break;
         case TYPE_FLOAT:
-            Serial.println(floatValue);
+            VARIO_DATA_DEBUG_PRINTLN(floatValue);
             break;
         case TYPE_DOUBLE:
-            Serial.println(doubleValue);
+            VARIO_DATA_DEBUG_PRINTLN(doubleValue);
             break;
         case TYPE_BOOL:
-            Serial.println(boolValue);
+            VARIO_DATA_DEBUG_PRINTLN(boolValue);
             break;
         }
     }
     else
     {
-        Serial.print("NO Recup - ");
+        VARIO_DATA_DEBUG_PRINT("NO Recup - ");
     }
 #endif
 

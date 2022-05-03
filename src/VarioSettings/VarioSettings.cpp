@@ -69,12 +69,6 @@ boolean VarioSettings::readSDSettings(char *FileName)
         {
           varioData.applySettingParam(settingName, settingValue);
 
-/*#ifdef SDCARD_DEBUG
-          Serial.print("Name:");
-          Serial.println(settingName);
-          Serial.print("Value :");
-          Serial.println(settingValue);
-#endif //SDCARD_DEBUG*/
           VARIO_SDCARD_DEBUG_DUMP(settingName);
           VARIO_SDCARD_DEBUG_DUMP(settingValue);
         }
@@ -88,9 +82,6 @@ boolean VarioSettings::readSDSettings(char *FileName)
   else
   {
     // if the file didn't open, print an error:
-/*#ifdef SDCARD_DEBUG
-    Serial.println("error opening settings.txt");
-#endif //SDCARD_DEBUG*/
     VARIO_SDCARD_DEBUG_PRINTLN("error opening settings FILE");
     return false;
   }
@@ -110,7 +101,6 @@ void VarioSettings::loadConfigurationVario(char *filename)
   File file = SD.open(filename, FILE_READ);
   if (!file)
   {
-    //Serial.println(F("Failed to read file"));
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to read file");
     return;
   }
@@ -121,15 +111,11 @@ void VarioSettings::loadConfigurationVario(char *filename)
   DeserializationError error = deserializeJson(VarioTool::jsonDoc, file);
   if (error)
   {
- //   Serial.println(F("Failed to read file, using default configuration"));
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to read file, using default configuration");
     file.close();
     return;
   }
 
-/*#ifdef SDCARD_DEBUG
-//  Serial.println("Paramètres : ");
-#endif*/
   VARIO_SDCARD_DEBUG_PRINTLN("Paramètres : ");
 
   const char *GnuvarioE_version = VarioTool::jsonDoc["gnuvarioe"]["version"]; // "1.0"
@@ -138,20 +124,14 @@ void VarioSettings::loadConfigurationVario(char *filename)
     isFileParamsOK = false;
   }
 
-#ifdef SDCARD_DEBUG
-  Serial.print("Version du fichier: ");
-  Serial.println(GnuvarioE_version);
+  VARIO_SDCARD_DEBUG_PRINT("Version du fichier: ");
+  VARIO_SDCARD_DEBUG_PRINTLN(GnuvarioE_version);
   if (!isFileParamsOK)
   {
-    Serial.println("AVEC MISE A JOUR DU FICHIER");
+    VARIO_SDCARD_DEBUG_PRINTLN("AVEC MISE A JOUR DU FICHIER");
   }
-#endif
 
   //*****    SYSTEME *****
-
-/*#ifdef SDCARD_DEBUG
-  Serial.println("****** Systeme *******");
-#endif*/
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** Systeme *******");
 
@@ -173,8 +153,6 @@ void VarioSettings::loadConfigurationVario(char *filename)
 
   //*****    GENERAL *****
 
- // Serial.println("****** General *******");
-
   VARIO_SDCARD_DEBUG_PRINTLN("****** General *******");
 
   JsonObject General = VarioTool::jsonDoc["general"];
@@ -191,7 +169,6 @@ void VarioSettings::loadConfigurationVario(char *filename)
   //*****  VARIO *****
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** Vario *******");
-  // Serial.println("****** Vario *******");
 
   JsonObject Vario = VarioTool::jsonDoc["vario"];
 
@@ -215,7 +192,6 @@ void VarioSettings::loadConfigurationVario(char *filename)
 
   //*****  FLIGHT START *****
 
-//  Serial.println("****** Flight start *******");
   VARIO_SDCARD_DEBUG_PRINTLN("****** Flight start *******");
 
   JsonObject FlightStart = VarioTool::jsonDoc["flightstart"];
@@ -233,17 +209,16 @@ void VarioSettings::loadConfigurationVario(char *filename)
   Serial.printf_P(PSTR("free heap memory: %d\n"), ESP.getFreeHeap());
 #endif
 
-   // Clearing Buffer
+  // Clearing Buffer
   VarioTool::jsonDoc.clear();
 
 #ifdef SDCARD_DEBUG
   Serial.printf_P(PSTR("free heap memory: %d\n"), ESP.getFreeHeap());
 #endif
 
-  //Mise à jour du fichier params.jso
+  // Mise à jour du fichier params.jso
   if (!isFileParamsOK)
   {
-//    Serial.println("Sauvegarde de nouveaux paramètres");
     saveConfigurationVario(filename);
   }
 }
@@ -260,13 +235,11 @@ void VarioSettings::saveConfigurationVario(char *filename)
   if (!file)
   {
 
-  //  Serial.println(F("Failed to create file"));
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to create file");
     return;
   }
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** SAUVEGARDE params.jso *******");
-  //Serial.println("****** SAUVEGARDE params.jso *******");
 #ifdef SDCARD_DEBUG
   Serial.printf_P(PSTR("free heap memory: %d\n"), ESP.getFreeHeap());
 #endif
@@ -274,7 +247,6 @@ void VarioSettings::saveConfigurationVario(char *filename)
   // Clearing Buffer
   VarioTool::jsonDoc.clear();
 
-  //Serial.println("****** GnuvarioE *******");
   VARIO_SDCARD_DEBUG_PRINTLN("****** GnuvarioE *******");
 
   // Set the values in the document
@@ -283,7 +255,6 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   //*****    SYSTEME *****
 
-  //Serial.println("****** Systeme *******");
   VARIO_SDCARD_DEBUG_PRINTLN("****** Systeme *******");
 
   JsonObject Systeme = VarioTool::jsonDoc.createNestedObject("systeme");
@@ -307,7 +278,6 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   //*****    GENERAL *****
 
-//  Serial.println("****** General *******");
   VARIO_SDCARD_DEBUG_PRINTLN("****** General *******");
 
   JsonObject General = VarioTool::jsonDoc.createNestedObject("general");
@@ -325,7 +295,6 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   //*****    VARIO *****
 
-//  Serial.println("****** Vario *******");
   VARIO_SDCARD_DEBUG_PRINTLN("****** Vario *******");
 
   JsonObject Vario = VarioTool::jsonDoc.createNestedObject("vario");
@@ -350,7 +319,6 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   //*****    Flight_Start *****
 
-//  Serial.println("****** Flight start *******");
   VARIO_SDCARD_DEBUG_PRINTLN("****** Flight start *******");
 
   JsonObject FlightStart = VarioTool::jsonDoc.createNestedObject("flightstart");
@@ -364,7 +332,6 @@ void VarioSettings::saveConfigurationVario(char *filename)
   // Serialize JSON to file
   if (serializeJson(VarioTool::jsonDoc, file) == 0)
   {
-//    Serial.println(F("Failed to write to file"));
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to write to file");
   }
 
@@ -375,7 +342,7 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
 #ifdef SDCARD_DEBUG
   Serial.printf_P(PSTR("free heap memory: %d\n"), ESP.getFreeHeap());
-#endif  
+#endif
 }
 
 VarioSettings varioSettings;

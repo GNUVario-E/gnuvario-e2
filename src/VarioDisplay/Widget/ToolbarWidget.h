@@ -8,8 +8,6 @@ class ToolbarWidget : public TextWidget
 private:
     char localText[20];
     uint8_t blinkFreq = 0;
-    bool isText = false;
-    uint32_t lastDisplayTime = 0;
 
     const unsigned char *batIcon = nullptr;
     const unsigned char *oldBatIcon = nullptr;
