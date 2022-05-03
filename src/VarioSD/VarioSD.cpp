@@ -23,31 +23,25 @@ bool VarioSD::info(void)
 
   if (cardType == CARD_NONE)
   {
-    //   Serial.println("No SD card attached");
     VARIO_PROG_DEBUG_PRINTLN("No SD card attached");
     return false;
   }
 
-  //  Serial.print("SD Card Type: ");
   VARIO_PROG_DEBUG_PRINTLN("SD Card Type: ");
   if (cardType == CARD_MMC)
   {
-    //    Serial.println("MMC");
     VARIO_PROG_DEBUG_PRINTLN("MMC");
   }
   else if (cardType == CARD_SD)
   {
-    //  Serial.println("SDSC");
     VARIO_PROG_DEBUG_PRINTLN("SDSC");
   }
   else if (cardType == CARD_SDHC)
   {
-    //    Serial.println("SDHC");
     VARIO_PROG_DEBUG_PRINTLN("SDHC");
   }
   else
   {
-    //    Serial.println("UNKNOWN");
     VARIO_PROG_DEBUG_PRINTLN("UNKNOWN");
   }
 
@@ -261,12 +255,10 @@ void VarioSD::appendFile(fs::FS &fs, const char *path, const char *message)
   }
   if (file.print(message))
   {
-    //    Serial.println("Message appended");
     VARIO_PROG_DEBUG_PRINTLN("Message appended");
   }
   else
   {
-    //    Serial.println("Append failed");
     VARIO_PROG_DEBUG_PRINTLN("Append failed");
   }
   file.close();
@@ -279,12 +271,10 @@ void VarioSD::renameFile(fs::FS &fs, const char *path1, const char *path2)
 #endif
   if (fs.rename(path1, path2))
   {
-    //    Serial.println("File renamed");
     VARIO_PROG_DEBUG_PRINTLN("File renamed");
   }
   else
   {
-    //    Serial.println("Rename failed");
     VARIO_PROG_DEBUG_PRINTLN("Rename failed");
   }
 }
@@ -296,12 +286,10 @@ void VarioSD::deleteFile(fs::FS &fs, const char *path)
 #endif
   if (fs.remove(path))
   {
-    //    Serial.println("File deleted");
     VARIO_PROG_DEBUG_PRINTLN("File deleted");
   }
   else
   {
-    //    Serial.println("Delete failed");
     VARIO_PROG_DEBUG_PRINTLN("Delete failed");
   }
 }
@@ -336,14 +324,12 @@ void VarioSD::testFileIO(fs::FS &fs, const char *path)
   }
   else
   {
-    //  Serial.println("Failed to open file for reading");
     VARIO_PROG_DEBUG_PRINTLN("Failed to open file for reading");
   }
 
   file = fs.open(path, FILE_WRITE);
   if (!file)
   {
-    //    Serial.println("Failed to open file for writing");
     VARIO_PROG_DEBUG_PRINTLN("Failed to open file for writing");
     return;
   }

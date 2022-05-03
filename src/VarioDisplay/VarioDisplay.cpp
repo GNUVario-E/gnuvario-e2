@@ -8,7 +8,6 @@
 #include "version.h"
 #include "VarioDebug/VarioDebug.h"
 
-
 SemaphoreHandle_t VarioDisplay::screenMutex;
 TaskHandle_t VarioDisplay::screenTaskHandler;
 TaskHandle_t VarioDisplay::bufferTaskHandler;
@@ -65,6 +64,7 @@ void VarioDisplay::buildScreens()
     bootScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_DEMAR));
 
     bootScreen->getTextWidget2()->setText("GNUVARIO-E2");
+    bootScreen->getTextWidget2()->setBlinkFreq(1);
 
     sprintf(tmpbuffer, "v%d.%02d", VERSION, SUB_VERSION);
     if (BETA_CODE > 0)
@@ -85,13 +85,16 @@ void VarioDisplay::buildScreens()
     wifiScreen = new VarioScreen(wifiScreenData, varioLanguage);
     wifiScreen->getTextWidget1()->setText(wifi);
 
+    // construction de l'écran calibration
     calibrationScreen = new VarioScreen(calibrationScreenData, varioLanguage);
     calibrationScreen->getTextWidget1()->setText(calibration);
 
+    // construction des écrans vario
     vario1Screen = new VarioScreen(vario1ScreenData, varioLanguage);
     vario2Screen = new VarioScreen(vario2ScreenData, varioLanguage);
     vario3Screen = new VarioScreen(vario3ScreenData, varioLanguage);
 
+    // construction de l'écran son
     soundScreen = new VarioScreen(soundScreenData, varioLanguage);
     soundScreen->getTextWidget1()->setText(sound);
 
@@ -111,17 +114,18 @@ void VarioDisplay::screenTask(void *parameter)
         /* launch interrupt */
         if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
         {
-            // d = millis();
-            // Serial.println(millis());
             VARIO_PROG_DEBUG_PRINTLN("screen refresh");
+
             display.setFullWindow();
             display.display(true); // partial update
 
             display.powerOff();
-            lastDisplayTime = millis();
+
             xSemaphoreGive(screenMutex);
-            // Serial.print("duration: ");
-            // Serial.println(millis() - d);
+        }
+        if (VarioDisplay::bufferTaskHandler != NULL)
+        {
+            xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
         }
     }
 }
@@ -139,37 +143,40 @@ void VarioDisplay::bufferTask()
 {
     while (true)
     {
+        bool notifyTask = true;
         // /* wait */
-        // xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
-        if (_doDisplay)
+        xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
+
+        /* launch interrupt */
+
+        // VARIO_PROG_DEBUG_PRINTLN("bufferTask");
+        if (_currentScreen->isRefreshNeeded(lastDisplayTime))
         {
-
-            /* launch interrupt */
-
-            // VARIO_PROG_DEBUG_PRINTLN("bufferTask");
-
-            if (_currentScreen->isRefreshNeeded(lastDisplayTime))
+            if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
             {
-                if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
+                // loop over widgets
+                for (uint8_t i = 0; i < _currentScreen->getNbWidgets(); i++)
                 {
-                    // loop over widgets
-                    for (uint8_t i = 0; i < _currentScreen->getNbWidgets(); i++)
+                    if (_currentScreen->tabWidgets[i]->getIsActif() && _currentScreen->tabWidgets[i]->isRefreshNeeded(lastDisplayTime))
                     {
-                        if (_currentScreen->tabWidgets[i]->getIsActif() && _currentScreen->tabWidgets[i]->isRefreshNeeded(lastDisplayTime))
-                        {
-                            _currentScreen->tabWidgets[i]->addToBuffer(display);
-                        }
+                        _currentScreen->tabWidgets[i]->addToBuffer(display);
                     }
-
-                    Serial.println("needRefresh");
-                    xSemaphoreGive(screenMutex);
-                    updateScreen();
                 }
-            }
 
-            // xSemaphoreGive(screenMutex);
+                Serial.println("needRefresh");
+                xSemaphoreGive(screenMutex);
+                updateScreen();
+                notifyTask = false; // task will be notified at the end of the screen refresh
+            }
         }
         vTaskDelay(pdMS_TO_TICKS(50));
+        if (notifyTask)
+        {
+            if (VarioDisplay::bufferTaskHandler != NULL)
+            {
+                xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
+            }
+        }
     }
 }
 
@@ -185,7 +192,6 @@ void VarioDisplay::updateScreen(void)
 /**
  * Méthode de remplissage du buffer de l'ecran
  */
-
 void VarioDisplay::displayScreen(VarioScreen *screen)
 {
     // Serial.println("displayScreen");
@@ -203,16 +209,15 @@ void VarioDisplay::displayScreen(VarioScreen *screen)
         // Serial.println("mutex displayScreen");
         display.fillScreen(GxEPD_WHITE);
         xSemaphoreGive(screenMutex);
-        _doDisplay = true;
+
         xTaskCreatePinnedToCore(this->startTaskBuffer, "TaskBuffer", SCREEN_STACK_SIZE, this, SCREEN_PRIORITY, &bufferTaskHandler, SCREEN_CORE);
-        // xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
+        xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
     }
 }
 
 void VarioDisplay::stopDisplay()
 {
     // Serial.println("stopDisplay");
-    _doDisplay = false;
     if (bufferTaskHandler != NULL)
     {
         vTaskDelete(bufferTaskHandler);

@@ -54,6 +54,16 @@ struct S_TOOLBAR
     uint16_t h;
 };
 
+struct S_SPEED
+{
+    bool isactif;
+    bool isborder;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+};
+
 struct ScreenData
 {
     S_LOGO logo;
@@ -68,4 +78,5 @@ struct ScreenData
     S_ALT alt;
     S_VARIO vario;
     S_TOOLBAR toolbar;
+    S_SPEED speed;
 };

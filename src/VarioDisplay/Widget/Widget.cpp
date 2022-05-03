@@ -49,7 +49,7 @@ void Widget::storeLastDiplayZone(GxEPD2_GFX &_display, int16_t w, int16_t h)
 
 void Widget::clearLastDiplayZone(GxEPD2_GFX &_display)
 {
-    if (lastDisplayZone.topx != 0 && lastDisplayZone.topy != 0 && lastDisplayZone.width != 0 && lastDisplayZone.height != 0)
+    if (lastDisplayZone.width != 0 && lastDisplayZone.height != 0)
     {
         _display.fillRect(lastDisplayZone.topx, lastDisplayZone.topy, lastDisplayZone.width, lastDisplayZone.height, GxEPD_WHITE);
     }

@@ -7,9 +7,9 @@ class TextWidget : public Widget
 {
 private:
     uint8_t blinkFreq = 0;
-    bool isText = false;
     uint32_t lastDisplayTime = 0;
     uint8_t fontSize = 2;
+    bool isText = false;
 
 protected:
     char text[50];

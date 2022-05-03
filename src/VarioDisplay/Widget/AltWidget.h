@@ -8,8 +8,6 @@ class AltWidget : public TextWidget
 private:
     char localText[20];
     uint8_t blinkFreq = 0;
-    bool isText = false;
-    uint32_t lastDisplayTime = 0;
     int16_t oldAlt = -999;
 
 public:

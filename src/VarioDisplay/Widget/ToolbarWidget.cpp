@@ -110,22 +110,5 @@ bool ToolbarWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         return true;
     }
 
-    if (hasBeenModified)
-    {
-        return true;
-    }
-
-    // si pas de clignotement, pas de refresh nécessaire
-    if (blinkFreq == 0)
-    {
-        return false;
-    }
-
-    // si le dernier affichage date de plus longtemps que le temps de clignotement, on doit raffraichir
-    if ((millis() - lastDisplayTime) > (blinkFreq * 1000))
-    {
-        return true;
-    }
-
-    return false;
+    return TextWidget::isRefreshNeeded(lastDisplayTime);
 }

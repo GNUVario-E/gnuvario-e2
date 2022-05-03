@@ -8,8 +8,6 @@ class VarioWidget : public TextWidget
 private:
     char localText[20];
     uint8_t blinkFreq = 0;
-    bool isText = false;
-    uint32_t lastDisplayTime = 0;
     float oldVario = -999.0;
 
 public:

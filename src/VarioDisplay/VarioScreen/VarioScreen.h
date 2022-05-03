@@ -11,6 +11,7 @@
 #include "VarioDisplay/Widget/AltWidget.h"
 #include "VarioDisplay/Widget/VarioWidget.h"
 #include "VarioDisplay/Widget/ToolbarWidget.h"
+#include "VarioDisplay/Widget/SpeedWidget.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include <VarioDisplay/VarioScreen/ScreenData.h>
 
@@ -32,6 +33,7 @@ private:
     AltWidget *altWidget;
     VarioWidget *varioWidget;
     ToolbarWidget *toolbarWidget;
+    SpeedWidget *speedWidget;
     // SoundeditWidget *soundEditWidget;
 
 protected:
@@ -54,4 +56,5 @@ public:
     AltWidget *getAltWidget();
     VarioWidget *getVarioWidget();
     ToolbarWidget *getToolbarWidget();
+    SpeedWidget *getSpeedWidget();
 };
