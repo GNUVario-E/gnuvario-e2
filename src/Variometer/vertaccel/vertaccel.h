@@ -31,11 +31,10 @@
 #define VERTACCEL_H
 
 #include <Arduino.h>
-#include "VarioData/VarioData.h"
 #include "HardwareConfig/HardwareConfig.h"
 
 //to know about the magnetometer
-#include "LightInvensense/LightInvensense.h"
+#include "Variometer/LightInvensense/LightInvensense.h"
 
 /* G to ms convertion */
 #define VERTACCEL_G_TO_MS 9.80665

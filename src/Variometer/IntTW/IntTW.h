@@ -24,7 +24,7 @@
 #include <Arduino.h>
 #include <esp32-hal-i2c.h>
 
-#include "HardwareConfig/HardwareConfig.h"
+#include <HardwareConfig.h>
 
 /*************************************/
 /* enable / disable functionnalities */

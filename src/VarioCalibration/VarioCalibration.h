@@ -8,11 +8,11 @@
 #include <SD.h>
 #include "VarioSettings/VarioSettings.h"
 #include "VarioBeeper/VarioBeeper.h"
-#include "IntTW/IntTW.h"
-#include "ms5611TW/ms5611TW.h"
-#include "vertaccel/vertaccel.h"
-#include "LightInvensense/LightInvensense.h"
-#include "TwoWireScheduler/TwoWireScheduler.h"
+#include "Variometer/IntTW/IntTW.h"
+#include "Variometer/ms5611TW/ms5611TW.h"
+#include "Variometer/vertaccel/vertaccel.h"
+#include "Variometer/LightInvensense/LightInvensense.h"
+#include "Variometer/TwoWireScheduler/TwoWireScheduler.h"
 
 #include "digit/digit.h"
 

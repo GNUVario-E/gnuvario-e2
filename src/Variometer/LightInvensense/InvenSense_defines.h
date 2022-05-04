@@ -21,8 +21,6 @@
 #ifndef INVENSENSE_DEFINES_H
 #define INVENSENSE_DEFINES_H
 
-#include "VarioSettings/VarioSettings.h"
-#include "VarioDebug/VarioDebug.h"
 #include "HardwareConfig/HardwareConfig.h"
 
 /* Time for some messy macro work. =]

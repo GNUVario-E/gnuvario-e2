@@ -30,8 +30,8 @@
 /*                                                                               */
 /*********************************************************************************/
 
-#include "ms5611TW/ms5611TW.h"
-#include "IntTW/IntTW.h"
+#include "Variometer/ms5611TW/ms5611TW.h"
+#include "Variometer/IntTW/IntTW.h"
 
 double Ms5611::Ms5611_Base_Sea_Pressure;
 
@@ -48,7 +48,10 @@ void Ms5611::readHardwareCalibration(uint16_t *cal)
     intTW.readBytes(address, MS5611_CMD_READ_PROM + (i * 2), 2, data);
 
     /* save coeff */
+
     cal[i] = ((uint16_t)data[0] << 8) + data[1];
+    Serial.print("cal");
+    Serial.println(cal[i]);
   }
 }
 

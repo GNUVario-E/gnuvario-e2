@@ -44,7 +44,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 
-//#include "VarioSettings/VarioSettings.h"
+#include "VarioSettings/VarioSettings.h"
 #include "VarioDebug/VarioDebug.h"
 #include "HardwareConfig/HardwareConfig.h"
 
@@ -56,10 +56,10 @@
 /* timer used */
 #define TWO_WIRE_SCHEDULER_TIMER_NUM 3
 
-#include "ms5611TW/ms5611TW.h"
+#include "Variometer/ms5611TW/ms5611TW.h"
 
 #ifdef HAVE_ACCELEROMETER
-#include "vertaccel/vertaccel.h"
+#include "Variometer/vertaccel/vertaccel.h"
 #endif
 
 /* clock settings */
@@ -110,6 +110,7 @@
 /* Vertaccel TWScheduler::vertaccel;                   */
 /* !!!                                             !!! */
 /*******************************************************/
+
 class TWScheduler
 {
 

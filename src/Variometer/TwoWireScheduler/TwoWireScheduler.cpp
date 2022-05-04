@@ -37,21 +37,21 @@
 /*                                                                                                 */
 /***************************************************************************************************/
 
-#include <TwoWireScheduler.h>
+#include "TwoWireScheduler.h"
 
 #include <Arduino.h>
 
-#include "IntTW/IntTW.h"
+#include "Variometer/IntTW/IntTW.h"
 #include <esp32-hal-timer.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 
-#include "ms5611TW/ms5611TW.h"
+#include "Variometer/ms5611TW/ms5611TW.h"
 #include "varioversion.h"
 
 #ifdef HAVE_ACCELEROMETER
-#include "LightInvensense/LightInvensense.h"
-#include "vertaccel/vertaccel.h"
+#include "Variometer/LightInvensense/LightInvensense.h"
+#include "Variometer/vertaccel/vertaccel.h"
 #endif
 
 #define TEMP_READ 0
@@ -71,6 +71,9 @@
 #define bisset(bit) (status & (1 << bit))
 
 TWScheduler twScheduler;
+
+Ms5611 TWScheduler::ms5611;
+Vertaccel TWScheduler::vertaccel;
 
 /*********************/
 /* static class data */
@@ -226,7 +229,10 @@ double TWScheduler::getAlti(void)
   ms5611.computeMeasures(&ms5611Values[0], &ms5611Values[3], temperature, pressure);
 
   ms5611SavePressure = pressure;
-
+  Serial.print("pressure");
+  Serial.println(pressure);
+ Serial.print("temperature");
+  Serial.println(temperature);
   /* get corresponding alti */
   double alti = ms5611.computeAltitude(pressure);
 
@@ -697,10 +703,10 @@ void TWScheduler::getNorthVector(double *vertVector, double *northVector)
   vertaccel.computeNorthVector(vertVector, rawMag, northVector);
 
   /* apply sensor orientation */
-#if ((VARIOVERSION == 254) || (VARIOVERSION == 291) || (VARIOVERSION == 293) || (VARIOVERSION == 294) || (VARIOVERSION == 391) || (VARIOVERSION == 393) || (VARIOVERSION == 394))
+#if ((VARIOVERSION == 254) || (VARIOVERSION == 291) || (VARIOVERSION == 293) || (VARIOVERSION == 294))
   northVector[0] = -northVector[0];
   northVector[1] = -northVector[1];
-#elif ((VARIOVERSION == 290) || (VARIOVERSION == 292) || (VARIOVERSION == 390) || (VARIOVERSION == 392))
+#elif ((VARIOVERSION == 290) || (VARIOVERSION == 292))
   double tmp;
   tmp = northVector[0];
   northVector[0] = northVector[1];

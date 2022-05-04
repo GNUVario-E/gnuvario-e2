@@ -270,6 +270,8 @@ void VarioManager::onSignalReceived(uint8_t _val)
             break;
         case CALIBRATION_START_ASKED:
             VARIO_CAL_DEBUG_PRINTLN("Démarrage de la calibration");
+            varioCalibration = new VarioCalibration();
+            varioCalibration->begin(varioBeeper);
             break;
         default:
             break;
