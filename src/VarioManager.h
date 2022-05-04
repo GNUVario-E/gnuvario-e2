@@ -15,7 +15,7 @@
 #include "VarioLanguage/VarioLanguage.h"
 #include "VarioButton/VarioButton.h"
 #include "VarioCalibration/VarioCalibration.h"
-// #include "Variometer/Variometer.h"
+#include "Variometer/Variometer.h"
 
 // #include "freertos/FreeRTOS.h"
 // #include "freertos/semphr.h"
@@ -69,6 +69,7 @@ public:
     VarioWifi *varioWifi;
     VarioLanguage *varioLanguage;
     VarioCalibration *varioCalibration;
+    Variometer *variometer;
 
     // void setCurrentPage(uint8_t page);
     // uint8_t getCurrentPageState();

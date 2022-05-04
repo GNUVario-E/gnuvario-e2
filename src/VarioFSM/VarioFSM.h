@@ -63,6 +63,7 @@ private:
     void statistic_on_enter();
     void statistic_on();
     void statistic_on_exit();
+    void statistic_init_on_exit();
 
     void soundedit_on_enter();
     void soundedit_on();
@@ -84,7 +85,7 @@ public:
                                 [this]()
                                 { statistic_on(); },
                                 [this]()
-                                { statistic_on_exit(); }),
+                                { statistic_init_on_exit(); }),
 
           _state_calibration([this]()
                              { calibration_on_enter(); },
