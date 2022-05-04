@@ -1,6 +1,31 @@
 #include "VarioFSM/VarioFSM.h"
 #include "VarioButton/VarioButton.h"
 
+void VarioFSM::startTask()
+{
+    // task creation
+    VARIO_PROG_DEBUG_PRINTLN("TaskFSM started");
+    xTaskCreate(this->startTaskImpl, "TaskFSM", 2000, this, 10, &_taskFSMHandle);
+}
+
+void VarioFSM::startTaskImpl(void *parm)
+{
+    // wrapper for task
+    static_cast<VarioFSM *>(parm)->task();
+}
+
+void VarioFSM::task()
+{
+
+    while (1)
+    {
+        run();
+
+        // give time to other tasks
+        vTaskDelay(delayT50);
+    }
+}
+
 void VarioFSM::initfsm(VarioDisplay *_varioDisplay)
 {
     varioDisplay = _varioDisplay;
@@ -47,13 +72,19 @@ void VarioFSM::boot_on_exit()
 void VarioFSM::calibration_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("calibration_on_enter");
-    varioDisplay->displayScreen(varioDisplay->calibrationScreen);
-    _notifyObserver(CALIBRATION_START_ASKED);
+    calibOnEnter = true;
 }
 
 void VarioFSM::calibration_on()
 {
     VARIO_FSM_DEBUG_PRINTLN("calibration_on");
+    if (calibOnEnter)
+    {
+        varioDisplay->displayScreen(varioDisplay->calibrationScreen);
+        // vTaskDelay(delayT50);
+        _notifyObserver(CALIBRATION_START_ASKED);
+        calibOnEnter = false;
+    }
 }
 
 void VarioFSM::calibration_on_exit()
@@ -64,13 +95,18 @@ void VarioFSM::calibration_on_exit()
 void VarioFSM::wifi_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("wifi_on_enter");
-    varioDisplay->displayScreen(varioDisplay->wifiScreen);
-    _notifyObserver(WIFI_START_ASKED);
+    wifiOnEnter = true;
 }
 
 void VarioFSM::wifi_on()
 {
     VARIO_FSM_DEBUG_PRINTLN("wifi_on");
+    if (wifiOnEnter)
+    {
+        varioDisplay->displayScreen(varioDisplay->wifiScreen);
+        _notifyObserver(WIFI_START_ASKED);
+        wifiOnEnter = false;
+    }
 }
 
 void VarioFSM::wifi_on_exit()

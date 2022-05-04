@@ -11,6 +11,12 @@
 class VarioFSM : public Observer, public Subject
 {
 private:
+    const TickType_t delayT50 = pdMS_TO_TICKS(50);
+    TaskHandle_t _taskFSMHandle = NULL;
+    static void startTaskImpl(void *);
+
+    void task();
+
     FunctionState _state_boot;
     FunctionState _state_statistic_init;
     FunctionState _state_calibration;
@@ -28,10 +34,12 @@ private:
     void boot_on();
     void boot_on_exit();
 
+    bool calibOnEnter = false;
     void calibration_on_enter();
     void calibration_on();
     void calibration_on_exit();
 
+    bool wifiOnEnter = false;
     void wifi_on_enter();
     void wifi_on();
     void wifi_on_exit();
@@ -141,4 +149,5 @@ public:
     void initfsm(VarioDisplay *_varioDisplay);
     void onSignalReceived(uint8_t _val);
     void run();
+    void startTask();
 };

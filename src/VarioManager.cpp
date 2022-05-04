@@ -71,6 +71,7 @@ boolean VarioManager::init()
 
     fsm.registerObserver(this);
     fsm.registerObserver(varioBeeper);
+    fsm.startTask();
 
     // if (esp32FOTA.isArchWwwExist())
     // {

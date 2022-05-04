@@ -30,6 +30,5 @@ void setup()
 
 void loop()
 {
-  fsm.run();
   delay(50);
 }
