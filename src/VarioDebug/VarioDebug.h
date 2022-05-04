@@ -9,7 +9,7 @@
 //#define BTN_DEBUG  //Boutons
 //#define HARDWARE_DEBUG
 //#define IMU_DEBUG			  //debug IMU
-//#define CAL_DEBUG
+#define CAL_DEBUG
 //#define I2CDEV_SERIAL_DEBUG   //debug I2Cdev
 //#define DEBUG_SERIAL_NMEA_1
 //#define SCREEN_DEBUG
@@ -34,7 +34,7 @@
 //#define TWOWIRESCH_DEBUG
 //#define POWER_DEBUG
 //#define MEMORY_DEBUG
-// #define FSM_DEBUG
+#define FSM_DEBUG
 
 #if !defined(VARIO_DEBUG) || !defined(PROG_DEBUG)
 #define VARIO_PROG_DEBUG_PRINTLN(x)

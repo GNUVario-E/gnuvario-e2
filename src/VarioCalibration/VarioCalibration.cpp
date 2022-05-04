@@ -47,7 +47,7 @@ void VarioCalibration::writeNumber(int16_t number)
 		file.write(valueDigit.get());
 	}
 }
-#endif //SDCARD_OUTPUT
+#endif // SDCARD_OUTPUT
 
 void VarioCalibration::startMeasure(void)
 {
@@ -56,7 +56,7 @@ void VarioCalibration::startMeasure(void)
 	unsigned long stabilizeTimestamp = millis();
 	while (millis() - stabilizeTimestamp < STABILIZE_DURATION)
 	{
-		//makeMeasureStep();
+		// makeMeasureStep();
 
 		vTaskDelay(delayT100);
 	}
@@ -109,7 +109,7 @@ uint8_t VarioCalibration::readRawMag(int16_t *mag)
 	return 0;
 }
 
-#endif //AK89xx_SECONDARY
+#endif // AK89xx_SECONDARY
 
 void VarioCalibration::makeMeasureStep(void)
 {
@@ -154,7 +154,7 @@ void VarioCalibration::makeMeasureStep(void)
 			VARIO_CAL_DEBUG_PRINTLN(magSD[i]);
 		}
 	}
-#endif //AK89xx_SECONDARY
+#endif // AK89xx_SECONDARY
 }
 
 /* return standard deviation */
@@ -199,14 +199,18 @@ double VarioCalibration::getMagMeasure(int16_t *magMeasure)
 
 	return sqrt(magMeasureSD);
 }
-#endif //AK89xx_SECONDARY
+#endif // AK89xx_SECONDARY
 
 void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 {
 	intTW.begin();
+
 	twScheduler.init();
 
+	VARIO_CAL_DEBUG_PRINTLN("Begin calibration3");
 	varioBeeper = _varioBeeper;
+
+	VARIO_CAL_DEBUG_PRINTLN("Begin calibration4");
 #if defined(SDCARD_OUTPUT)
 	sdcardFound = true;
 #endif
@@ -323,7 +327,7 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 					writeNumber(gyroCal[i]);
 				}
 				file.write('\n');
-#endif //SDCARD_OUTPUT
+#endif // SDCARD_OUTPUT
 
 #ifdef SERIAL_OUTPUT
 				Serial.print(gyroCal[0], DEC);
@@ -333,7 +337,7 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 					Serial.print(gyroCal[i], DEC);
 				}
 				Serial.print("\n");
-#endif //SERIAL_OUTPUT
+#endif // SERIAL_OUTPUT
 
 				/* start recording */
 				recordInitState = RECORD_STATE_GYRO_CALIBRATED;
@@ -368,7 +372,7 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 #ifdef AK89xx_SECONDARY
 				int16_t magMeasure[3];
 				double magMeasureSD = getMagMeasure(magMeasure);
-#endif //AK89xx_SECONDARY
+#endif // AK89xx_SECONDARY
 
 				/**************************/
 				/* check measure validity */
@@ -412,9 +416,9 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 						Serial.print(magMeasure[1], DEC);
 						Serial.print(", ");
 						Serial.print(magMeasure[2], DEC);
-#endif //AK89xx_SECONDARY
+#endif // AK89xx_SECONDARY
 						Serial.print("\n");
-#endif //SERIAL_OUTPUT
+#endif // SERIAL_OUTPUT
 
 #if defined(SDCARD_OUTPUT)
 						/*****************/
@@ -437,11 +441,11 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 						file.write(',');
 						file.write(' ');
 						writeNumber(magMeasure[2]);
-#endif //AK89xx_SECONDARY
+#endif // AK89xx_SECONDARY
 						file.write('\n');
 
 						file.flush();
-#endif //SDCARD_OUTPUT
+#endif // SDCARD_OUTPUT
 
 						VARIO_CAL_DEBUG_PRINTLN("WRITE DATA");
 

@@ -54,7 +54,6 @@ void VarioDisplay::init(VarioLanguage *_varioLanguage)
 void VarioDisplay::buildScreens()
 {
     char wifi[] = "WIFI ...";
-    char calibration[] = "CALIBRATION ...";
     char sound[] = "SOUND ...";
     char statistic[] = "STATISTIC ...";
 
@@ -87,7 +86,7 @@ void VarioDisplay::buildScreens()
 
     // construction de l'écran calibration
     calibrationScreen = new VarioScreen(calibrationScreenData, varioLanguage);
-    calibrationScreen->getTextWidget1()->setText(calibration);
+    calibrationScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_CALIBR));
 
     // construction des écrans vario
     vario1Screen = new VarioScreen(vario1ScreenData, varioLanguage);
