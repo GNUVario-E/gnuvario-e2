@@ -195,6 +195,12 @@ void VarioFSM::statistic_on_exit()
     VARIO_FSM_DEBUG_PRINTLN("statistic_on_exit");
 }
 
+void VarioFSM::statistic_init_on_exit()
+{
+    VARIO_FSM_DEBUG_PRINTLN("statistic_init_on_exit");
+    _notifyObserver(VARIO_START_ASKED);
+}
+
 void VarioFSM::soundedit_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("soundedit_on_enter");
