@@ -8,11 +8,11 @@
 
 #include "VarioBeeper/VarioBeeper.h"
 
-#include "IntTW/IntTW.h"
-#include "TwoWireScheduler/TwoWireScheduler.h"
+#include "Variometer/IntTW/IntTW.h"
+#include "Variometer/TwoWireScheduler/TwoWireScheduler.h"
 
-Ms5611 TWScheduler::ms5611;
-Vertaccel TWScheduler::vertaccel;
+// Ms5611 TWScheduler::ms5611;
+// Vertaccel TWScheduler::vertaccel;
 
 /* need beeps */
 #define MAKE_BEEP

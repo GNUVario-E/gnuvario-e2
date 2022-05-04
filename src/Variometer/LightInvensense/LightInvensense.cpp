@@ -27,8 +27,8 @@
 #include <inv_mpu_dmp_motion_driver.h>
 #endif
 
-#include <InvenSense_defines.h>
-#include "IntTW/IntTW.h"
+#include "InvenSense_defines.h"
+#include "Variometer/IntTW/IntTW.h"
 
 #define MAX_INIT_RESET_RETRY 20
 

@@ -1,7 +1,7 @@
-/* vertaccel -- Compute vertical acceleration from IMU 
+/* vertaccel -- Compute vertical acceleration from IMU
  *
  * Copyright 2016-2019 Baptiste PELLEGRIN
- * 
+ *
  * This file is part of GNUVario.
  *
  * GNUVario is free software: you can redistribute it and/or modify
@@ -30,7 +30,8 @@
 #include "vertaccel.h"
 
 #include <Arduino.h>
-#include "LightInvensense/LightInvensense.h"
+#include "VarioData.h"
+#include "Variometer/LightInvensense/LightInvensense.h"
 
 #ifdef VERTACCEL_ENABLE_EEPROM
 #include <EEPROM.h>
@@ -105,7 +106,7 @@ VertaccelSettings Vertaccel::readEEPROMSettings(void)
   readAccelCalibration(eepromSettings.accelCal);
 #ifdef AK89xx_SECONDARY
   readMagCalibration(eepromSettings.magCal);
-#endif //AK89xx_SECONDARY
+#endif // AK89xx_SECONDARY
 
   return eepromSettings;
 }
@@ -146,8 +147,8 @@ void Vertaccel::readMagCalibration(VertaccelCalibration &magCal)
 
   readEEPROMValues(VERTACCEL_MAG_CAL_EEPROM_ADDR, VERTACCEL_MAG_CAL_EEPROM_TAG, sizeof(VertaccelCalibration), (uint8_t *)(&magCal));
 }
-#endif //AK89xx_SECONDARY
-#endif //VERTACCEL_ENABLE_EEPROM
+#endif // AK89xx_SECONDARY
+#endif // VERTACCEL_ENABLE_EEPROM
 
 /***************/
 /* init device */
@@ -159,7 +160,7 @@ void Vertaccel::init(void)
   fastMPUInit(false);
 
 #ifndef VERTACCEL_STATIC_CALIBRATION
-  //varioSettings.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_00)->getValueUInt8()
+  // varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_00)->getValueUInt8()
   uint8_t gyroCalArray[12] = {varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_00)->getValueUInt8(),
                               varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_01)->getValueUInt8(),
                               varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_02)->getValueUInt8(),
@@ -207,7 +208,6 @@ void Vertaccel::compute(int16_t *imuAccel, int32_t *imuQuat, double *vertVector,
   double quat[4];
 
 #ifndef VERTACCEL_STATIC_CALIBRATION
-
   int64_t calibratedAccel = (int64_t)imuAccel[0] << varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16();
   calibratedAccel -= (int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_00)->getValueInt16();
   calibratedAccel *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_SCALE) + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
@@ -223,6 +223,12 @@ void Vertaccel::compute(int16_t *imuAccel, int32_t *imuQuat, double *vertVector,
   calibratedAccel *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
   accel[2] = ((double)calibratedAccel) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_ACCEL_SCALE_SHIFT)));
 
+  Serial.print("imuAccel0:");
+  Serial.println(imuAccel[0]);
+  Serial.print("imuAccel1:");
+  Serial.println(imuAccel[1]);
+  Serial.print("imuAccel2:");
+  Serial.println(imuAccel[2]);
 #else
   /* inline for optimization */
   int64_t calibratedAccel;
@@ -425,10 +431,10 @@ uint8_t Vertaccel::readRawMag(int16_t *mag)
     fastMPUReadMag(mag);
 #else
     fastMPUReadRawMag(mag);
-#endif //VERTACCEL_USE_MAG_SENS_ADJ
+#endif // VERTACCEL_USE_MAG_SENS_ADJ
     haveValue = 1;
   }
 
   return haveValue;
 }
-#endif //AK89xx_SECONDARY
+#endif // AK89xx_SECONDARY

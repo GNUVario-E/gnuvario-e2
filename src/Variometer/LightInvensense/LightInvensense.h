@@ -22,7 +22,7 @@
 #define LIGHT_INVENSENSE_H
 
 #include <Arduino.h>
-#include <InvenSense_defines.h>
+#include "InvenSense_defines.h"
 
 #define LIGHT_INVENSENSE_COMPASS_ADDR (0x0C)
 
