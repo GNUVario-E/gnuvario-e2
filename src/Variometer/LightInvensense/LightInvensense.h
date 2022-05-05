@@ -1,7 +1,7 @@
 /* LightInvensense -- Light and optimized Invensense IMU driver
  *
  * Copyright 2016-2019 Baptiste PELLEGRIN
- * 
+ *
  * This file is part of GNUVario.
  *
  * GNUVario is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@
 /* This Invensense library optimize space by saving config       */
 /* directly in the DMP firmware.                                 */
 /*                                                               */
-/* To use it :                                                   */ 
-/*    1) Set the target config below (see InvenSense_defines.h)  */  
+/* To use it :                                                   */
+/*    1) Set the target config below (see InvenSense_defines.h)  */
 /*    2) Uncomment LIGHT_INVENSENSE_BUILD                        */
 /*    3) Run createCompressedFirmware() from a sketch            */
 /*       and paste the result in LightInvensense.cpp             */
@@ -59,7 +59,7 @@
 /* See inv_mpu_dmp_motion_driver.h */
 #ifdef LIGHT_INVENSENSE_BUILD
 #include <inv_mpu_dmp_motion_driver.h>
-#define LIGHT_INVENSENSE_DMP_FEATURES (DMP_FEATURE_6X_LP_QUAT|DMP_FEATURE_SEND_RAW_ACCEL|DMP_FEATURE_GYRO_CAL|DMP_FEATURE_TAP)
+#define LIGHT_INVENSENSE_DMP_FEATURES (DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_SEND_RAW_ACCEL | DMP_FEATURE_GYRO_CAL | DMP_FEATURE_TAP)
 #endif
 
 /* Tap settings if enabled */
@@ -68,7 +68,6 @@
 #define LIGHT_INVENSENSE_TAP_COUNT 1
 #define LIGHT_INVENSENSE_TAP_TIME 100
 #define LIGHT_INVENSENSE_TAP_TIME_MULTI 500
-
 
 /*********************/
 /* BUILDING FIRMWARE */
@@ -80,7 +79,6 @@ int createCompressedFirmware(void);
 
 #endif
 
-
 /*********************************/
 /* INIT MPU WITH CUSTOM FIRMWARE */
 /*********************************/
@@ -89,17 +87,17 @@ int createCompressedFirmware(void);
 int fastMPUInit(bool startMPU = true);
 
 /* if needed set biases before (or after) starting DMP */
-int fastMPUSetGyroBias(const unsigned char* bias);  //in machine representation
-int fastMPUReadGyroBias(unsigned char* bias);
-int fastMPUSetGyroBias(const int16_t* bias);
-int fastMPUSetGyroBiasQ16(const int32_t* bias); //q16bias = bias << 16
+int fastMPUSetGyroBias(const unsigned char *bias); // in machine representation
+int fastMPUReadGyroBias(unsigned char *bias);
+int fastMPUSetGyroBias(const int16_t *bias);
+int fastMPUSetGyroBiasQ16(const int32_t *bias); // q16bias = bias << 16
 
-int fastMPUSetAccelBias(const unsigned char* bias); //in machine representation
-int fastMPUReadAccelBias(unsigned char* bias);
-int fastMPUSetAccelBias(const int16_t* bias);
-int fastMPUSetAccelBiasQ15(const int32_t* bias);  //q15bias = bias << 15
+int fastMPUSetAccelBias(const unsigned char *bias); // in machine representation
+int fastMPUReadAccelBias(unsigned char *bias);
+int fastMPUSetAccelBias(const int16_t *bias);
+int fastMPUSetAccelBiasQ15(const int32_t *bias); // q15bias = bias << 15
 
-void fastMPUStart(void); //if not started already
+void fastMPUStart(void); // if not started already
 
 /* read gyro/accel/quat measures */
 int fastMPUReadFIFO(int16_t *gyro, int16_t *accel, int32_t *quat);
@@ -107,8 +105,7 @@ int fastMPUReadFIFO(int16_t *gyro, int16_t *accel, int32_t *quat);
 /* to compute with you own values */
 uint8_t fastMPUGetFIFOPaquetLength(void);
 int8_t fastMPUHaveFIFOPaquet(uint16_t fifoCount);
-void fastMPUParseFIFO(uint8_t* dmpPaquet, int16_t *gyro, int16_t *accel, int32_t *quat, uint8_t& tap);
-
+void fastMPUParseFIFO(uint8_t *dmpPaquet, int16_t *gyro, int16_t *accel, int32_t *quat, uint8_t &tap);
 
 /* tap callback */
 void fastMPUSetTapCallback(void (*callback)(unsigned char, unsigned char));
@@ -117,20 +114,16 @@ void fastMPUSetTapCallback(void (*callback)(unsigned char, unsigned char));
 /* if not used, call it manually */
 void fastMPUCheckTap(uint8_t tap);
 
-
-#ifdef AK89xx_SECONDARY
 /* mag measures */
 bool fastMPUMagReady(void);
-int fastMPUReadRawMag(int16_t* mag);
-int fastMPUReadMag(int16_t* mag);
-unsigned char* fastMPUGetMagSensAdj(void);
-void fastMPUAdjMag(int16_t* mag);
+int fastMPUReadRawMag(int16_t *mag);
+int fastMPUReadMag(int16_t *mag);
+unsigned char *fastMPUGetMagSensAdj(void);
+void fastMPUAdjMag(int16_t *mag);
 
 /* to use with your own values */
-int fastMPUParseRawMag(uint8_t* magData, int16_t* mag);
-int fastMPUParseMag(uint8_t* magData, int16_t* mag);
-
-#endif
+int fastMPUParseRawMag(uint8_t *magData, int16_t *mag);
+int fastMPUParseMag(uint8_t *magData, int16_t *mag);
 
 /******************/
 /* CUSTOM DEFINES */

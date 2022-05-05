@@ -1,7 +1,7 @@
 /* LightInvensense -- Light and optimized Invensense IMU driver
  *
  * Copyright 2016-2019 Baptiste PELLEGRIN
- * 
+ *
  * This file is part of GNUVario.
  *
  * GNUVario is free software: you can redistribute it and/or modify
@@ -496,7 +496,7 @@ int createCompressedFirmware(void)
   return 0;
 }
 
-#endif //LIGHT_INVENSENSE_BUILD
+#endif // LIGHT_INVENSENSE_BUILD
 
 /**************************/
 /* Firmware decompression */
@@ -512,7 +512,7 @@ uint8_t decodeCompressedFirmware(void)
   /* already finish ? */
   if (decReadPos >= COMPRESSED_DMP_CODE_SIZE)
   {
-    return 0x00; //return 0x00 even if zeroCount != 0
+    return 0x00; // return 0x00 even if zeroCount != 0
   }
 
   /********************/
@@ -648,7 +648,7 @@ void enableDMP(void)
 #else
   data = 0;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_INT_ENABLE, 1, &data);
-#endif //MPU_ENABLE_INT_PIN
+#endif // MPU_ENABLE_INT_PIN
 
   /* reset STD FIFO */
   data = 0;
@@ -929,7 +929,7 @@ int fastMPUInit(bool startMPU)
   data[0] = COMPRESSED_DMP_LPF_CFG;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_LPF, 1, data);
 
-#ifdef MPU6500 //MPU6500 accel/gyro dlpf separately
+#ifdef MPU6500 // MPU6500 accel/gyro dlpf separately
   data[0] = BIT_FIFO_SIZE_1024 | data[0];
   intTW.writeBytes(INV_HW_ADDR, INV_REG_ACCEL_CFG2, 1, data);
 #endif
@@ -939,7 +939,7 @@ int fastMPUInit(bool startMPU)
   /********************/
 
   /* power on gyro and accel */
-  data[0] = 0; //all power on
+  data[0] = 0; // all power on
   intTW.writeBytes(INV_HW_ADDR, INV_REG_PWR_MGMT_2, 1, data);
   delay(50);
 
@@ -985,20 +985,20 @@ int fastMPUInit(bool startMPU)
   intTW.writeBytes(INV_HW_ADDR, INV_REG_S4_ADDR, 1, data);
   data[0] = AKM_REG_CNTL;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_S4_REG, 1, data);
-  //TODO check rate
+  // TODO check rate
   data[0] = BIT_SLAVE_EN | ((1000 / (1 + COMPRESSED_DMP_RATE_DIV_CFG)) / LIGHT_INVENSENSE_COMPASS_SAMPLE_RATE - 1);
   intTW.writeBytes(INV_HW_ADDR, INV_REG_S4_CTRL, 1, data);
   data[0] = AKM_SINGLE_MEASUREMENT;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_S4_DO, 1, data);
 
   /* active slaves and set sample rate */
-  //data[0] = 0x03;
+  // data[0] = 0x03;
   data[0] = 0x11;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_I2C_DELAY_CTRL, 1, data);
 #ifdef MPU9150
   data[0] = BIT_I2C_MST_VDDIO;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_YG_OFFS_TC, 1, data);
-#endif //MPU9150
+#endif // MPU9150
   /*
   data[0] = (1000/(1+COMPRESSED_DMP_RATE_DIV_CFG)) / LIGHT_INVENSENSE_COMPASS_SAMPLE_RATE - 1;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_S4_CTRL, 1, data);
@@ -1028,7 +1028,7 @@ void fastMPUStart(void)
 {
 
 #ifdef AK89xx_SECONDARY
-  readMagSensAdj(); //also reset FIFO
+  readMagSensAdj(); // also reset FIFO
 #else
   fastFIFOReset();
 #endif
@@ -1054,8 +1054,8 @@ void fastMPUCheckTap(uint8_t tap)
     uint8_t count = (tap % 8) + 1;
     tapCallBack(direction, count);
   }
-#endif //COMPRESSED_DMP_PAQUET_TAP
-#endif //COMPRESSED_DMP_PAQUET_GESTURE
+#endif // COMPRESSED_DMP_PAQUET_TAP
+#endif // COMPRESSED_DMP_PAQUET_GESTURE
 }
 
 /* fifo */
@@ -1100,7 +1100,7 @@ void fastMPUParseFIFO(uint8_t *dmpPaquet, int16_t *gyro, int16_t *accel, int32_t
     }
   }
 
-  /* 
+  /*
   quat[0] = ((int32_t)fifo_data[0] << 24) | ((int32_t)fifo_data[1] << 16) | ((int32_t)fifo_data[2] << 8) | fifo_data[3];
   quat[1] = ((int32_t)fifo_data[4] << 24) | ((int32_t)fifo_data[5] << 16) | ((int32_t)fifo_data[6] << 8) | fifo_data[7];
   quat[2] = ((int32_t)fifo_data[8] << 24) | ((int32_t)fifo_data[9] << 16) | ((int32_t)fifo_data[10] << 8) | fifo_data[11];
@@ -1120,7 +1120,7 @@ void fastMPUParseFIFO(uint8_t *dmpPaquet, int16_t *gyro, int16_t *accel, int32_t
   /*
   accel[0] = ((int16_t)fifo_data[ii+0] << 8) | fifo_data[ii+1];
   accel[1] = ((int16_t)fifo_data[ii+2] << 8) | fifo_data[ii+3];
-  accel[2] = ((int16_t)fifo_data[ii+4] << 8) | fifo_data[ii+5];  
+  accel[2] = ((int16_t)fifo_data[ii+4] << 8) | fifo_data[ii+5];
   */
 #endif
 
@@ -1151,10 +1151,10 @@ void fastMPUParseFIFO(uint8_t *dmpPaquet, int16_t *gyro, int16_t *accel, int32_t
   {
     tap = 0;
   }
-#endif //COMPRESSED_DMP_PAQUET_TAP
+#endif // COMPRESSED_DMP_PAQUET_TAP
 #else
   tap = 0;
-#endif //COMPRESSED_DMP_PAQUET_GESTURE
+#endif // COMPRESSED_DMP_PAQUET_GESTURE
 }
 
 int fastMPUReadFIFO(int16_t *gyro, int16_t *accel, int32_t *quat)
@@ -1200,8 +1200,8 @@ int fastMPUReadFIFO(int16_t *gyro, int16_t *accel, int32_t *quat)
 #ifdef COMPRESSED_DMP_PAQUET_GESTURE
 #ifdef COMPRESSED_DMP_PAQUET_TAP
   fastMPUCheckTap(tap);
-#endif //COMPRESSED_DMP_PAQUET_TAP
-#endif //COMPRESSED_DMP_PAQUET_GESTURE
+#endif // COMPRESSED_DMP_PAQUET_TAP
+#endif // COMPRESSED_DMP_PAQUET_GESTURE
 
   return 0;
 }
@@ -1212,26 +1212,16 @@ bool fastMPUMagReady(void)
 
   uint8_t data;
   intTW.readBytes(INV_HW_ADDR, INV_REG_I2C_MST_STATUS, 1, &data);
-  return (data & 0x40); //I2C_SLV4_DONE
+  return (data & 0x40); // I2C_SLV4_DONE
 }
 
 int fastMPUParseRawMag(uint8_t *magData, int16_t *mag)
 {
-
-  /* check for errors */
-#if defined AK8975_SECONDARY
-  /* AK8975 doesn't have the overrun error bit. */
-  if (!(magData[0] & AKM_DATA_READY))
-    return -2;
-  if ((magData[7] & AKM_OVERFLOW) || (magData[7] & AKM_DATA_ERROR))
-    return -3;
-#elif defined AK8963_SECONDARY
   /* AK8963 doesn't have the data read error bit. */
   if (!(magData[0] & AKM_DATA_READY) || (magData[0] & AKM_DATA_OVERRUN))
     return -2;
   if (magData[7] & AKM_OVERFLOW)
     return -3;
-#endif
 
   /* return */
   /* remap as accelerometer */

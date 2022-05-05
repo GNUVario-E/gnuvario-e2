@@ -37,200 +37,24 @@
 
 VarioCalibration Calibration;
 
-#if defined(SDCARD_OUTPUT)
-
-void VarioCalibration::writeNumber(int16_t number)
+void VarioCalibration::startTask()
 {
-	valueDigit.begin((long)number);
-	while (valueDigit.available())
-	{
-		file.write(valueDigit.get());
-	}
-}
-#endif // SDCARD_OUTPUT
-
-void VarioCalibration::startMeasure(void)
-{
-	/* stabilize */
-	// just wait
-	unsigned long stabilizeTimestamp = millis();
-	while (millis() - stabilizeTimestamp < STABILIZE_DURATION)
-	{
-		// makeMeasureStep();
-
-		vTaskDelay(delayT100);
-	}
-
-	VARIO_CAL_DEBUG_PRINTLN("init Var");
-
-	/* init vars */
-	measureTimestamp = millis();
-	accelCount = 0;
-#ifdef AK89xx_SECONDARY
-	magCount = 0;
-#endif
-
-	for (int i = 0; i < 3; i++)
-	{
-		accelMean[i] = 0.0;
-		accelSD[i] = 0.0;
-#ifdef AK89xx_SECONDARY
-		magMean[i] = 0.0;
-		magSD[i] = 0.0;
-#endif
-	}
+	// task creation
+	VARIO_PROG_DEBUG_PRINTLN("Task Calib started");
+	xTaskCreate(this->startTaskImpl, "TaskCalib", 4000, this, 10, &_taskCalibHandle);
 }
 
-uint8_t VarioCalibration::readRawAccel(int16_t *accel, int32_t *quat)
+void VarioCalibration::startTaskImpl(void *parm)
 {
-	VARIO_CAL_DEBUG_PRINTLN("readRawAccel");
-	if (twScheduler.haveAccel())
-	{
-		VARIO_CAL_DEBUG_PRINTLN("haveAccel");
-		twScheduler.getRawAccel(accel, quat);
-		return 1;
-	}
-
-	return 0;
+	// wrapper for task
+	static_cast<VarioCalibration *>(parm)->task();
 }
 
-#ifdef AK89xx_SECONDARY
-uint8_t VarioCalibration::readRawMag(int16_t *mag)
+void VarioCalibration::task()
 {
-	VARIO_CAL_DEBUG_PRINTLN("readRawMag");
-
-	if (twScheduler.haveMag())
-	{
-		VARIO_CAL_DEBUG_PRINTLN("haveMag");
-		twScheduler.getRawMag(mag);
-		return 1;
-	}
-
-	return 0;
-}
-
-#endif // AK89xx_SECONDARY
-
-void VarioCalibration::makeMeasureStep(void)
-{
-	/* accel */
-	int16_t accel[3];
-	int32_t quat[4];
-	if (readRawAccel(accel, quat))
-	{
-
-		VARIO_CAL_DEBUG_PRINTLN("makeMeasureStep : readRawAccel OK");
-
-		accelCount++;
-		for (int i = 0; i < 3; i++)
-		{
-
-			accelMean[i] += (double)accel[i];
-			accelSD[i] += ((double)accel[i]) * ((double)accel[i]);
-
-			VARIO_CAL_DEBUG_PRINT("accelMean : ");
-			VARIO_CAL_DEBUG_PRINTLN(accelMean[i]);
-			VARIO_CAL_DEBUG_PRINTLN("accelSD : ");
-			VARIO_CAL_DEBUG_PRINTLN(accelSD[i]);
-		}
-	}
-
-#ifdef AK89xx_SECONDARY
-	/* mag */
-	int16_t mag[3];
-	if (readRawMag(mag))
-	{
-		VARIO_CAL_DEBUG_PRINTLN("makeMeasureStep : readRawMag OK");
-
-		magCount++;
-		for (int i = 0; i < 3; i++)
-		{
-			magMean[i] += (double)mag[i];
-			magSD[i] += ((double)mag[i]) * ((double)mag[i]);
-
-			VARIO_CAL_DEBUG_PRINT("magMean : ");
-			VARIO_CAL_DEBUG_PRINTLN(magMean[i]);
-			VARIO_CAL_DEBUG_PRINT("magSD : ");
-			VARIO_CAL_DEBUG_PRINTLN(magSD[i]);
-		}
-	}
-#endif // AK89xx_SECONDARY
-}
-
-/* return standard deviation */
-double VarioCalibration::getAccelMeasure(int16_t *accelMeasure)
-{
-	double accelMeasureSD = 0.0;
-
-	VARIO_CAL_DEBUG_PRINTLN("GetAccelMeasure");
-
-	for (int i = 0; i < 3; i++)
-	{
-		accelMeasureSD += accelSD[i] / (double)accelCount;
-		accelMeasureSD -= (accelMean[i] / (double)accelCount) * (accelMean[i] / (double)accelCount);
-
-		accelMeasure[i] = (int16_t)(accelMean[i] / (double)accelCount);
-
-		VARIO_CAL_DEBUG_PRINT("accelMeasure : ");
-		VARIO_CAL_DEBUG_PRINTLN(accelMeasure[i]);
-	}
-
-	return sqrt(accelMeasureSD);
-}
-
-#ifdef AK89xx_SECONDARY
-/* return standard deviation */
-double VarioCalibration::getMagMeasure(int16_t *magMeasure)
-{
-	VARIO_CAL_DEBUG_PRINTLN("GetMagMeasure");
-
-	double magMeasureSD = 0.0;
-
-	for (int i = 0; i < 3; i++)
-	{
-		magMeasureSD += magSD[i] / (double)magCount;
-		magMeasureSD -= (magMean[i] / (double)magCount) * (magMean[i] / (double)magCount);
-
-		magMeasure[i] = (int16_t)(magMean[i] / (double)magCount);
-
-		VARIO_CAL_DEBUG_PRINT("magMeasure : ");
-		VARIO_CAL_DEBUG_PRINTLN(magMeasure[i]);
-	}
-
-	return sqrt(magMeasureSD);
-}
-#endif // AK89xx_SECONDARY
-
-void VarioCalibration::begin(VarioBeeper *_varioBeeper)
-{
-	intTW.begin();
-
-	twScheduler.init();
-
-	VARIO_CAL_DEBUG_PRINTLN("Begin calibration3");
-	varioBeeper = _varioBeeper;
-
-	VARIO_CAL_DEBUG_PRINTLN("Begin calibration4");
-#if defined(SDCARD_OUTPUT)
-	sdcardFound = true;
-#endif
-
-	varioBeeper->setVolume(10);
-	varioBeeper->generateTone(2000, 300);
-
-	vTaskDelay(delayT100 * 30);
-
-	/* reset variables */
-	VARIO_CAL_DEBUG_PRINTLN("Begin calibration");
-
-	startMeasure();
-	accelSDRecordTimestamp = millis();
-
-	VARIO_CAL_DEBUG_PRINTLN("Loop");
-
 	while (1)
 	{
-		vTaskDelay(delayT100);
+		vTaskDelay(delayT50);
 
 		/*------------------------------------------------------------*/
 		/*  wait, record standard deviation, and get gyro calibration */
@@ -369,10 +193,8 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 				int16_t accelMeasure[3];
 				double accelMeasureSD = getAccelMeasure(accelMeasure);
 
-#ifdef AK89xx_SECONDARY
 				int16_t magMeasure[3];
 				double magMeasureSD = getMagMeasure(magMeasure);
-#endif // AK89xx_SECONDARY
 
 				/**************************/
 				/* check measure validity */
@@ -409,14 +231,13 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 						Serial.print(accelMeasure[1], DEC);
 						Serial.print(", ");
 						Serial.print(accelMeasure[2], DEC);
-#ifdef AK89xx_SECONDARY
 						Serial.print(", ");
 						Serial.print(magMeasure[0], DEC);
 						Serial.print(", ");
 						Serial.print(magMeasure[1], DEC);
 						Serial.print(", ");
 						Serial.print(magMeasure[2], DEC);
-#endif // AK89xx_SECONDARY
+
 						Serial.print("\n");
 #endif // SERIAL_OUTPUT
 
@@ -431,7 +252,6 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 						file.write(',');
 						file.write(' ');
 						writeNumber(accelMeasure[2]);
-#ifdef AK89xx_SECONDARY
 						file.write(',');
 						file.write(' ');
 						writeNumber(magMeasure[0]);
@@ -441,7 +261,6 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 						file.write(',');
 						file.write(' ');
 						writeNumber(magMeasure[2]);
-#endif // AK89xx_SECONDARY
 						file.write('\n');
 
 						file.flush();
@@ -462,4 +281,185 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 			}
 		}
 	}
+}
+
+#if defined(SDCARD_OUTPUT)
+
+void VarioCalibration::writeNumber(int16_t number)
+{
+	valueDigit.begin((long)number);
+	while (valueDigit.available())
+	{
+		file.write(valueDigit.get());
+	}
+}
+#endif // SDCARD_OUTPUT
+
+void VarioCalibration::startMeasure(void)
+{
+	/* stabilize */
+	// just wait
+	unsigned long stabilizeTimestamp = millis();
+	while (millis() - stabilizeTimestamp < STABILIZE_DURATION)
+	{
+		// makeMeasureStep();
+
+		vTaskDelay(delayT100);
+	}
+
+	VARIO_CAL_DEBUG_PRINTLN("init Var");
+
+	/* init vars */
+	measureTimestamp = millis();
+	accelCount = 0;
+	magCount = 0;
+
+	for (int i = 0; i < 3; i++)
+	{
+		accelMean[i] = 0.0;
+		accelSD[i] = 0.0;
+		magMean[i] = 0.0;
+		magSD[i] = 0.0;
+	}
+}
+
+uint8_t VarioCalibration::readRawAccel(int16_t *accel, int32_t *quat)
+{
+	VARIO_CAL_DEBUG_PRINTLN("readRawAccel");
+	if (twScheduler.haveAccel())
+	{
+		VARIO_CAL_DEBUG_PRINTLN("haveAccel");
+		twScheduler.getRawAccel(accel, quat);
+		return 1;
+	}
+
+	return 0;
+}
+
+uint8_t VarioCalibration::readRawMag(int16_t *mag)
+{
+	VARIO_CAL_DEBUG_PRINTLN("readRawMag");
+
+	if (twScheduler.haveMag())
+	{
+		VARIO_CAL_DEBUG_PRINTLN("haveMag");
+		twScheduler.getRawMag(mag);
+		return 1;
+	}
+
+	return 0;
+}
+
+void VarioCalibration::makeMeasureStep(void)
+{
+	/* accel */
+	int16_t accel[3];
+	int32_t quat[4];
+	if (readRawAccel(accel, quat))
+	{
+
+		VARIO_CAL_DEBUG_PRINTLN("makeMeasureStep : readRawAccel OK");
+
+		accelCount++;
+		for (int i = 0; i < 3; i++)
+		{
+
+			accelMean[i] += (double)accel[i];
+			accelSD[i] += ((double)accel[i]) * ((double)accel[i]);
+
+			VARIO_CAL_DEBUG_PRINT("accelMean : ");
+			VARIO_CAL_DEBUG_PRINTLN(accelMean[i]);
+			VARIO_CAL_DEBUG_PRINTLN("accelSD : ");
+			VARIO_CAL_DEBUG_PRINTLN(accelSD[i]);
+		}
+	}
+
+	/* mag */
+	int16_t mag[3];
+	if (readRawMag(mag))
+	{
+		VARIO_CAL_DEBUG_PRINTLN("makeMeasureStep : readRawMag OK");
+
+		magCount++;
+		for (int i = 0; i < 3; i++)
+		{
+			magMean[i] += (double)mag[i];
+			magSD[i] += ((double)mag[i]) * ((double)mag[i]);
+
+			VARIO_CAL_DEBUG_PRINT("magMean : ");
+			VARIO_CAL_DEBUG_PRINTLN(magMean[i]);
+			VARIO_CAL_DEBUG_PRINT("magSD : ");
+			VARIO_CAL_DEBUG_PRINTLN(magSD[i]);
+		}
+	}
+}
+
+/* return standard deviation */
+double VarioCalibration::getAccelMeasure(int16_t *accelMeasure)
+{
+	double accelMeasureSD = 0.0;
+
+	VARIO_CAL_DEBUG_PRINTLN("GetAccelMeasure");
+
+	for (int i = 0; i < 3; i++)
+	{
+		accelMeasureSD += accelSD[i] / (double)accelCount;
+		accelMeasureSD -= (accelMean[i] / (double)accelCount) * (accelMean[i] / (double)accelCount);
+
+		accelMeasure[i] = (int16_t)(accelMean[i] / (double)accelCount);
+
+		VARIO_CAL_DEBUG_PRINT("accelMeasure : ");
+		VARIO_CAL_DEBUG_PRINTLN(accelMeasure[i]);
+	}
+
+	return sqrt(accelMeasureSD);
+}
+
+/* return standard deviation */
+double VarioCalibration::getMagMeasure(int16_t *magMeasure)
+{
+	VARIO_CAL_DEBUG_PRINTLN("GetMagMeasure");
+
+	double magMeasureSD = 0.0;
+
+	for (int i = 0; i < 3; i++)
+	{
+		magMeasureSD += magSD[i] / (double)magCount;
+		magMeasureSD -= (magMean[i] / (double)magCount) * (magMean[i] / (double)magCount);
+
+		magMeasure[i] = (int16_t)(magMean[i] / (double)magCount);
+
+		VARIO_CAL_DEBUG_PRINT("magMeasure : ");
+		VARIO_CAL_DEBUG_PRINTLN(magMeasure[i]);
+	}
+
+	return sqrt(magMeasureSD);
+}
+
+void VarioCalibration::begin(VarioBeeper *_varioBeeper)
+{
+	intTW.begin();
+
+	twScheduler.init();
+
+	VARIO_CAL_DEBUG_PRINTLN("Begin calibration3");
+	varioBeeper = _varioBeeper;
+
+	VARIO_CAL_DEBUG_PRINTLN("Begin calibration4");
+#if defined(SDCARD_OUTPUT)
+	sdcardFound = true;
+#endif
+
+	varioBeeper->setVolume(10);
+	varioBeeper->generateTone(2000, 300);
+
+	vTaskDelay(delayT100 * 30);
+
+	/* reset variables */
+	VARIO_CAL_DEBUG_PRINTLN("Begin calibration");
+
+	startMeasure();
+	accelSDRecordTimestamp = millis();
+
+	VARIO_CAL_DEBUG_PRINTLN("Loop");
 }

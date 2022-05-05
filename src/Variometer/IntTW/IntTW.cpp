@@ -1,7 +1,7 @@
-/* InTW -- Interrupt driven Two Wire library 
+/* InTW -- Interrupt driven Two Wire library
  *
  * Copyright 2016-2019 Baptiste PELLEGRIN
- * 
+ *
  * This file is part of GNUVario.
  *
  * GNUVario is free software: you can redistribute it and/or modify
@@ -248,7 +248,7 @@ bool IntTW::writeBytes(uint8_t address, uint8_t cmd, uint8_t count, uint8_t *buf
 
   /* launch command */
   setTxBuffer(buff);
-  //start(buildCommand, cmdLength, INTTW_NONE);
+  // start(buildCommand, cmdLength, INTTW_NONE);
   start(newCommand, cmdLength, INTTW_NONE);
 
   if (count)
@@ -271,7 +271,7 @@ bool IntTW::readBytes(uint8_t address, uint8_t cmd, uint8_t count, uint8_t *buff
   /* check count */
   uint8_t cmdLength = sizeof(buildCommand);
   if (!count)
-    cmdLength -= 2; //remove read
+    cmdLength -= 2; // remove read
 
   /* launch command */
   setRxBuffer(buff);

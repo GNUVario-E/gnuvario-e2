@@ -1,7 +1,7 @@
 /* TwoWireScheduler -- Interrupt driven Two Wire devices scheduler
  *
  * Copyright 2016-2019 Baptiste PELLEGRIN
- * 
+ *
  * This file is part of GNUVario.
  *
  * GNUVario is free software: you can redistribute it and/or modify
@@ -58,9 +58,7 @@
 
 #include "Variometer/ms5611TW/ms5611TW.h"
 
-#ifdef HAVE_ACCELEROMETER
 #include "Variometer/vertaccel/vertaccel.h"
-#endif
 
 /* clock settings */
 #define TWO_WIRE_SCHEDULER_INTERRUPT_PRESCALE 80
@@ -118,9 +116,7 @@ public:
   /* static class devices to define */
   static Ms5611 ms5611;
 
-#ifdef HAVE_ACCELEROMETER
   static Vertaccel vertaccel;
-#endif
 
   /* init both devices but not the TW bus */
   static void init(void);
@@ -132,30 +128,24 @@ public:
   static double getAlti(void);
   static void getTempAlti(double &temp, double &alti);
 
-#ifdef HAVE_ACCELEROMETER
   /* IMU part */
   /* tap callback is triggered by getRawAccel and getAccel */
   static bool haveAccel(void);
   static bool haveNewAccel(void);
   static bool resetNewAccel(void);
   static void getRawAccel(int16_t *rawAccel, int32_t *quat);
-  static double getAccel(double *vertVector); //vertVector = NULL if not needed
+  static double getAccel(double *vertVector); // vertVector = NULL if not needed
 
   static bool haveGyro(void);
-  static bool haveNewGyro(void);
-  static bool resetNewGyro(void);
   static void getRawGyro(int16_t *rawGyro, int32_t *quat);
 
   static void getRawAccelGyro(int16_t *rawAccel, int16_t *rawGyro, int32_t *quat);
   static void getAccelGyro(double *vertVector, double *gyroVector);
 
-#ifdef AK89xx_SECONDARY
   static bool haveMag(void);
   static void getRawMag(int16_t *rawMag);
-  static void getNorthVector(double *vertVector, double *northVector);                      //give the vertVector obtained previously
-  static void getNorthVector2(double *vertVector, double *gyroVector, double *northVector); //give the vertVector and gyroVector obtained previously
-#endif                                                                                      //AK89xx_SECONDARY
-#endif                                                                                      //HAVE_ACCELEROMETER
+  static void getNorthVector(double *vertVector, double *northVector);                      // give the vertVector obtained previously
+  static void getNorthVector2(double *vertVector, double *gyroVector, double *northVector); // give the vertVector and gyroVector obtained previously
 
   /* the main interrupt */
   static void mainInterrupt(void);
@@ -164,26 +154,22 @@ private:
   static uint16_t volatile status;
 
   static int8_t volatile ms5611Step;
-  static uint8_t volatile ms5611Output[3 * 3]; //three ms5611 output measures
+  static uint8_t volatile ms5611Output[3 * 3]; // three ms5611 output measures
   static uint8_t volatile ms5611Count;
   static SemaphoreHandle_t ms5611Mutex;
   static double ms5611SavePressure;
 
-#ifdef HAVE_ACCELEROMETER
   static uint8_t volatile checkOutput[2];
-  static uint8_t volatile imuOutput[LIGHT_INVENSENSE_COMPRESSED_DMP_PAQUET_LENGTH]; //imu dmp fifo output
+  static uint8_t volatile imuOutput[LIGHT_INVENSENSE_COMPRESSED_DMP_PAQUET_LENGTH]; // imu dmp fifo output
 #ifdef MPU_ENABLE_INT_PIN
   static uint8_t volatile imuIntCount;
   static SemaphoreHandle_t imuIntCountMutex;
-#endif //MPU_ENABLE_INT_PIN
+#endif // MPU_ENABLE_INT_PIN
   static uint8_t volatile imuCount;
   static SemaphoreHandle_t imuMutex;
-#ifdef AK89xx_SECONDARY
-  static uint8_t volatile magOutput[8]; //magnetometer output
+  static uint8_t volatile magOutput[8]; // magnetometer output
   static uint8_t volatile magCount;
   static SemaphoreHandle_t magMutex;
-#endif //AK89xx_SECONDARY
-#endif //HAVE_ACCELEROMETER
   static TaskHandle_t schedulerTaskHandler;
   static hw_timer_t *timer;
 
@@ -193,24 +179,20 @@ private:
   static void errorRelaunch(void);
   static void errorRelaunchCallback(void);
   static void ms5611OutputCallback(void);
-#ifdef HAVE_ACCELEROMETER
   static void imuInterrupt(void);
   static void imuCheckFifoCountCallBack(void);
   static void imuReadFifoData(void);
   static void imuHaveFifoDataCallback(void);
 #ifdef MPU_ENABLE_INT_PIN
   static void imuIntPinInterrupt(void);
-#endif //MPU_ENABLE_INT_PIN
-#ifdef AK89xx_SECONDARY
+#endif // MPU_ENABLE_INT_PIN
   static void magInterrupt(void);
   static void magCheckStatusCallback(void);
   static void magHaveDataCallback(void);
-#endif //AK89xx_SECONDARY
-#endif //HAVE_ACCELEROMETER
   static void interruptScheduler(void *param);
   static void timerCallback(void);
 };
 
 extern TWScheduler twScheduler;
 
-#endif //TWO_WIRE_SCHEDULER_H
+#endif // TWO_WIRE_SCHEDULER_H
