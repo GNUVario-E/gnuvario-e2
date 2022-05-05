@@ -46,13 +46,7 @@
 class VarioManager : public Observer
 {
 private:
-    // static void startTaskImpl(void *);
-    // TaskHandle_t vmTaskHandler;
-    // SemaphoreHandle_t vmMutex;
-    // void vmTask();
     const TickType_t delayT100 = pdMS_TO_TICKS(100);
-    // uint8_t currentStatePage = STATE_PAGE_NONE;
-    // uint16_t currentMode = MODE_INIT;
     void launchTimers();
     static void startTimers10sImpl(void *);
     void timer10s();
@@ -71,9 +65,6 @@ public:
     VarioCalibration *varioCalibration;
     Variometer *variometer;
 
-    // void setCurrentPage(uint8_t page);
-    // uint8_t getCurrentPageState();
-    // void handleButton(uint8_t btn);
     boolean init();
     void onSignalReceived(uint8_t _val);
 };
