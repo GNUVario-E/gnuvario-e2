@@ -129,3 +129,19 @@ ScreenData statisticScreenData = {
     toolbar : {false, true, 0, 210, 128, 98, 99},
     speed : {false, true, 0, 210, 128, 98, 99}
 };
+
+ScreenData rebootScreenData = {
+    logo : {true, true, 0, 0, 128, 296, 94, 74, 99},
+    txt1 : {true, false, 0, 230, 128, 41, 99},
+    txt2 : {false, true, 20, 130, 100, 41, 99},
+    txt3 : {false, true, 20, 130, 100, 41, 99},
+    txt4 : {false, true, 20, 130, 100, 41, 99},
+    txt5 : {false, true, 20, 130, 100, 41, 99},
+    txt6 : {false, true, 20, 130, 100, 41, 99},
+    txt7 : {false, true, 20, 130, 100, 41, 99},
+    txt8 : {false, true, 20, 130, 100, 41, 99},
+    alt : {false, true, 0, 170, 65, 40, 99},
+    vario : {false, true, 64, 170, 64, 40, 99},
+    toolbar : {false, true, 0, 210, 128, 98, 99},
+    speed : {false, true, 0, 210, 128, 98, 99}
+};

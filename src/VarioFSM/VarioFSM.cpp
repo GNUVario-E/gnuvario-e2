@@ -34,8 +34,9 @@ void VarioFSM::initfsm(VarioDisplay *_varioDisplay)
     fsm.add_timed_transition(&_state_boot, &_state_statistic_init, 4000, nullptr);   // bascule en mode vario si pas d'appui sur le bouton pendant 5s
     fsm.add_timed_transition(&_state_statistic_init, &_state_vario1, 3000, nullptr); // bascule en mode vario apres les stats initiales
 
-    fsm.add_transition(&_state_boot, &_state_calibration, BTN_SHORT_C, nullptr); // bascule en mode calibration si appui sur bouton C pendant boot
-    fsm.add_transition(&_state_boot, &_state_wifi, BTN_SHORT_A, nullptr);        // bascule en mode wifi si appui sur bouton A pendant boot
+    fsm.add_transition(&_state_boot, &_state_calibration, BTN_SHORT_C, nullptr);  // bascule en mode calibration si appui sur bouton C pendant boot
+    fsm.add_transition(&_state_calibration, &_state_reboot, BTN_LONG_A, nullptr); // reboot si appui long sur bouton A pendant calibration
+    fsm.add_transition(&_state_boot, &_state_wifi, BTN_SHORT_A, nullptr);         // bascule en mode wifi si appui sur bouton A pendant boot
 
     fsm.add_transition(&_state_vario1, &_state_vario2, BTN_SHORT_C, nullptr);    // deplacement dans les ecrans vario
     fsm.add_transition(&_state_vario2, &_state_vario3, BTN_SHORT_C, nullptr);    // deplacement dans les ecrans vario
@@ -216,6 +217,24 @@ void VarioFSM::soundedit_on_exit()
 {
     VARIO_FSM_DEBUG_PRINTLN("soundedit_on_exit");
     // sauvegarde du volume
+}
+
+void VarioFSM::reboot_on_enter()
+{
+    VARIO_FSM_DEBUG_PRINTLN("reboot_on_enter");
+    varioDisplay->displayScreen(varioDisplay->rebootScreen);
+    vTaskDelay(delayT50 * 20);
+    ESP.restart();
+}
+
+void VarioFSM::reboot_on()
+{
+    VARIO_FSM_DEBUG_PRINTLN("reboot_on");
+}
+
+void VarioFSM::reboot_on_exit()
+{
+    VARIO_FSM_DEBUG_PRINTLN("reboot_on_exit");
 }
 
 void VarioFSM::onSignalReceived(uint8_t _val)
