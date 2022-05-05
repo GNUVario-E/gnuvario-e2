@@ -27,6 +27,7 @@ private:
     FunctionState _state_sound;
     FunctionState _state_statistic;
     FunctionState _state_sound_edit;
+    FunctionState _state_reboot;
 
     FunctionFsm fsm;
 
@@ -68,6 +69,10 @@ private:
     void soundedit_on_enter();
     void soundedit_on();
     void soundedit_on_exit();
+
+    void reboot_on_enter();
+    void reboot_on();
+    void reboot_on_exit();
 
     VarioDisplay *varioDisplay;
 
@@ -142,6 +147,13 @@ public:
                             { soundedit_on(); },
                             [this]()
                             { soundedit_on_exit(); }),
+
+          _state_reboot([this]()
+                        { reboot_on_enter(); },
+                        [this]()
+                        { reboot_on(); },
+                        [this]()
+                        { reboot_on_exit(); }),
 
           fsm(&_state_boot)
     {

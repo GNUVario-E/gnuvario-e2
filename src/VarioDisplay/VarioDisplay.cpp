@@ -99,6 +99,10 @@ void VarioDisplay::buildScreens()
 
     statisticScreen = new VarioScreen(statisticScreenData, varioLanguage);
     statisticScreen->getTextWidget1()->setText(statistic);
+
+    // construction de l'écran de reboot
+    rebootScreen = new VarioScreen(rebootScreenData, varioLanguage);
+    rebootScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_REDEMAR));
 }
 
 /**

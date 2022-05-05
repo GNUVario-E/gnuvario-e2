@@ -6,7 +6,6 @@
 #include "VarioLanguage/VarioLanguage.h"
 #include "VarioDisplay/VarioScreen/VarioScreen.h"
 
-
 #define SCREEN_STACK_SIZE 2000
 #define SCREEN_CORE 1
 #define SCREEN_PRIORITY 10
@@ -41,4 +40,5 @@ public:
     VarioScreen *vario3Screen;
     VarioScreen *soundScreen;
     VarioScreen *statisticScreen;
+    VarioScreen *rebootScreen;
 };
