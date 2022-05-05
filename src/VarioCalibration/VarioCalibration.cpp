@@ -442,10 +442,8 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 
 	twScheduler.init();
 
-	VARIO_CAL_DEBUG_PRINTLN("Begin calibration3");
 	varioBeeper = _varioBeeper;
 
-	VARIO_CAL_DEBUG_PRINTLN("Begin calibration4");
 #if defined(SDCARD_OUTPUT)
 	sdcardFound = true;
 #endif
@@ -460,6 +458,4 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 
 	startMeasure();
 	accelSDRecordTimestamp = millis();
-
-	VARIO_CAL_DEBUG_PRINTLN("Loop");
 }

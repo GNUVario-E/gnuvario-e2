@@ -51,6 +51,14 @@ bool VarioImu::havePressure(void)
 
 bool VarioImu::updateData(void)
 {
+    if (twScheduler.havePressure())
+    {
+        Serial.println("havePressure");
+    }
+    if (twScheduler.haveAccel())
+    {
+        Serial.println("haveAccel");
+    }
     if (twScheduler.havePressure() && twScheduler.haveAccel())
     {
         double temp;
