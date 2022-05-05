@@ -53,21 +53,30 @@ bool VarioImu::updateData(void)
 {
     if (twScheduler.havePressure() && twScheduler.haveAccel())
     {
+        double temp;
+        double alti;
+        double accel;
+        twScheduler.resetNewAccel();
+        twScheduler.getTempAlti(temp, alti);
+        accel = twScheduler.getAccel(NULL);
         Serial.print("altitude: ");
-        Serial.println(twScheduler.getAlti());
+        Serial.println(alti);
 
         Serial.print("accel: ");
-        Serial.println(twScheduler.getAccel(NULL));
+        Serial.println(accel);
 
-        kalmanvert->update(twScheduler.getAlti(),
-                           twScheduler.getAccel(NULL),
-                           millis());
+        Serial.print("temp: ");
+        Serial.println(temp);
+
+        // kalmanvert->update(twScheduler.getAlti(),
+        //                    twScheduler.getAccel(NULL),
+        //                    millis());
 
         return true;
     }
     else
     {
-        Serial.println("Ni pression ni alti");
+        Serial.println("Ni pression et/ou ni alti");
     }
     // else if (twScheduler.haveNewAccel())
     // {

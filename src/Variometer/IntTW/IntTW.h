@@ -1,7 +1,7 @@
-/* InTW -- Interrupt driven Two Wire library 
+/* InTW -- Interrupt driven Two Wire library
  *
  * Copyright 2016-2019 Baptiste PELLEGRIN
- * 
+ *
  * This file is part of GNUVario.
  *
  * GNUVario is free software: you can redistribute it and/or modify
@@ -94,14 +94,14 @@
 /************************************************/
 #define INTTW_DEST(count, dest) (uint8_t)((uint8_t)(count) | (uint8_t)(dest))
 
-//transmitted from/to the command buffer (just after the count byte)
+// transmitted from/to the command buffer (just after the count byte)
 #define INTTW_IN_CMD 0x00
 
-//transmitted from/to the current tx/rx pointer (see setTxBuffer/setRxBuffer)
+// transmitted from/to the current tx/rx pointer (see setTxBuffer/setRxBuffer)
 #define INTTW_AT_POINTER 0x80
 
 #ifdef INTTW_LOAD_POINTER_FUNC
-//transmitted from/to the pointer stored just after the count byte
+// transmitted from/to the pointer stored just after the count byte
 #define INTTW_SET_POINTER 0xC0
 #endif
 
@@ -115,12 +115,12 @@
 /*************/
 #define INTTW_NONE 0
 
-//Read the cmd from progmem (you can't use writes with INTTW_IN_CMD)
+// Read the cmd from progmem (you can't use writes with INTTW_IN_CMD)
 #define INTTW_USE_PROGMEM 1
 
-//Don't release the Two Wire bus. You need to launch another
-//command immediately after. The last command need to
-//have this flag disabled
+// Don't release the Two Wire bus. You need to launch another
+// command immediately after. The last command need to
+// have this flag disabled
 //!!! Don't keep bus for multiple read (burst) on the same device, this is not implemented !!!
 #define INTTW_KEEP_BUS 2
 
@@ -134,12 +134,12 @@ public:
   /* before starting a new one                        */
   void setTxBuffer(uint8_t *buff);
   void setRxBuffer(uint8_t *buff);
-  void start(uint8_t *commands, uint8_t commandLength, uint8_t commandflags = INTTW_NONE, void (*successCallback)(void) = NULL); //callback called also on error
+  void start(uint8_t *commands, uint8_t commandLength, uint8_t commandflags = INTTW_NONE, void (*successCallback)(void) = NULL); // callback called also on error
 
   /* sequence control */
   bool transmitting(void);
   bool succeeded(void);
-  void stop(void); //force stop in case of keeping bus
+  void stop(void); // force stop in case of keeping bus
   void release(void);
 
   /* blocking methods below (wait for transfert finished) */
@@ -147,7 +147,7 @@ public:
   bool writeBytes(uint8_t address, uint8_t cmd, uint8_t count, uint8_t *buff);
   bool readBytes(uint8_t address, uint8_t cmd, uint8_t count, uint8_t *buff);
 
-  void twiVect(void); //twi interrupt
+  void twiVect(void); // twi interrupt
 
 private:
   uint8_t *volatile txBuffer;
@@ -158,4 +158,4 @@ private:
 
 extern IntTW intTW;
 
-#endif //INT_TW_H
+#endif // INT_TW_H

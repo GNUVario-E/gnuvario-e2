@@ -28,10 +28,13 @@
 class VarioCalibration
 {
 
-public:
-	void begin(VarioBeeper *_varioBeeper);
-
 private:
+	const TickType_t delayT50 = pdMS_TO_TICKS(50);
+	TaskHandle_t _taskCalibHandle = NULL;
+	static void startTaskImpl(void *);
+
+	void task();
+
 	const TickType_t delayT100 = pdMS_TO_TICKS(100);
 	VarioBeeper *varioBeeper = NULL;
 	/********************************/
@@ -55,13 +58,11 @@ private:
 	double accelMean[3];
 	double accelSD[3];
 
-#ifdef AK89xx_SECONDARY
 	/* mag measures */
 	int16_t lastMagMeasure[3];
 	long magCount;
 	double magMean[3];
 	double magSD[3];
-#endif //AK89xx_SECONDARY
 
 	File file;
 
@@ -75,19 +76,19 @@ private:
 	void startMeasure(void);
 	uint8_t readRawAccel(int16_t *accel, int32_t *quat);
 
-#ifdef AK89xx_SECONDARY
 	/*******************************/
 	uint8_t readRawMag(int16_t *mag);
-#endif //AK89xx_SECONDARY
 
 	void makeMeasureStep(void);
 	double getAccelMeasure(int16_t *accelMeasure);
 
-#ifdef AK89xx_SECONDARY
 	/* return standard deviation */
 	/*******************************/
 	double getMagMeasure(int16_t *magMeasure);
-#endif //AK89xx_SECONDARY
+
+public:
+	void begin(VarioBeeper *_varioBeeper);
+	void startTask();
 };
 
 #endif

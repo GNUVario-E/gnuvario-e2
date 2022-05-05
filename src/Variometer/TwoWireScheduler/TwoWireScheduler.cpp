@@ -1,7 +1,7 @@
 /* TwoWireScheduler -- Interrupt driven Two Wire devices scheduler
  *
  * Copyright 2016-2019 Baptiste PELLEGRIN
- * 
+ *
  * This file is part of GNUVario.
  *
  * GNUVario is free software: you can redistribute it and/or modify
@@ -18,25 +18,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/***************************************************************************************************/
-/*                                TWOWIRESCHEDULER                                                 */
-/*                                                                                                 */
-/*  Ver     Date         Description                                                               */
-/*  1.0                                                                                            */
-/*  1.1     21/08/19     Ajout getTempAlti(double& temp, double& alti)                             */
-/*  1.2     04/09/19		 Modification nom bibliothèque MS5611                                      */
-/*  1.3     15/11/19     modif delayMicroseconds(400);                                             */
-/*  1.4     24/09/20     Modif calcul Nord magnetique - ajout gyroscope                            */
-/*  1.4.1   25/09/20     Ajout debug                                                               */
-/*  1.4.2   06/10/20     Ajout void TWScheduler::disableAcquisition()                              */
-/*  1.4.3   09/10/20     Correction disableAcquisition                                             */
-/*  1.4.4   22/10/20     alti < 0 --> alti = 0                                                     */
-/*  1.4.5   06/04/21     Ajout computeAltitude2                                                    */
-/*                       Modification getalti                                                      */
-/*  1.4.6   11/04/21     correction SetBaseSeaPressure                                             */
-/*                                                                                                 */
-/***************************************************************************************************/
-
 #include "TwoWireScheduler.h"
 
 #include <Arduino.h>
@@ -49,10 +30,8 @@
 #include "Variometer/ms5611TW/ms5611TW.h"
 #include "varioversion.h"
 
-#ifdef HAVE_ACCELEROMETER
 #include "Variometer/LightInvensense/LightInvensense.h"
 #include "Variometer/vertaccel/vertaccel.h"
-#endif
 
 #define TEMP_READ 0
 #define PRESS_READ 1
@@ -61,10 +40,9 @@
 #define HAVE_MAG 6
 #define HAVE_NEWACCEL 8
 #define HAVE_GYRO 16
-#define HAVE_NEWGYRO 32
 #ifdef MPU_ENABLE_INT_PIN
 #define MPU_FIFO_EMPTIED 7
-#endif //MPU_ENABLE_INT_PIN
+#endif // MPU_ENABLE_INT_PIN
 
 #define bset(bit) status |= (1 << bit)
 #define bunset(bit) status &= ~(1 << bit)
@@ -78,27 +56,26 @@ Vertaccel TWScheduler::vertaccel;
 /*********************/
 /* static class data */
 /*********************/
-uint16_t volatile TWScheduler::status = 0; //no problem to not release at start as there is no values
+uint16_t volatile TWScheduler::status = 0; // no problem to not release at start as there is no values
 
 int8_t volatile TWScheduler::ms5611Step = 0;
-uint8_t volatile TWScheduler::ms5611Output[3 * 3]; //three ms5611 output measures
+uint8_t volatile TWScheduler::ms5611Output[3 * 3]; // three ms5611 output measures
 uint8_t volatile TWScheduler::ms5611Count = TWO_WIRE_SCHEDULER_MS5611_SHIFT;
 SemaphoreHandle_t TWScheduler::ms5611Mutex;
 double TWScheduler::ms5611SavePressure;
 
 uint8_t volatile TWScheduler::checkOutput[2];
-uint8_t volatile TWScheduler::imuOutput[LIGHT_INVENSENSE_COMPRESSED_DMP_PAQUET_LENGTH]; //imu dmp fifo output
+uint8_t volatile TWScheduler::imuOutput[LIGHT_INVENSENSE_COMPRESSED_DMP_PAQUET_LENGTH]; // imu dmp fifo output
 #ifdef MPU_ENABLE_INT_PIN
 uint8_t volatile TWScheduler::imuIntCount = 0;
 SemaphoreHandle_t TWScheduler::imuIntCountMutex;
-#endif //MPU_ENABLE_INT_PIN
+#endif // MPU_ENABLE_INT_PIN
 uint8_t volatile TWScheduler::imuCount = TWO_WIRE_SCHEDULER_IMU_SHIFT;
 SemaphoreHandle_t TWScheduler::imuMutex;
-#ifdef AK89xx_SECONDARY
-uint8_t volatile TWScheduler::magOutput[8]; //magnetometer output
+
+uint8_t volatile TWScheduler::magOutput[8]; // magnetometer output
 uint8_t volatile TWScheduler::magCount = TWO_WIRE_SCHEDULER_MAG_SHIFT;
 SemaphoreHandle_t TWScheduler::magMutex;
-#endif //AK89xx_SECONDARY
 
 TaskHandle_t TWScheduler::schedulerTaskHandler;
 hw_timer_t *TWScheduler::timer;
@@ -147,7 +124,6 @@ void TWScheduler::ms5611Interrupt(void)
     intTW.start((uint8_t *)ms5611Step1, sizeof(ms5611Step1), INTTW_USE_PROGMEM, ms5611TempCallback);
     ms5611Step = 1;
   }
-
   else
   {
 
@@ -176,7 +152,6 @@ void TWScheduler::ms5611Interrupt(void)
 
 void TWScheduler::ms5611TempCallback(void)
 {
-
   bset(TEMP_READ);
 }
 
@@ -192,27 +167,25 @@ void TWScheduler::errorRelaunch(void)
 
 void TWScheduler::errorRelaunchCallback(void)
 {
-
+   Serial.println("errorRelaunchCallback");
   /* conv D1 success */
   bset(PRESS_READ);
 }
 
 void TWScheduler::ms5611OutputCallback(void)
 {
-
+  Serial.println("Nouvelle pression depuis callback");
   /* done ! */
   status |= (1 << PRESS_READ) | (1 << HAVE_PRESSURE);
 }
 
 bool TWScheduler::havePressure(void)
 {
-
   return bisset(HAVE_PRESSURE);
 }
 
 double TWScheduler::getAlti(void)
 {
-
   /* copy needed values */
   uint8_t ms5611Values[6];
 
@@ -231,7 +204,7 @@ double TWScheduler::getAlti(void)
   ms5611SavePressure = pressure;
   Serial.print("pressure");
   Serial.println(pressure);
- Serial.print("temperature");
+  Serial.print("temperature");
   Serial.println(temperature);
   /* get corresponding alti */
   double alti = ms5611.computeAltitude(pressure);
@@ -249,7 +222,6 @@ double TWScheduler::getAlti(void)
 
 void TWScheduler::getTempAlti(double &temp, double &alti)
 {
-
   /* copy needed values */
   uint8_t ms5611Values[6];
 
@@ -272,11 +244,10 @@ void TWScheduler::getTempAlti(double &temp, double &alti)
 
   /*	if (alti < 0) alti = ms5611.computeAltitude2(pressure);
 
-	if (alti < 0) alti = 0;*/
+  if (alti < 0) alti = 0;*/
   temp = temperature;
 }
 
-#ifdef HAVE_ACCELEROMETER
 /************/
 /* IMU part */
 /************/
@@ -317,7 +288,7 @@ void TWScheduler::imuInterrupt(void)
   /* check FiFo for available measures */
   intTW.setRxBuffer((uint8_t *)checkOutput);
   intTW.start((uint8_t *)imuReadFifoCount, sizeof(imuReadFifoCount), INTTW_USE_PROGMEM | INTTW_KEEP_BUS, imuCheckFifoCountCallBack);
-#endif //MPU_ENABLE_INT_PIN
+#endif // MPU_ENABLE_INT_PIN
 }
 
 void TWScheduler::imuCheckFifoCountCallBack(void)
@@ -328,23 +299,24 @@ void TWScheduler::imuCheckFifoCountCallBack(void)
 
   /* launch FiFo read if OK */
   int8_t fifoState = fastMPUHaveFIFOPaquet(fifoCount);
+  
+
 #ifdef MPU_ENABLE_INT_PIN
   /* check for empty fifo */
   if (fifoState == 0)
   {
     xSemaphoreTake(imuIntCountMutex, portMAX_DELAY);
     bset(MPU_FIFO_EMPTIED);
-    imuIntCount = 0; //start using the interrupt
+    imuIntCount = 0; // start using the interrupt
     xSemaphoreGive(imuIntCountMutex);
   }
-#endif //MPU_ENABLE_INT_PIN
+#endif // MPU_ENABLE_INT_PIN
   if (fifoState > 0)
   {
     imuReadFifoData();
   }
   else
   {
-
     /* else stop TW communication */
     intTW.stop();
   }
@@ -352,7 +324,6 @@ void TWScheduler::imuCheckFifoCountCallBack(void)
 
 void TWScheduler::imuReadFifoData(void)
 {
-
   /* we need to lock */
   intTW.setRxBuffer((uint8_t *)imuOutput);
 
@@ -363,13 +334,12 @@ void TWScheduler::imuReadFifoData(void)
 
 void TWScheduler::imuHaveFifoDataCallback(void)
 {
-
+  Serial.println("Nouvelle accélération depuis callback");
   /* done ! */
   status |= (1 << HAVE_ACCEL);
   status |= (1 << HAVE_NEWACCEL);
 
   status |= (1 << HAVE_GYRO);
-  status |= (1 << HAVE_NEWGYRO);
 
 #ifdef MPU_ENABLE_INT_PIN
   /* decrease FiFo counter */
@@ -382,7 +352,6 @@ void TWScheduler::imuHaveFifoDataCallback(void)
 #ifdef MPU_ENABLE_INT_PIN
 void IRAM_ATTR TWScheduler::imuIntPinInterrupt(void)
 {
-
   BaseType_t xHigherPriorityTaskWokenT = 0;
   xSemaphoreTakeFromISR(imuIntCountMutex, &xHigherPriorityTaskWokenT);
 
@@ -398,25 +367,21 @@ void IRAM_ATTR TWScheduler::imuIntPinInterrupt(void)
 
 bool TWScheduler::haveAccel(void)
 {
-
   return bisset(HAVE_ACCEL);
 }
 
 bool TWScheduler::haveNewAccel(void)
 {
-
   return bisset(HAVE_NEWACCEL);
 }
 
 bool TWScheduler::resetNewAccel(void)
 {
-
   return bunset(HAVE_NEWACCEL);
 }
 
 void TWScheduler::getRawAccel(int16_t *rawAccel, int32_t *quat)
 {
-
   /***************/
   /* check accel */
   /***************/
@@ -460,7 +425,6 @@ void TWScheduler::getRawAccel(int16_t *rawAccel, int32_t *quat)
 
 double TWScheduler::getAccel(double *vertVector)
 {
-
   /*****************/
   /* get raw accel */
   /*****************/
@@ -487,25 +451,11 @@ double TWScheduler::getAccel(double *vertVector)
 
 bool TWScheduler::haveGyro(void)
 {
-
   return bisset(HAVE_GYRO);
-}
-
-bool TWScheduler::haveNewGyro(void)
-{
-
-  return bisset(HAVE_NEWGYRO);
-}
-
-bool TWScheduler::resetNewGyro(void)
-{
-
-  return bunset(HAVE_NEWGYRO);
 }
 
 void TWScheduler::getRawGyro(int16_t *rawGyro, int32_t *quat)
 {
-
   /***************/
   /* check gyro */
   /***************/
@@ -530,7 +480,6 @@ void TWScheduler::getRawGyro(int16_t *rawGyro, int32_t *quat)
 
 void TWScheduler::getRawAccelGyro(int16_t *rawAccel, int16_t *rawGyro, int32_t *quat)
 {
-
   /***************/
   /* check accel */
   /***************/
@@ -555,7 +504,6 @@ void TWScheduler::getRawAccelGyro(int16_t *rawAccel, int16_t *rawGyro, int32_t *
 
 void TWScheduler::getAccelGyro(double *vertVector, double *gyroVector)
 {
-
   /*****************/
   /* get raw accel */
   /*****************/
@@ -592,7 +540,6 @@ void TWScheduler::getAccelGyro(double *vertVector, double *gyroVector)
   }
 }
 
-#ifdef AK89xx_SECONDARY
 /************/
 /* Mag part */
 /************/
@@ -611,7 +558,6 @@ const uint8_t magReadData[] PROGMEM = {INTTW_ACTION(INV_HW_ADDR, INTTW_WRITE),
 
 void TWScheduler::magInterrupt(void)
 {
-
   /* check for available measures */
   intTW.setRxBuffer((uint8_t *)checkOutput);
   intTW.start((uint8_t *)magReadStatus, sizeof(magReadStatus), INTTW_USE_PROGMEM | INTTW_KEEP_BUS, magCheckStatusCallback);
@@ -619,7 +565,6 @@ void TWScheduler::magInterrupt(void)
 
 void TWScheduler::magCheckStatusCallback(void)
 {
-
   /* check if new measure */
   if (checkOutput[0] & 0x40)
   {
@@ -633,7 +578,6 @@ void TWScheduler::magCheckStatusCallback(void)
   }
   else
   {
-
     /* stop TW communication */
     intTW.stop();
   }
@@ -641,20 +585,17 @@ void TWScheduler::magCheckStatusCallback(void)
 
 void TWScheduler::magHaveDataCallback(void)
 {
-
   /* done ! */
   status |= (1 << HAVE_MAG);
 }
 
 bool TWScheduler::haveMag(void)
 {
-
   return bisset(HAVE_MAG);
 }
 
 void TWScheduler::getRawMag(int16_t *rawMag)
 {
-
   /*************/
   /* check mag */
   /*************/
@@ -694,7 +635,6 @@ void TWScheduler::getRawMag(int16_t *rawMag)
 
 void TWScheduler::getNorthVector(double *vertVector, double *northVector)
 {
-
   /* get raw mag */
   int16_t rawMag[3];
   getRawMag(rawMag);
@@ -716,7 +656,6 @@ void TWScheduler::getNorthVector(double *vertVector, double *northVector)
 
 void TWScheduler::getNorthVector2(double *vertVector, double *gyroVector, double *northVector)
 {
-
   /* get raw mag */
   int16_t rawMag[3];
   getRawMag(rawMag);
@@ -725,9 +664,6 @@ void TWScheduler::getNorthVector2(double *vertVector, double *gyroVector, double
   vertaccel.computeNorthVector2(vertVector, gyroVector, rawMag, northVector);
 }
 
-#endif //AK89xx_SECONDARY
-#endif //HAVE_ACCELEROMETER
-
 /*---------------------*/
 /*                     */
 /*      Scheduler      */
@@ -735,7 +671,6 @@ void TWScheduler::getNorthVector2(double *vertVector, double *gyroVector, double
 /*---------------------*/
 void TWScheduler::init(void)
 {
-
   /* init the devices */
   /* and mutexes      */
 
@@ -743,15 +678,12 @@ void TWScheduler::init(void)
   ms5611Mutex = xSemaphoreCreateBinary();
   xSemaphoreGive(ms5611Mutex);
 
-#ifdef HAVE_ACCELEROMETER
   vertaccel.init();
   imuMutex = xSemaphoreCreateBinary();
   xSemaphoreGive(imuMutex);
-#ifdef AK89xx_SECONDARY
+
   magMutex = xSemaphoreCreateBinary();
   xSemaphoreGive(magMutex);
-#endif //AK89xx_SECONDARY
-#endif //HAVE_ACCELEROMETER
 
 #ifdef MPU_ENABLE_INT_PIN
   /* init INT pin */
@@ -796,10 +728,8 @@ void TWScheduler::disableAcquisition()
 
 void TWScheduler::interruptScheduler(void *param)
 {
-
   while (true)
   {
-
     /* wait */
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
 
@@ -810,7 +740,6 @@ void TWScheduler::interruptScheduler(void *param)
 
 void IRAM_ATTR TWScheduler::timerCallback(void)
 {
-
   /* just wake scheduler */
   BaseType_t xHigherPriorityTaskWoken = 0;
   xTaskNotifyFromISR(schedulerTaskHandler, 0, eNoAction, &xHigherPriorityTaskWoken);
@@ -820,7 +749,6 @@ void IRAM_ATTR TWScheduler::timerCallback(void)
 
 void TWScheduler::mainInterrupt(void)
 {
-
   /* launch interrupts */
   if (ms5611Count == 0)
   {
@@ -828,28 +756,21 @@ void TWScheduler::mainInterrupt(void)
     ms5611Count = TWO_WIRE_SCHEDULER_MS5611_PERIOD;
   }
 
-#ifdef HAVE_ACCELEROMETER
   if (imuCount == 0)
   {
     imuInterrupt();
     imuCount = TWO_WIRE_SCHEDULER_IMU_PERIOD;
   }
-#ifdef AK89xx_SECONDARY
+
   if (magCount == 0)
   {
     magInterrupt();
     magCount = TWO_WIRE_SCHEDULER_MAG_PERIOD;
   }
-#endif //AK89xx_SECONDARY
-#endif //HAVE_ACCELEROMETER
 
   /* decrease counters */
   ms5611Count--;
 
-#ifdef HAVE_ACCELEROMETER
   imuCount--;
-#ifdef AK89xx_SECONDARY
   magCount--;
-#endif //AK89xx_SECONDARY
-#endif //HAVE_ACCELEROMETER
 }

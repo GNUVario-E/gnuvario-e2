@@ -20,9 +20,6 @@ void TextWidget::addToBuffer(GxEPD2_GFX &_display)
 
         int16_t tbx, tby;
         uint16_t tbw, tbh;
-        Serial.println("addToBuffer");
-        Serial.print("isText:");
-        Serial.println(isText);
 
         bool isTitle = true;
         uint8_t marginTitle = 0;
@@ -107,7 +104,6 @@ void TextWidget::initAutoTitleFromIndex()
     // le titre
     if (TITLE_NAME_INDEX != 99)
     {
-        Serial.println(varioLanguage->getText(TITLE_NAME_INDEX));
         setTitle(varioLanguage->getText(TITLE_NAME_INDEX));
     }
     else
@@ -137,8 +133,6 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
     // si le dernier affichage date de plus longtemps que le temps de clignotement, on doit raffraichir
     if ((millis() - lastDisplayTime) > (blinkFreq * 1000))
     {
-        Serial.println("refresh needed");
-        Serial.println(lastDisplayTime);
         return true;
     }
 

@@ -104,9 +104,7 @@ VertaccelSettings Vertaccel::readEEPROMSettings(void)
   VertaccelSettings eepromSettings;
   readGyroCalibration(eepromSettings.gyroCal);
   readAccelCalibration(eepromSettings.accelCal);
-#ifdef AK89xx_SECONDARY
   readMagCalibration(eepromSettings.magCal);
-#endif // AK89xx_SECONDARY
 
   return eepromSettings;
 }
@@ -135,7 +133,6 @@ void Vertaccel::readAccelCalibration(VertaccelCalibration &accelCal)
   readEEPROMValues(VERTACCEL_ACCEL_CAL_EEPROM_ADDR, VERTACCEL_ACCEL_CAL_EEPROM_TAG, sizeof(VertaccelCalibration), (uint8_t *)(&accelCal));
 }
 
-#ifdef AK89xx_SECONDARY
 void Vertaccel::saveMagCalibration(const VertaccelCalibration &magCal)
 {
 
@@ -147,7 +144,6 @@ void Vertaccel::readMagCalibration(VertaccelCalibration &magCal)
 
   readEEPROMValues(VERTACCEL_MAG_CAL_EEPROM_ADDR, VERTACCEL_MAG_CAL_EEPROM_TAG, sizeof(VertaccelCalibration), (uint8_t *)(&magCal));
 }
-#endif // AK89xx_SECONDARY
 #endif // VERTACCEL_ENABLE_EEPROM
 
 /***************/
@@ -274,7 +270,6 @@ void Vertaccel::computeGyro(int16_t *imuGyro, int32_t *imuQuat, double *gyroVect
 {
 }
 
-#ifdef AK89xx_SECONDARY
 void Vertaccel::computeNorthVector(double *vertVector, int16_t *mag, double *northVector)
 {
 
@@ -377,8 +372,6 @@ void Vertaccel::computeNorthVector2(double *vertVector, double *gyroVector, int1
   northVector[1] = (vertVector[0] * vertVector[1] / vertVector[2]) * n[0] + (1 + vertVector[1] * vertVector[1] / vertVector[2]) * n[1] - vertVector[1] * n[2];
 }
 
-#endif
-
 /* direct access to sensors */
 uint8_t Vertaccel::readRawAccel(int16_t *accel, int32_t *quat)
 {
@@ -419,7 +412,6 @@ uint8_t Vertaccel::readRawSensor(int16_t *gyro, int16_t *accel, int32_t *quat)
   return haveValue;
 }
 
-#ifdef AK89xx_SECONDARY
 uint8_t Vertaccel::readRawMag(int16_t *mag)
 {
 
@@ -437,4 +429,3 @@ uint8_t Vertaccel::readRawMag(int16_t *mag)
 
   return haveValue;
 }
-#endif // AK89xx_SECONDARY
