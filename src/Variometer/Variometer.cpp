@@ -14,7 +14,7 @@ void Variometer::init()
 {
     varioImu->init();
 
-    //ici la loop du vario
+    // ici la loop du vario
     double alti;
     double altiFiltered = 0;
     double temperature;
@@ -33,7 +33,7 @@ void Variometer::init()
             Serial.print("velocity:");
             Serial.println(velocity);
         }
-        vTaskDelay(pdMS_TO_TICKS(10));
+        vTaskDelay(pdMS_TO_TICKS(100));
 
         //           if( twScheduler.havePressure() && twScheduler.haveAccel() ) {
         //     kalmanvert.update( twScheduler.getAlti(),

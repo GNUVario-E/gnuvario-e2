@@ -25,7 +25,7 @@ void VarioImu::init()
 
     while (!twScheduler.havePressure())
     {
-        //attente pression
+        // attente pression
     }
 
     /* init kalman filter with 0.0 accel */
@@ -64,6 +64,10 @@ bool VarioImu::updateData(void)
                            millis());
 
         return true;
+    }
+    else
+    {
+        Serial.println("Ni pression ni alti");
     }
     // else if (twScheduler.haveNewAccel())
     // {
