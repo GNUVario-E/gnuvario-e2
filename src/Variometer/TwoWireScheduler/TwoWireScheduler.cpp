@@ -174,7 +174,7 @@ void TWScheduler::errorRelaunchCallback(void)
 
 void TWScheduler::ms5611OutputCallback(void)
 {
-  Serial.println("Nouvelle pression depuis callback");
+  // Serial.println("Nouvelle pression depuis callback");
   /* done ! */
   status |= (1 << PRESS_READ) | (1 << HAVE_PRESSURE);
 }
@@ -334,7 +334,7 @@ void TWScheduler::imuReadFifoData(void)
 
 void TWScheduler::imuHaveFifoDataCallback(void)
 {
-  Serial.println("Nouvelle accélération depuis callback");
+  // Serial.println("Nouvelle accélération depuis callback");
   /* done ! */
   status |= (1 << HAVE_ACCEL);
   status |= (1 << HAVE_NEWACCEL);
