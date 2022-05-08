@@ -145,7 +145,7 @@ void VarioDisplay::startTaskBuffer(void *parm)
 void VarioDisplay::bufferTask()
 {
     bool firstRun = true;
-    uint8_t nbToggle = 0;
+    uint8_t nbToggle = 0; 
     uint8_t tabToggle[10][2];
     while (true)
     {
@@ -203,6 +203,7 @@ void VarioDisplay::bufferTask()
                 notifyTask = false; // task will be notified at the end of the screen refresh
             }
         }
+
         if (firstRun)
         {
             // toggle to next widget if necessary
@@ -219,7 +220,7 @@ void VarioDisplay::bufferTask()
             }
             firstRun = false;
         }
-        vTaskDelay(pdMS_TO_TICKS(50));
+        vTaskDelay(pdMS_TO_TICKS(100));
         if (notifyTask)
         {
             if (VarioDisplay::bufferTaskHandler != NULL)

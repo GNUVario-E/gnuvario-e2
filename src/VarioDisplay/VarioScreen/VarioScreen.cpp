@@ -96,6 +96,8 @@ bool VarioScreen::isRefreshNeeded(uint32_t lastDisplayTime)
     {
         if (tabWidgets[i]->getIsActif() && tabWidgets[i]->isRefreshNeeded(lastDisplayTime))
         {
+            // on marque comme modifié pour la prochaine boucle de  bufferTask de VarioDisplay
+            tabWidgets[i]->setForceRefresh();
             return true;
         }
     }

@@ -3,6 +3,8 @@
 #include "VarioDebug/VarioDebug.h"
 #include "event.h"
 
+#define BEEPER_TASK_PRIORITY 10
+
 VarioBeeper::VarioBeeper()
 {
 }
@@ -85,7 +87,7 @@ void VarioBeeper::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskVarioBeeper started");
-    xTaskCreate(this->startTaskImpl, "TaskVarioBeeper", 1000, this, 10, &_taskVarioBeeperHandle);
+    xTaskCreate(this->startTaskImpl, "TaskVarioBeeper", 1000, this, BEEPER_TASK_PRIORITY, &_taskVarioBeeperHandle);
 }
 
 void VarioBeeper::startTaskImpl(void *parm)
