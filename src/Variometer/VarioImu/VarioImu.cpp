@@ -22,10 +22,14 @@ void VarioImu::init()
 {
     intTW.begin();
     twScheduler.init();
+}
 
+void VarioImu::postInit()
+{
     while (!twScheduler.havePressure())
     {
         // attente pression
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 
     /* init kalman filter with 0.0 accel */
@@ -61,12 +65,16 @@ bool VarioImu::updateData(void)
     }
     if (twScheduler.havePressure() && twScheduler.haveAccel())
     {
+        compteurAccel = 0;
         double temp;
         double alti;
         double accel;
         twScheduler.resetNewAccel();
         twScheduler.getTempAlti(temp, alti);
         accel = twScheduler.getAccel(NULL);
+
+        fc.vario.alti = round(alti);
+
         Serial.print("altitude: ");
         Serial.println(alti);
 
@@ -76,27 +84,29 @@ bool VarioImu::updateData(void)
         Serial.print("temp: ");
         Serial.println(temp);
 
-        // kalmanvert->update(twScheduler.getAlti(),
-        //                    twScheduler.getAccel(NULL),
-        //                    millis());
+        kalmanvert->update(twScheduler.getAlti(),
+                           twScheduler.getAccel(NULL),
+                           millis());
 
         return true;
+    }
+
+    else if (twScheduler.haveNewAccel())
+    {
+        Serial.println("haveNewAccel");
+        compteurAccel++;
+        twScheduler.resetNewAccel();
+        if (compteurAccel > 100)
+        {
+            compteurAccel = 0;
+            twScheduler.resetNewAccel();
+        }
+        return false;
     }
     else
     {
         Serial.println("Ni pression et/ou ni alti");
     }
-    // else if (twScheduler.haveNewAccel())
-    // {
-    //     compteurAccel++;
-    //     twScheduler.resetNewAccel();
-    //     if (compteurAccel > 100)
-    //     {
-    //         compteurAccel = 0;
-    //         twScheduler.resetNewAccel();
-    //     }
-    //     return false;
-    // }
     return false;
 }
 
@@ -124,7 +134,7 @@ double VarioImu::firstAlti()
             delay(1000);
 
             firstAlti = twScheduler.getAlti();
-
+            fc.vario.alti = firstAlti;
             if (!isnan(firstAlti))
                 break;
         }

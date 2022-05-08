@@ -161,10 +161,10 @@ private:
 
   static uint8_t volatile checkOutput[2];
   static uint8_t volatile imuOutput[LIGHT_INVENSENSE_COMPRESSED_DMP_PAQUET_LENGTH]; // imu dmp fifo output
-#ifdef MPU_ENABLE_INT_PIN
+
   static uint8_t volatile imuIntCount;
   static SemaphoreHandle_t imuIntCountMutex;
-#endif // MPU_ENABLE_INT_PIN
+
   static uint8_t volatile imuCount;
   static SemaphoreHandle_t imuMutex;
   static uint8_t volatile magOutput[8]; // magnetometer output
@@ -183,9 +183,7 @@ private:
   static void imuCheckFifoCountCallBack(void);
   static void imuReadFifoData(void);
   static void imuHaveFifoDataCallback(void);
-#ifdef MPU_ENABLE_INT_PIN
   static void imuIntPinInterrupt(void);
-#endif // MPU_ENABLE_INT_PIN
   static void magInterrupt(void);
   static void magCheckStatusCallback(void);
   static void magHaveDataCallback(void);

@@ -224,6 +224,7 @@ const uint8_t compressedFirmware[] PROGMEM = {
     0x00, 0x00, 0xAC, 0x8C, 0x9C, 0x0C, 0x30, 0xAC, 0xDE, 0xD0, 0xDE, 0xFF, 0xD8, 0x8C, 0x9C, 0xAC,
     0xD0, 0x10, 0xAC, 0xDE, 0x80, 0x92, 0xA2, 0xF2, 0x4C, 0x82, 0xA8, 0xF1, 0xCA, 0xF2, 0x35, 0xF1,
     0x96, 0x88, 0xA6, 0xD9, 0x00, 0x00, 0xD8, 0xF1, 0xFF};
+
 #define COMPRESSED_DMP_CODE_SIZE 2665
 #define COMPRESSED_DMP_LPF_CFG (0x2)
 #define COMPRESSED_DMP_RATE_DIV_CFG (0x4)
@@ -633,22 +634,16 @@ void enableDMP(void)
 
   /* enable DMP FIFO */
   data = BIT_DMP_EN |
-#ifdef AK89xx_SECONDARY
          BIT_AUX_IF_EN |
-#endif
          BIT_FIFO_EN;
+
   intTW.writeBytes(INV_HW_ADDR, INV_REG_USER_CTRL, 1, &data);
 
-#ifdef MPU_ENABLE_INT_PIN
   /* enable DMP FiFo INT pin */
   data = BIT_ACTL;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_INT_PIN_CFG, 1, &data);
   data = BIT_DMP_INT_EN;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_INT_ENABLE, 1, &data);
-#else
-  data = 0;
-  intTW.writeBytes(INV_HW_ADDR, INV_REG_INT_ENABLE, 1, &data);
-#endif // MPU_ENABLE_INT_PIN
 
   /* reset STD FIFO */
   data = 0;
@@ -664,7 +659,6 @@ int fastFIFOReset(void)
   return 0;
 }
 
-#ifdef AK89xx_SECONDARY
 static uint8_t magSensAdj[3];
 
 void readMagSensAdj(void)
@@ -701,7 +695,6 @@ void readMagSensAdj(void)
   /* enable DMP */
   enableDMP();
 }
-#endif
 
 void saveInt32(int32_t value, uint8_t *data)
 {
@@ -905,13 +898,11 @@ int fastMPUInit(bool startMPU)
   data[0] = 0x00;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_PWR_MGMT_1, 1, data);
 
-#ifdef MPU6500
   /* MPU6500 shares 4kB of memory between the DMP and the FIFO. Since the
    * first 3kB are needed by the DMP, we'll use the last 1kB for the FIFO.
    */
   data[0] = BIT_FIFO_SIZE_1024;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_ACCEL_CFG2, 1, data);
-#endif
 
   /****************/
   /* set settings */
@@ -929,10 +920,8 @@ int fastMPUInit(bool startMPU)
   data[0] = COMPRESSED_DMP_LPF_CFG;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_LPF, 1, data);
 
-#ifdef MPU6500 // MPU6500 accel/gyro dlpf separately
   data[0] = BIT_FIFO_SIZE_1024 | data[0];
   intTW.writeBytes(INV_HW_ADDR, INV_REG_ACCEL_CFG2, 1, data);
-#endif
 
   /********************/
   /* power on sensors */
@@ -955,7 +944,6 @@ int fastMPUInit(bool startMPU)
   data[1] = INV_DMP_START_ADDRESS & 0xFF;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_PRGM_START_H, 2, data);
 
-#ifdef AK89xx_SECONDARY
   /*****************/
   /* setup compass */
   /*****************/
@@ -995,15 +983,11 @@ int fastMPUInit(bool startMPU)
   // data[0] = 0x03;
   data[0] = 0x11;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_I2C_DELAY_CTRL, 1, data);
-#ifdef MPU9150
-  data[0] = BIT_I2C_MST_VDDIO;
-  intTW.writeBytes(INV_HW_ADDR, INV_REG_YG_OFFS_TC, 1, data);
-#endif // MPU9150
+
   /*
   data[0] = (1000/(1+COMPRESSED_DMP_RATE_DIV_CFG)) / LIGHT_INVENSENSE_COMPASS_SAMPLE_RATE - 1;
   intTW.writeBytes(INV_HW_ADDR, INV_REG_S4_CTRL, 1, data);
   */
-#endif
 
   /**************/
   /* enable dmp */
@@ -1026,12 +1010,7 @@ int fastMPUInit(bool startMPU)
 
 void fastMPUStart(void)
 {
-
-#ifdef AK89xx_SECONDARY
   readMagSensAdj(); // also reset FIFO
-#else
-  fastFIFOReset();
-#endif
 }
 
 /* tap call back */
@@ -1206,7 +1185,6 @@ int fastMPUReadFIFO(int16_t *gyro, int16_t *accel, int32_t *quat)
   return 0;
 }
 
-#ifdef AK89xx_SECONDARY
 bool fastMPUMagReady(void)
 {
 
@@ -1276,5 +1254,3 @@ int fastMPUReadMag(int16_t *mag)
 
   return state;
 }
-
-#endif

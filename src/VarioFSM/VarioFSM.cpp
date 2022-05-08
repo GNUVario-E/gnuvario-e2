@@ -1,11 +1,16 @@
 #include "VarioFSM/VarioFSM.h"
 #include "VarioButton/VarioButton.h"
 
+#define FSM_TASK_PRIORITY 10
+
 void VarioFSM::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskFSM started");
-    xTaskCreate(this->startTaskImpl, "TaskFSM", 2000, this, 10, &_taskFSMHandle);
+
+    xTaskCreate(this->startTaskImpl, "TaskFSM", 2000, this, FSM_TASK_PRIORITY, &_taskFSMHandle);
+    vTaskDelay(delayT50);
+    xTaskNotify(VarioFSM::_taskFSMHandle, 0, eNoAction);
 }
 
 void VarioFSM::startTaskImpl(void *parm)
@@ -19,7 +24,7 @@ void VarioFSM::task()
 
     while (1)
     {
-        run();
+        fsm.run_machine();
 
         // give time to other tasks
         vTaskDelay(delayT50);
@@ -31,7 +36,7 @@ void VarioFSM::initfsm(VarioDisplay *_varioDisplay)
     varioDisplay = _varioDisplay;
 
     // definition des transitions
-    fsm.add_timed_transition(&_state_boot, &_state_statistic_init, 4000, nullptr);   // bascule en mode vario si pas d'appui sur le bouton pendant 5s
+    fsm.add_timed_transition(&_state_boot, &_state_statistic_init, 3000, nullptr);   // bascule en mode vario si pas d'appui sur le bouton pendant 3s
     fsm.add_timed_transition(&_state_statistic_init, &_state_vario1, 3000, nullptr); // bascule en mode vario apres les stats initiales
 
     fsm.add_transition(&_state_boot, &_state_calibration, BTN_SHORT_C, nullptr);  // bascule en mode calibration si appui sur bouton C pendant boot
@@ -267,9 +272,4 @@ void VarioFSM::onSignalReceived(uint8_t _val)
     {
         fsm.trigger(_val);
     }
-}
-
-void VarioFSM::run()
-{
-    fsm.run_machine();
 }

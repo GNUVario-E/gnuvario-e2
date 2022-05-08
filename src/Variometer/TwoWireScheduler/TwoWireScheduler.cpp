@@ -36,13 +36,11 @@
 #define TEMP_READ 0
 #define PRESS_READ 1
 #define HAVE_PRESSURE 2
-#define HAVE_ACCEL 4
-#define HAVE_MAG 6
-#define HAVE_NEWACCEL 8
-#define HAVE_GYRO 16
-#ifdef MPU_ENABLE_INT_PIN
+#define HAVE_ACCEL 3
+#define HAVE_MAG 4
+#define HAVE_NEWACCEL 5
+#define HAVE_GYRO 6
 #define MPU_FIFO_EMPTIED 7
-#endif // MPU_ENABLE_INT_PIN
 
 #define bset(bit) status |= (1 << bit)
 #define bunset(bit) status &= ~(1 << bit)
@@ -66,10 +64,10 @@ double TWScheduler::ms5611SavePressure;
 
 uint8_t volatile TWScheduler::checkOutput[2];
 uint8_t volatile TWScheduler::imuOutput[LIGHT_INVENSENSE_COMPRESSED_DMP_PAQUET_LENGTH]; // imu dmp fifo output
-#ifdef MPU_ENABLE_INT_PIN
+
 uint8_t volatile TWScheduler::imuIntCount = 0;
 SemaphoreHandle_t TWScheduler::imuIntCountMutex;
-#endif // MPU_ENABLE_INT_PIN
+
 uint8_t volatile TWScheduler::imuCount = TWO_WIRE_SCHEDULER_IMU_SHIFT;
 SemaphoreHandle_t TWScheduler::imuMutex;
 
@@ -167,14 +165,12 @@ void TWScheduler::errorRelaunch(void)
 
 void TWScheduler::errorRelaunchCallback(void)
 {
-   Serial.println("errorRelaunchCallback");
   /* conv D1 success */
   bset(PRESS_READ);
 }
 
 void TWScheduler::ms5611OutputCallback(void)
 {
-  // Serial.println("Nouvelle pression depuis callback");
   /* done ! */
   status |= (1 << PRESS_READ) | (1 << HAVE_PRESSURE);
 }
@@ -202,10 +198,7 @@ double TWScheduler::getAlti(void)
   ms5611.computeMeasures(&ms5611Values[0], &ms5611Values[3], temperature, pressure);
 
   ms5611SavePressure = pressure;
-  Serial.print("pressure");
-  Serial.println(pressure);
-  Serial.print("temperature");
-  Serial.println(temperature);
+
   /* get corresponding alti */
   double alti = ms5611.computeAltitude(pressure);
 
@@ -266,8 +259,6 @@ const uint8_t imuReadFifo[] PROGMEM = {INTTW_ACTION(INV_HW_ADDR, INTTW_WRITE),
 
 void TWScheduler::imuInterrupt(void)
 {
-
-#ifdef MPU_ENABLE_INT_PIN
   /* once the FiFo is emptied, we use interrupts */
   if (bisset(MPU_FIFO_EMPTIED))
   {
@@ -284,11 +275,6 @@ void TWScheduler::imuInterrupt(void)
     intTW.setRxBuffer((uint8_t *)checkOutput);
     intTW.start((uint8_t *)imuReadFifoCount, sizeof(imuReadFifoCount), INTTW_USE_PROGMEM | INTTW_KEEP_BUS, imuCheckFifoCountCallBack);
   }
-#else
-  /* check FiFo for available measures */
-  intTW.setRxBuffer((uint8_t *)checkOutput);
-  intTW.start((uint8_t *)imuReadFifoCount, sizeof(imuReadFifoCount), INTTW_USE_PROGMEM | INTTW_KEEP_BUS, imuCheckFifoCountCallBack);
-#endif // MPU_ENABLE_INT_PIN
 }
 
 void TWScheduler::imuCheckFifoCountCallBack(void)
@@ -299,9 +285,7 @@ void TWScheduler::imuCheckFifoCountCallBack(void)
 
   /* launch FiFo read if OK */
   int8_t fifoState = fastMPUHaveFIFOPaquet(fifoCount);
-  
 
-#ifdef MPU_ENABLE_INT_PIN
   /* check for empty fifo */
   if (fifoState == 0)
   {
@@ -310,7 +294,7 @@ void TWScheduler::imuCheckFifoCountCallBack(void)
     imuIntCount = 0; // start using the interrupt
     xSemaphoreGive(imuIntCountMutex);
   }
-#endif // MPU_ENABLE_INT_PIN
+
   if (fifoState > 0)
   {
     imuReadFifoData();
@@ -334,22 +318,18 @@ void TWScheduler::imuReadFifoData(void)
 
 void TWScheduler::imuHaveFifoDataCallback(void)
 {
-  // Serial.println("Nouvelle accélération depuis callback");
   /* done ! */
   status |= (1 << HAVE_ACCEL);
   status |= (1 << HAVE_NEWACCEL);
 
   status |= (1 << HAVE_GYRO);
 
-#ifdef MPU_ENABLE_INT_PIN
   /* decrease FiFo counter */
   xSemaphoreTake(imuIntCountMutex, portMAX_DELAY);
   imuIntCount--;
   xSemaphoreGive(imuIntCountMutex);
-#endif
 }
 
-#ifdef MPU_ENABLE_INT_PIN
 void IRAM_ATTR TWScheduler::imuIntPinInterrupt(void)
 {
   BaseType_t xHigherPriorityTaskWokenT = 0;
@@ -363,7 +343,6 @@ void IRAM_ATTR TWScheduler::imuIntPinInterrupt(void)
   if (xHigherPriorityTaskWokenT == pdTRUE || xHigherPriorityTaskWokenG == pdTRUE)
     portYIELD_FROM_ISR();
 }
-#endif
 
 bool TWScheduler::haveAccel(void)
 {
@@ -685,13 +664,11 @@ void TWScheduler::init(void)
   magMutex = xSemaphoreCreateBinary();
   xSemaphoreGive(magMutex);
 
-#ifdef MPU_ENABLE_INT_PIN
   /* init INT pin */
   imuIntCountMutex = xSemaphoreCreateBinary();
   xSemaphoreGive(imuIntCountMutex);
   pinMode(VARIO_MPU_INT_PIN, INPUT);
   attachInterrupt(VARIO_MPU_INT_PIN, imuIntPinInterrupt, FALLING);
-#endif
 
   /* create scheduler task */
   VARIO_PROG_DEBUG_PRINTLN("Task two wire scheduler started");
@@ -711,9 +688,7 @@ void TWScheduler::disableAcquisition()
   vTaskSuspend(schedulerTaskHandler);
   timerAlarmDisable(timer);
 
-#ifdef MPU_ENABLE_INT_PIN
   detachInterrupt(VARIO_MPU_INT_PIN);
-#endif
 
   intTW.release();
 
