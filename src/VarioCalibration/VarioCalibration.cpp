@@ -35,13 +35,15 @@
 /* orientation change detection */
 #define NEW_MEASURE_MINIMAL_DEVIATION_COEFF 20.0
 
+#define CALIBRATION_TASK_PRIORITY 9
+
 VarioCalibration Calibration;
 
 void VarioCalibration::startTask()
 {
 	// task creation
 	VARIO_PROG_DEBUG_PRINTLN("Task Calib started");
-	xTaskCreate(this->startTaskImpl, "TaskCalib", 4000, this, 10, &_taskCalibHandle);
+	xTaskCreate(this->startTaskImpl, "TaskCalib", 4000, this, CALIBRATION_TASK_PRIORITY, &_taskCalibHandle);
 }
 
 void VarioCalibration::startTaskImpl(void *parm)
