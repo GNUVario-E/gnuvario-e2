@@ -4,14 +4,14 @@ bool AltWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
 
     // title = variol
-    if (fc.alt != oldAlt)
+    if (fc.vario.alti != oldAlt)
     {
         // sprintf(localText, "Alt : %d", fc.alt);
-        sprintf(localText, "Cap : %d", fc.power.capacite);
+        sprintf(localText, "%d m", fc.vario.alti);
 
         setText(localText);
-        oldAlt = fc.alt;
-        // sprintf(text, "Alt : %d", 10);
+        oldAlt = fc.vario.alti;
+
         return true;
     }
 

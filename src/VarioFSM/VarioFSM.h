@@ -161,6 +161,5 @@ public:
 
     void initfsm(VarioDisplay *_varioDisplay);
     void onSignalReceived(uint8_t _val);
-    void run();
     void startTask();
 };

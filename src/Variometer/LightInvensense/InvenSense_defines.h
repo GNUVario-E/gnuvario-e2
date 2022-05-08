@@ -23,10 +23,6 @@
 
 #include "HardwareConfig/HardwareConfig.h"
 
-#define MPU6500
-
-#define AK89xx_SECONDARY
-
 /* Filter configurations. */
 #define INV_FILTER_256HZ_NOLPF2 0
 #define INV_FILTER_188HZ 1
@@ -103,7 +99,6 @@
 #define SUPPORTS_AK89xx_HIGH_SENS (0x10)
 #define AK89xx_FSR (4915)
 
-#ifdef AK89xx_SECONDARY
 #define AKM_REG_WHOAMI (0x00)
 
 #define AKM_REG_ST1 (0x02)
@@ -129,7 +124,6 @@
 #define AKM_MODE_SELF_TEST (0x08 | SUPPORTS_AK89xx_HIGH_SENS)
 
 #define AKM_WHOAMI (0x48)
-#endif
 
 /* GYRO REGS */
 #define INV_REG_WHO_AM_I (0x75)
@@ -207,9 +201,7 @@
 #define INV_TEST_SAMPLE_WAIT_MS (10)
 
 #define MAX_PACKET_LENGTH (12)
-#ifdef MPU6500
 #define HWST_MAX_PACKET_LENGTH (512)
-#endif
 
 #define MAX_COMPASS_SAMPLE_RATE (100)
 

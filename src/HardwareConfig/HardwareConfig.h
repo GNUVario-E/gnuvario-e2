@@ -26,7 +26,5 @@
 /* Set the freq */
 #define VARIO_TW_FREQ 400000UL
 
-#define MPU9250
 #define MPU_STATIC_ADDRESS 0x68
 #define MS5611_STATIC_ADDRESS 0x77
-#define MPU_ENABLE_INT_PIN

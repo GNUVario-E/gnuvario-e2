@@ -21,8 +21,8 @@ private:
     uint8_t volume = 0;
     uint8_t oldVolume = 0;
 
-    bool isMute = false;
-    bool oldIsMute = false;
+    bool isMute = true;
+    bool oldIsMute = true;
 
 public:
     ToolbarWidget(VarioLanguage *_variolanguage, uint8_t altWidgetIndex, int16_t topx, int16_t topy, int16_t width, int16_t height) : TextWidget(_variolanguage, altWidgetIndex, topx, topy, width, height)

@@ -334,17 +334,17 @@ void Vertaccel::computeNorthVector2(double *vertVector, double *gyroVector, int1
   int64_t calibratedMag;
   calibratedMag = ((int64_t)mag[0]) << varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16();
   calibratedMag -= (int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_00)->getValueInt16();
-  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE) + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
   n[0] = ((double)calibratedMag) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
 
   calibratedMag = ((int64_t)mag[1]) << varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16();
   calibratedMag -= (int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_01)->getValueInt16();
-  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE) + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
   n[1] = ((double)calibratedMag) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
 
   calibratedMag = ((int64_t)mag[2]) << varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16();
   calibratedMag -= (int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_02)->getValueInt16();
-  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE) + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
   n[2] = ((double)calibratedMag) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
 
 #else

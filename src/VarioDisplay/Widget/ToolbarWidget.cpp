@@ -10,6 +10,7 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
 
     if (isMute || (volume == 0))
     {
+
         _display.drawInvertedBitmap(topx, topy, volume0icons, imgWidth, imgHeight, GxEPD_BLACK);
     }
     else if (volume < 5)
@@ -36,18 +37,6 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
 
     _display.setCursor(topx + (imgWidth)*3 + (imgWidth / 2 - tbw / 2), topy + 28 + 6);
     _display.print(batPct);
-
-    // _display.drawInvertedBitmap(topx + imgWidth, topy, bat1icons, imgWidth, imgHeight, GxEPD_BLACK);
-    // _display.drawInvertedBitmap(topx + (imgWidth)*2, topy, bat2icons, imgWidth, imgHeight, GxEPD_BLACK);
-    // _display.drawInvertedBitmap(topx + (imgWidth)*3, topy, bat3icons, imgWidth, imgHeight, GxEPD_BLACK);
-
-    // _display.drawInvertedBitmap(topx, topy + imgHeight, volume0icons, imgWidth, imgHeight, GxEPD_BLACK);
-    // _display.drawInvertedBitmap(topx + imgWidth, topy + imgHeight, volume1icons, imgWidth, imgHeight, GxEPD_BLACK);
-    // _display.drawInvertedBitmap(topx + (imgWidth)*2, topy + imgHeight, volume2icons, imgWidth, imgHeight, GxEPD_BLACK);
-    // _display.drawInvertedBitmap(topx + (imgWidth)*3, topy + imgHeight, volume3icons, imgWidth, imgHeight, GxEPD_BLACK);
-
-    // _display.drawInvertedBitmap(topx, topy + imgHeight * 2, saticons, imgWidth, imgHeight, GxEPD_BLACK);
-    // _display.drawInvertedBitmap(topx + imgWidth * 2, topy + imgHeight * 2, satfixicons, imgWidth, imgHeight, GxEPD_BLACK);
 
     storeLastDiplayZone(_display, width, height);
     if (isBorder)
@@ -98,6 +87,7 @@ bool ToolbarWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         oldVolume = volume;
         hasChange = true;
     }
+
     if (oldIsMute != fc.sound.isMute)
     {
         isMute = fc.sound.isMute;

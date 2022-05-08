@@ -1,8 +1,8 @@
-#ifndef VARIO_IMU_H
-#define VARIO_IMU_H
+#pragma once
 
 class Kalmanvert;
 
+#include "FC.h"
 class VarioImu
 {
 private:
@@ -15,6 +15,7 @@ private:
 public:
     VarioImu(Kalmanvert *kalmanvert);
     void init();
+    void postInit();
     void initKalman(double firstAlti);
     bool havePressure(void);
     bool updateData();
@@ -24,4 +25,5 @@ public:
     double getAccel();
     double firstAlti();
 };
-#endif //VARIO_IMU_H
+
+extern fcdata_t fc;
