@@ -14,11 +14,15 @@ struct sound_data
     float volume;
 };
 
+struct vario_data
+{
+    int16_t alti;
+};
+
 struct fcdata_t
 {
-    int16_t alt;
     double_t speed;
-    float vario;
+    vario_data vario;
     bool isFixed;
     power_data power;
     sound_data sound;
