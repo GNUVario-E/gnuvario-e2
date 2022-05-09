@@ -19,9 +19,10 @@ VarioDataType *VarioData::getParam(const char *paramName)
     }
   }
 
-  VARIO_SDCARD_DEBUG_PRINTLN("Parameter not found");
+  VARIO_SDCARD_DEBUG_PRINT("Parameter not found");
+  VARIO_SDCARD_DEBUG_PRINTLN(paramName);
 
-  return NULL;
+  return nullptr;
 }
 
 boolean VarioData::init()
@@ -35,7 +36,7 @@ boolean VarioData::applySettingParam(const char *settingName, const char *settin
   VarioDataType *vparam;
   vparam = getParam(settingName);
 
-  if (vparam != NULL)
+  if (vparam != nullptr)
   {
     return vparam->setValue(settingValue);
   }

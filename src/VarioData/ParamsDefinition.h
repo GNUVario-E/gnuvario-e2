@@ -1,5 +1,4 @@
-#ifndef _PARAMS_DEFINITION_H
-#define _PARAMS_DEFINITION_H
+# pragma once
 
 /***************************
  *        PARAMETERS       *
@@ -96,6 +95,8 @@
 ////////////////////////////////////
 
 /* variocal */
+
+// #define VERSION "1.0"
 #define PARAM_VERTACCEL_GYRO_CAL_BIAS_00 "VERTACCEL_GYRO_CAL_BIAS_00"
 #define PARAM_VERTACCEL_GYRO_CAL_BIAS_01 "VERTACCEL_GYRO_CAL_BIAS_01"
 #define PARAM_VERTACCEL_GYRO_CAL_BIAS_02 "VERTACCEL_GYRO_CAL_BIAS_02"
@@ -227,5 +228,3 @@
 /* alti/vario objects */
 /**********************/
 #define POSITION_MEASURE_STANDARD_DEVIATION 0.1
-
-#endif //_PARAMS_DEFINITION_H
