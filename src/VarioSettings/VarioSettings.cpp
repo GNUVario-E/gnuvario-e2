@@ -65,7 +65,7 @@ boolean VarioSettings::readSDSettings(char *FileName)
             VarioTool::appendChar(settingValue, line[i]);
           }
         }
-        if (strcmp(settingName, "") != 0)
+        if (settingName[0] != 0)
         {
           varioData.applySettingParam(settingName, settingValue);
 

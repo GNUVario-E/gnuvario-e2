@@ -427,3 +427,8 @@ char *VarioDataType::trimSpace(char *str)
     *(end + 1) = '\0';
     return str;
 }
+
+uint8_t VarioDataType::getDataType()
+{
+    return dataType;
+}

@@ -1,6 +1,4 @@
-#ifndef _VARIO_DATATYPE_H
-#define _VARIO_DATATYPE_H
-
+#pragma once
 #include "Arduino.h"
 #include <ArduinoJson.h>
 
@@ -56,6 +54,8 @@ public:
     double getValueDouble();
     char *getValueChar();
 
+    uint8_t getDataType();
+
     bool setValue(const char *_value);
     bool setValue(int8_t _value);
     bool setValue(int16_t _value);
@@ -67,4 +67,3 @@ public:
 
     bool setParameterFromJsonObject(JsonObject *section, const char *key);
 };
-#endif //_VARIO_DATATYPE_H
