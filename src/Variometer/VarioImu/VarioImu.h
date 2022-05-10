@@ -10,7 +10,7 @@ private:
     double alti;
     double temp;
     double accel;
-    int8_t bearing = 0;
+    int16_t bearing = 0;
     int8_t compteurAccel = 0;
 
 public:
@@ -25,7 +25,7 @@ public:
     double getTemp();
     double getAccel();
     double firstAlti();
-   
+    int16_t getBearing(void);
 };
 
 extern fcdata_t fc;

@@ -177,3 +177,80 @@ void VarioImu::updateKalman(double mp, double ma, unsigned long timestamp)
     kalmanvert->update(mp, ma, timestamp);
 }
 
+int16_t VarioImu::getBearing(void)
+{
+
+    //     // vitesse > 5km et dernière mesure de vitesse de moins de 1.5s
+    //     if ((variometerState > VARIOMETER_STATE_CALIBRATED) && (speedAvailable || ((millis() - timeSpeedMesure) < nbMsLastMesureAcceptable)) && (currentSpeed > 5))
+    //     {
+    //         if (nmeaParser.haveBearing())
+    //         {
+
+    //             bearing = nmeaParser.getBearing();
+
+    //             gpsAvailable = true;
+    //             timeCapMesure = millis();
+
+    // #ifdef DATA_DEBUG
+    //             SerialPort.print("Compas GPS : ");
+    //             SerialPort.println(bearing);
+    // #endif // DATA_DEBUG
+    //         }
+    //     }
+
+    //     // desactive le baro GPS si pas de mesure durant 1,5sec - passe au baro magnetique
+    //     if ((gpsAvailable) && ((millis() - timeCapMesure) < nbMsLastMesureAcceptable))
+    //     {
+    //         return bearing;
+    //     }
+    //     else
+    //     {
+    //         gpsAvailable = false;
+    //     }
+
+    if (twScheduler.haveAccel() && twScheduler.haveMag())
+    {
+        double vertVector[3];
+        twScheduler.getAccel(vertVector);
+
+        // accelerometer and magnetometer data
+        float a, ax, ay, az;
+
+        ax = vertVector[0];
+        ay = vertVector[1];
+        az = vertVector[2];
+
+        // Normalize accelerometer and magnetometer data
+        a = sqrtf(ax * ax + ay * ay + az * az);
+        ax /= a;
+        ay /= a;
+        az /= a;
+        twScheduler.resetNewAccel();
+
+        double northVector[2];
+        double northVectorNorm[2];
+        twScheduler.getNorthVector(vertVector, northVector);
+
+        double norm = sqrt(northVector[0] * northVector[0] + northVector[1] * northVector[1]);
+        northVectorNorm[0] = northVector[0] / norm;
+        northVectorNorm[1] = northVector[1] / norm;
+
+        int16_t tmpcap = atan2(northVectorNorm[1], northVectorNorm[0]) * 180 / M_PI;
+        Serial.print("tmpcap: ");
+        Serial.println(tmpcap);
+        if (tmpcap < 0)
+        {
+            tmpcap = tmpcap + 360;
+        }
+        bearing = tmpcap;
+
+        Serial.print("bearing: ");
+        Serial.println(bearing);
+    }
+    else
+    {
+        bearing = -1;
+    }
+
+    return bearing;
+}

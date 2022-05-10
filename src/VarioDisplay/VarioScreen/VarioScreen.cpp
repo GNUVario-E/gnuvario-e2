@@ -70,6 +70,10 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     speedWidget->setIsActif(data.speed.isactif);
     speedWidget->setIsBorder(data.speed.isborder);
 
+    bearingWidget = new BearingWidget(_varioLanguage, data.bearing.altWidgetIndex, data.bearing.x, data.bearing.y, data.bearing.w, data.bearing.h);
+    bearingWidget->setIsActif(data.bearing.isactif);
+    bearingWidget->setIsBorder(data.bearing.isborder);
+
     tabWidgets[nb_widgets++] = logoWidget;
     tabWidgets[nb_widgets++] = textWidget1;
     tabWidgets[nb_widgets++] = textWidget2;
@@ -83,6 +87,7 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     tabWidgets[nb_widgets++] = varioWidget;
     tabWidgets[nb_widgets++] = toolbarWidget;
     tabWidgets[nb_widgets++] = speedWidget;
+    tabWidgets[nb_widgets++] = bearingWidget;
 }
 
 uint8_t VarioScreen::getNbWidgets()
@@ -167,4 +172,9 @@ ToolbarWidget *VarioScreen::getToolbarWidget()
 SpeedWidget *VarioScreen::getSpeedWidget()
 {
     return speedWidget;
+}
+
+BearingWidget *VarioScreen::getBearingWidget()
+{
+    return bearingWidget;
 }
