@@ -15,7 +15,9 @@ public:
     {
         TITLE_NAME_INDEX = TITRE_VARIO;
         initAutoTitleFromIndex();
+        setTextSize(4);
+        setMarginTextRight(16);
     }
-
+    void addToBuffer(GxEPD2_GFX &_display);
     bool isRefreshNeeded(uint32_t lastDisplayTime);
 };

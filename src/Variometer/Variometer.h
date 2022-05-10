@@ -27,5 +27,6 @@ public:
     void init();
     void startTask();
     void debug();
+ 
 };
 #endif // VARIOMETER_H

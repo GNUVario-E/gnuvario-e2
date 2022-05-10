@@ -35,6 +35,19 @@ void VarioImu::postInit()
     /* init kalman filter with 0.0 accel */
     double firstAlti = twScheduler.getAlti();
 
+    // if (isnan(firstAlti))
+    // {
+    //     for (int i = 0; i < 4; i++)
+    //     {
+    //         vTaskDelay(pdMS_TO_TICKS(500));
+
+    //         firstAlti = twScheduler.getAlti();
+
+    //         if (!isnan(firstAlti))
+    //             break;
+    //     }
+    // }
+
     Serial.print("first altitude: ");
     Serial.println(firstAlti);
 
@@ -55,25 +68,12 @@ bool VarioImu::havePressure(void)
 
 bool VarioImu::updateData(void)
 {
-    if (twScheduler.havePressure())
-    {
-        Serial.println("havePressure");
-    }
-    if (twScheduler.haveAccel())
-    {
-        Serial.println("haveAccel");
-    }
     if (twScheduler.havePressure() && twScheduler.haveAccel())
     {
         compteurAccel = 0;
-        double temp;
-        double alti;
-        double accel;
         twScheduler.resetNewAccel();
         twScheduler.getTempAlti(temp, alti);
         accel = twScheduler.getAccel(NULL);
-
-        fc.vario.alti = round(alti);
 
         Serial.print("altitude: ");
         Serial.println(alti);
@@ -84,13 +84,8 @@ bool VarioImu::updateData(void)
         Serial.print("temp: ");
         Serial.println(temp);
 
-        kalmanvert->update(twScheduler.getAlti(),
-                           twScheduler.getAccel(NULL),
-                           millis());
-
         return true;
     }
-
     else if (twScheduler.haveNewAccel())
     {
         Serial.println("haveNewAccel");
@@ -152,7 +147,6 @@ double VarioImu::firstAlti()
 
 double VarioImu::getAlti()
 {
-    alti = twScheduler.getAlti();
     return alti;
 }
 
@@ -163,7 +157,6 @@ double VarioImu::getTemp()
 
 double VarioImu::getAccel()
 {
-    accel = twScheduler.getAccel(NULL);
     return accel;
 }
 
@@ -183,3 +176,4 @@ void VarioImu::updateKalman(double mp, double ma, unsigned long timestamp)
 {
     kalmanvert->update(mp, ma, timestamp);
 }
+
