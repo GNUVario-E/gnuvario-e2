@@ -15,6 +15,7 @@ public:
     {
         TITLE_NAME_INDEX = TITRE_ALTI;
         initAutoTitleFromIndex();
+        setTextSize(4);
     }
 
     bool isRefreshNeeded(uint32_t lastDisplayTime);

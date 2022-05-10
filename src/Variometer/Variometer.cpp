@@ -18,7 +18,6 @@ void Variometer::startTaskImpl(void *parm)
     static_cast<Variometer *>(parm)->task();
 }
 
-
 void Variometer::task()
 {
     double alti;
@@ -26,6 +25,7 @@ void Variometer::task()
     double temperature;
     double accel;
     double velocity;
+    int8_t bearing;
     double calibratedAlti;
     bool lastSentence;
 
@@ -35,72 +35,41 @@ void Variometer::task()
     {
         if (varioImu->updateData())
         {
+            alti = varioImu->getAlti();
+            if (altiFiltered != 0)
+            {
+                altiFiltered = altiFiltered + COEF_ALTI_FILTERED * (alti - altiFiltered);
+            }
+            else
+            {
+                altiFiltered = alti; // first reading so set filtered to reading
+            }
+
+            fc.vario.alti = round(altiFiltered);
+
+            accel = varioImu->getAccel();
+
+            unsigned long myTime = millis();
+            kalmanvert->update(altiFiltered, accel, myTime);
+
             velocity = kalmanvert->getVelocity();
+
             varioBeeper->setVelocity(velocity);
+            fc.vario.velocity = velocity;
+
+            calibratedAlti = kalmanvert->getCalibratedPosition();
+
+            if (calibratedAlti < 0)
+                calibratedAlti = 0;
+
             Serial.print("velocity:");
             Serial.println(velocity);
         }
+
+        bearing = varioImu->getBearing();
+        fc.vario.bearing = bearing;
+        
         vTaskDelay(pdMS_TO_TICKS(100));
-
-        //           if( twScheduler.havePressure() && twScheduler.haveAccel() ) {
-        //     kalmanvert.update( twScheduler.getAlti(),
-        //                        twScheduler.getAccel(NULL),
-        //                        millis() );
-
-        //     beeper.setVelocity( kalmanvert.getVelocity() );
-
-        //   }
-
-        //         if (varioImu->havePressure() && varioImu->haveAccel())
-        //         {
-        //             kalmanvert->update(varioImu->getAlti(),
-        //                                varioImu->getAccel(NULL),
-        //                                millis());
-        //         }
-
-        //         if (varioImu->havePressure() && varioImu->haveAccel())
-        //         {
-        //             kalmanvert->update(varioImu->getAlti(),
-        //                                varioImu->getAccel(),
-        //                                millis());
-
-        //             if (varioImu->updateData())
-        //             {
-        //                 alti = varioImu->getAlti();
-
-        //                 if (altiFiltered != 0)
-        //                 {
-        //                     altiFiltered = altiFiltered + COEF_ALTI_FILTERED * (alti - altiFiltered);
-        //                 }
-        //                 else
-        //                 {
-        //                     altiFiltered = alti; // first reading so set filtered to reading
-        //                 }
-        //                 Serial.print("altiFiltered");
-        //                 Serial.println(altiFiltered);
-
-        //                 temperature = varioImu->getTemp();
-        //                 accel = varioImu->getAccel();
-        //                 unsigned long myTime = millis();
-        //                 varioImu->updateKalman(altiFiltered, accel, myTime);
-        //                 //       velocity = kalmanvert.getVelocity();
-        //                 // calibratedAlti = kalmanvert.getCalibratedPosition();
-
-        //                 velocity = kalmanvert->getVelocity();
-        //                 calibratedAlti = kalmanvert->getCalibratedPosition();
-
-        //                 if (calibratedAlti < 0)
-        //                     calibratedAlti = 0;
-        //             }
-
-        //             // varioGps = new VarioGps();
-        //             // varioGps->init();
-
-        //             // varioGps->update(kalmanvert, &lastSentence);
-        //             varioBeeper->setVelocity(velocity);
-        //             Serial.print("velocity:");
-        //             Serial.println(velocity);
-        //             vTaskDelay(pdMS_TO_TICKS(100));
 
         // give time to other tasks
         vTaskDelay(delayT50);

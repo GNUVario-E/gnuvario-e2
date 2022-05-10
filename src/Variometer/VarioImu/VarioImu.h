@@ -10,7 +10,8 @@ private:
     double alti;
     double temp;
     double accel;
-    int compteurAccel = 0;
+    int8_t bearing = 0;
+    int8_t compteurAccel = 0;
 
 public:
     VarioImu(Kalmanvert *kalmanvert);
@@ -24,6 +25,7 @@ public:
     double getTemp();
     double getAccel();
     double firstAlti();
+   
 };
 
 extern fcdata_t fc;

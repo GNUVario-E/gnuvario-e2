@@ -67,6 +67,14 @@ boolean VarioSettings::readSDSettings(char *FileName)
         }
         if (settingName[0] != 0)
         {
+          // rustine pour le fichier de calibration
+          if (strncmp(settingName, "VERTACCEL_GYRO_CAL_BIAS", strlen("VERTACCEL_GYRO_CAL_BIAS")) == 0)
+          {
+            if (settingValue[0] == '0' && settingValue[1] == 'x')
+            {
+              sprintf(settingValue, "%d", (int)strtol(settingValue, NULL, 16));
+            }
+          }
           varioData.applySettingParam(settingName, settingValue);
 
           VARIO_SDCARD_DEBUG_DUMP(settingName);

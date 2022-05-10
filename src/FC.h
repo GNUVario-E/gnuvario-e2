@@ -17,6 +17,8 @@ struct sound_data
 struct vario_data
 {
     int16_t alti;
+    float velocity;
+    int bearing;
 };
 
 struct fcdata_t
