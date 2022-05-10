@@ -14,8 +14,8 @@ ScreenData bootScreenData = {
     txt8 : {false, true, 20, 130, 100, 41, 99},
     alt : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
-    toolbar : {false, true, 0, 210, 128, 98, 99},
-    speed : {false, true, 0, 210, 128, 98, 99}
+    toolbar : {false, true, 0, 210, 128, 51, 99},
+    speed : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData wifiScreenData = {
@@ -30,8 +30,8 @@ ScreenData wifiScreenData = {
     txt8 : {false, true, 20, 130, 100, 41, 99},
     alt : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
-    toolbar : {false, true, 0, 210, 128, 98, 99},
-    speed : {false, true, 0, 210, 128, 98, 99}
+    toolbar : {false, true, 0, 210, 128, 51, 99},
+    speed : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData calibrationScreenData = {
@@ -46,8 +46,8 @@ ScreenData calibrationScreenData = {
     txt8 : {false, true, 20, 130, 100, 41, 99},
     alt : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
-    toolbar : {false, true, 0, 210, 128, 98, 99},
-    speed : {false, true, 0, 210, 128, 98, 99}
+    toolbar : {false, true, 0, 210, 128, 51, 99},
+    speed : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData vario1ScreenData = {
@@ -63,7 +63,7 @@ ScreenData vario1ScreenData = {
     alt : {true, true, 0, 46, 128, 51, 99},
     vario : {true, true, 0, 96, 128, 51, 99},
     toolbar : {true, true, 0, 0, 128, 47, 99},
-    speed : {false, true, 0, 210, 128, 98, 99}
+    speed : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData vario2ScreenData = {
@@ -79,7 +79,7 @@ ScreenData vario2ScreenData = {
     alt : {true, true, 0, 146, 128, 51, 99},
     vario : {true, true, 0, 196, 128, 51, 99},
     toolbar : {true, true, 0, 0, 128, 47, 99},
-    speed : {true, true, 0, 246, 128, 599, 99}
+    speed : {true, true, 0, 246, 128, 50, 99}
 };
 
 ScreenData vario3ScreenData = {
@@ -95,7 +95,7 @@ ScreenData vario3ScreenData = {
     alt : {false, true, 10, 230, 100, 20, 99},
     vario : {false, true, 10, 190, 100, 20, 99},
     toolbar : {false, true, 0, 230, 128, 41, 99},
-    speed : {false, true, 0, 210, 128, 98, 99}
+    speed : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData soundScreenData = {
@@ -110,8 +110,8 @@ ScreenData soundScreenData = {
     txt8 : {false, true, 20, 130, 100, 41, 99},
     alt : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
-    toolbar : {false, true, 0, 210, 128, 98, 99},
-    speed : {false, true, 0, 210, 128, 98, 99}
+    toolbar : {false, true, 0, 210, 128, 51, 99},
+    speed : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData statisticScreenData = {
@@ -126,8 +126,8 @@ ScreenData statisticScreenData = {
     txt8 : {true, false, 0, 140, 128, 21, 99},
     alt : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
-    toolbar : {false, true, 0, 210, 128, 98, 99},
-    speed : {false, true, 0, 210, 128, 98, 99}
+    toolbar : {false, true, 0, 210, 128, 51, 99},
+    speed : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData rebootScreenData = {
@@ -142,6 +142,6 @@ ScreenData rebootScreenData = {
     txt8 : {false, true, 20, 130, 100, 41, 99},
     alt : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
-    toolbar : {false, true, 0, 210, 128, 98, 99},
-    speed : {false, true, 0, 210, 128, 98, 99}
+    toolbar : {false, true, 0, 210, 128, 51, 99},
+    speed : {false, true, 0, 210, 128, 51, 99}
 };
