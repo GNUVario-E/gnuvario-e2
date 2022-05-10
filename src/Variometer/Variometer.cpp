@@ -1,6 +1,7 @@
 
 
 #include "Variometer.h"
+#include "VarioTool/VarioTool.h"
 
 #define COEF_ALTI_FILTERED 0.1
 #define VARIO_TASK_PRIORITY 10
@@ -25,7 +26,7 @@ void Variometer::task()
     double temperature;
     double accel;
     double velocity;
-    int8_t bearing;
+    int16_t bearing;
     double calibratedAlti;
     bool lastSentence;
 
@@ -65,11 +66,12 @@ void Variometer::task()
             Serial.print("velocity:");
             Serial.println(velocity);
         }
+        // give time to other tasks
+        vTaskDelay(delayT50);
 
         bearing = varioImu->getBearing();
         fc.vario.bearing = bearing;
-        
-        vTaskDelay(pdMS_TO_TICKS(100));
+        VarioTool::bearingToOrdinal2c(fc.vario.bearingTxt, bearing);
 
         // give time to other tasks
         vTaskDelay(delayT50);

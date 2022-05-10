@@ -18,7 +18,8 @@ struct vario_data
 {
     int16_t alti;
     float velocity;
-    int bearing;
+    int16_t bearing;
+    char bearingTxt[3];
 };
 
 struct fcdata_t

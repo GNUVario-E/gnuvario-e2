@@ -76,3 +76,47 @@ void VarioTool::deleteRecursive(const char *path)
     SD.rmdir(path);
     fileSD.close();
 }
+
+void VarioTool::bearingToOrdinal2c(char *bearingTxt, float bearing)
+{
+
+    if (bearing >= 0.0 && bearing < 22.5)
+    {
+        strncpy(bearingTxt, "N", 1);
+    }
+    if (bearing >= 22.5 && bearing < 67.5)
+    {
+        strncpy(bearingTxt, "NE", 2);
+    }
+    if (bearing >= 67.5 && bearing < 112.5)
+    {
+        strncpy(bearingTxt, "E", 1);
+    }
+    if (bearing >= 112.5 && bearing < 157.5)
+    {
+        strncpy(bearingTxt, "SE", 2);
+    }
+    if (bearing >= 157.5 && bearing < 202.5)
+    {
+        strncpy(bearingTxt, "S", 1);
+    }
+    if (bearing >= 202.5 && bearing < 247.5)
+    {
+        strncpy(bearingTxt, "SW", 2);
+    }
+    if (bearing >= 247.5 && bearing < 292.5)
+    {
+        strncpy(bearingTxt, "W", 1);
+    }
+    if (bearing >= 292.5 && bearing < 337.5)
+    {
+        strncpy(bearingTxt, "NW", 2);
+    }
+    if (bearing >= 337.5 && bearing < 360)
+    {
+        strncpy(bearingTxt, "N", 1);
+    }
+
+    else
+        strncpy(bearingTxt, "N", 1);
+}

@@ -12,4 +12,5 @@ public:
     static boolean readLines(File *file, char *line);
     static void deleteRecursive(const char *path);
     static StaticJsonDocument<4096> jsonDoc;
+    static void bearingToOrdinal2c(char *bearingTxt, float bearing);
 };

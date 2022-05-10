@@ -12,6 +12,7 @@
 #include "VarioDisplay/Widget/VarioWidget.h"
 #include "VarioDisplay/Widget/ToolbarWidget.h"
 #include "VarioDisplay/Widget/SpeedWidget.h"
+#include "VarioDisplay/Widget/BearingWidget.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include <VarioDisplay/VarioScreen/ScreenData.h>
 
@@ -34,6 +35,7 @@ private:
     VarioWidget *varioWidget;
     ToolbarWidget *toolbarWidget;
     SpeedWidget *speedWidget;
+    BearingWidget *bearingWidget;
     // SoundeditWidget *soundEditWidget;
 
 protected:
@@ -57,4 +59,5 @@ public:
     VarioWidget *getVarioWidget();
     ToolbarWidget *getToolbarWidget();
     SpeedWidget *getSpeedWidget();
+    BearingWidget *getBearingWidget();
 };

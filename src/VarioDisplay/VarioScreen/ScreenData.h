@@ -70,6 +70,17 @@ struct S_SPEED
     uint8_t altWidgetIndex;
 };
 
+struct S_BEARING
+{
+    bool isactif;
+    bool isborder;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+    uint8_t altWidgetIndex;
+};
+
 struct ScreenData
 {
     S_LOGO logo;
@@ -85,4 +96,5 @@ struct ScreenData
     S_VARIO vario;
     S_TOOLBAR toolbar;
     S_SPEED speed;
+    S_BEARING bearing;
 };
