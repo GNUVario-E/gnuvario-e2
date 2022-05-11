@@ -69,20 +69,20 @@ bool VarioImu::updateData(void)
         twScheduler.getTempAlti(temp, alti);
         accel = twScheduler.getAccel(NULL);
 
-        VARIO_IMU_DEBUG_PRINT("altitude: ");
-        VARIO_IMU_DEBUG_PRINTLN(alti);
+        // VARIO_IMU_DEBUG_PRINT("altitude: ");
+        // VARIO_IMU_DEBUG_PRINTLN(alti);
 
-        VARIO_IMU_DEBUG_PRINT("accel: ");
-        VARIO_IMU_DEBUG_PRINTLN(accel);
+        // VARIO_IMU_DEBUG_PRINT("accel: ");
+        // VARIO_IMU_DEBUG_PRINTLN(accel);
 
-        VARIO_IMU_DEBUG_PRINT("temp: ");
-        VARIO_IMU_DEBUG_PRINTLN(temp);
+        // VARIO_IMU_DEBUG_PRINT("temp: ");
+        // VARIO_IMU_DEBUG_PRINTLN(temp);
 
         return true;
     }
     else if (twScheduler.haveNewAccel())
     {
-        VARIO_IMU_DEBUG_PRINTLN("haveNewAccel");
+        // VARIO_IMU_DEBUG_PRINTLN("haveNewAccel");
         compteurAccel++;
         twScheduler.resetNewAccel();
         if (compteurAccel > 100)

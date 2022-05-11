@@ -53,7 +53,6 @@ void VarioDisplay::init(VarioLanguage *_varioLanguage)
 
 void VarioDisplay::buildScreens()
 {
-    char wifi[] = "WIFI ...";
     char sound[] = "SOUND ...";
     char statistic[] = "STATISTIC ...";
 
@@ -82,7 +81,15 @@ void VarioDisplay::buildScreens()
 
     // construction de l'écran WIFI
     wifiScreen = new VarioScreen(wifiScreenData, varioLanguage);
-    wifiScreen->getTextWidget1()->setText(wifi);
+    wifiScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_CONNECT));
+    wifiScreen->getTextWidget1()->setIndexTxtFC(1);
+    sprintf(fc.text.text1, "%s", varioLanguage->getText(TITRE_CONNECTA));
+    wifiScreen->getTextWidget2()->setText("");
+    wifiScreen->getTextWidget2()->setTextSize(1);
+    wifiScreen->getTextWidget2()->setIndexTxtFC(2);
+    wifiScreen->getTextWidget3()->setText("");
+    wifiScreen->getTextWidget3()->setTextSize(1);
+    wifiScreen->getTextWidget3()->setIndexTxtFC(3);
 
     // construction de l'écran calibration
     calibrationScreen = new VarioScreen(calibrationScreenData, varioLanguage);
@@ -145,7 +152,7 @@ void VarioDisplay::startTaskBuffer(void *parm)
 void VarioDisplay::bufferTask()
 {
     bool firstRun = true;
-    uint8_t nbToggle = 0; 
+    uint8_t nbToggle = 0;
     uint8_t tabToggle[10][2];
     while (true)
     {

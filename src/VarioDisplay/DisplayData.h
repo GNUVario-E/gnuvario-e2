@@ -22,10 +22,10 @@ ScreenData bootScreenData = {
 };
 
 ScreenData wifiScreenData = {
-    logo : {true, true, 0, 0, 128, 296, 94, 74, 99},
-    txt1 : {true, false, 0, 230, 128, 41, 99},
-    txt2 : {false, true, 20, 130, 100, 41, 99},
-    txt3 : {false, true, 20, 130, 100, 41, 99},
+    logo : {true, false, 0, 0, 128, 240, 94, 74, 99},
+    txt1 : {true, false, 0, 180, 128, 41, 99},
+    txt2 : {true, false, 0, 220, 128, 41, 99},
+    txt3 : {true, false, 0, 260, 128, 40, 99},
     txt4 : {false, true, 20, 130, 100, 41, 99},
     txt5 : {false, true, 20, 130, 100, 41, 99},
     txt6 : {false, true, 20, 130, 100, 41, 99},

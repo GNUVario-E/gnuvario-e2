@@ -1,6 +1,5 @@
 
-#ifndef VARIOMETER_H
-#define VARIOMETER_H
+#pragma once
 
 #include "kalmanvert/kalmanvert.h"
 #include "VarioImu/VarioImu.h"
@@ -27,6 +26,4 @@ public:
     void init();
     void startTask();
     void debug();
- 
 };
-#endif // VARIOMETER_H

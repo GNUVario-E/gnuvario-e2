@@ -11,6 +11,7 @@ private:
     uint8_t fontSize = 2;
     bool isText = false;
     int8_t marginTextRight = 0;
+    uint8_t indexTxtFC = 0;
 
 protected:
     char text[50];
@@ -28,4 +29,5 @@ public:
     void setBlinkFreq(uint8_t freq);
     void setMarginTextRight(int8_t margin);
     bool isRefreshNeeded(uint32_t lastDisplayTime);
+    void setIndexTxtFC(uint8_t _index);
 };

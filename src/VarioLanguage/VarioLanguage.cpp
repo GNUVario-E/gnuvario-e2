@@ -24,7 +24,7 @@
 #define DEFAULT_TITRE_DUREE "Duree"
 #define DEFAULT_TITRE_VITESSE "Vitesse"
 #define DEFAULT_TITRE_CONNECT "Connexion"
-#define DEFAULT_TITRE_CONNECTA "Connexion a "
+#define DEFAULT_TITRE_CONNECTA "Connecte a"
 #define DEFAULT_TITRE_DEMAR "Demarrage"
 #define DEFAULT_TITRE_REDEMAR "Redemarrage"
 #define DEFAULT_TITRE_ENCOURS "en cours"
