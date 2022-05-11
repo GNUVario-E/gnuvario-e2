@@ -141,7 +141,7 @@ bool VarioWifi::connectToWifi()
         wifiMulti.addAP(ssid_4, password_4);
     }
 
-    Serial.println("Connecting ...");
+    VARIO_WIFI_DEBUG_PRINTLN("Connecting ...");
 
     int counter = 0;
     while (wifiMulti.run() != WL_CONNECTED)
@@ -160,8 +160,11 @@ bool VarioWifi::connectToWifi()
     VARIO_WIFI_DEBUG_PRINTLN(WiFi.SSID());
     VARIO_WIFI_DEBUG_PRINT("Use IP address :");
     VARIO_WIFI_DEBUG_PRINTLN(WiFi.localIP().toString());
-
-    //    vm->varioDisplay->displayPageWifi(WiFi.SSID().substring(0, 12).c_str(), WiFi.localIP().toString().c_str());
+    fc.text.isText1 = true;
+    fc.text.isText2 = true;
+    WiFi.SSID().toCharArray(fc.text.text2, sizeof(WiFi.SSID()));
+    fc.text.isText3 = true;
+    sprintf(fc.text.text3, "%s", WiFi.localIP().toString().c_str());
 
     return true;
 }

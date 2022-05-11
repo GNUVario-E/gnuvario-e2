@@ -130,8 +130,25 @@ void VarioManager::timer10s()
 
 void VarioManager::setPowerDataToFC()
 {
-    fc.power.tension = varioPower->getTension();
-    fc.power.capacite = varioPower->getCapacitePct();
+    if (fc.power.tension != 0)
+    {
+        // lissage
+        fc.power.tension = fc.power.tension + 0.1 * (varioPower->getTension() - fc.power.tension);
+    }
+    else
+    {
+        fc.power.tension = varioPower->getTension();
+    }
+
+    if (fc.power.capacite != 0)
+    {
+        // lissage
+        fc.power.capacite = fc.power.capacite + 0.1 * (varioPower->getCapacitePct() - fc.power.capacite);
+    }
+    else
+    {
+        fc.power.capacite = varioPower->getCapacitePct();
+    }
 }
 
 void VarioManager::onSignalReceived(uint8_t _val)

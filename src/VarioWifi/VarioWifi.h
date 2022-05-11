@@ -1,6 +1,6 @@
-#ifndef VARIO_WIFI_H
-#define VARIO_WIFI_H
+#pragma once
 
+#include "FC.h"
 // #define DEST_FS_USES_SD
 
 #include <Arduino.h>
@@ -12,8 +12,6 @@
 #include "VarioIgcParser/VarioIgcParser.h"
 #include "VarioSqlFlight/VarioSqlFlight.h"
 #include "VarioWebHandler.h"
-
-class VarioManager;
 
 class VarioWifi
 {
@@ -36,4 +34,4 @@ public:
     bool begin();
 };
 
-#endif // VARIO_WIFI_H
+extern fcdata_t fc;

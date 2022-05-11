@@ -117,6 +117,75 @@ void TextWidget::setBlinkFreq(uint8_t freq)
 
 bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
+
+    switch (indexTxtFC)
+    {
+    case 1:
+        if (fc.text.isText1)
+        {
+            setText(fc.text.text1);
+            fc.text.isText1 = false;
+            return true;
+        }
+        break;
+    case 2:
+        if (fc.text.isText2)
+        {
+            setText(fc.text.text2);
+            fc.text.isText2 = false;
+            return true;
+        }
+        break;
+    case 3:
+        if (fc.text.isText3)
+        {
+            setText(fc.text.text3);
+            fc.text.isText3 = false;
+            return true;
+        }
+        break;
+    case 4:
+        if (fc.text.isText4)
+        {
+            setText(fc.text.text4);
+            fc.text.isText4 = false;
+            return true;
+        }
+        break;
+    case 5:
+        if (fc.text.isText5)
+        {
+            setText(fc.text.text5);
+            fc.text.isText5 = false;
+            return true;
+        }
+        break;
+    case 6:
+        if (fc.text.isText6)
+        {
+            setText(fc.text.text6);
+            fc.text.isText6 = false;
+            return true;
+        }
+        break;
+    case 7:
+        if (fc.text.isText7)
+        {
+            setText(fc.text.text7);
+            fc.text.isText7 = false;
+            return true;
+        }
+        break;
+    case 8:
+        if (fc.text.isText8)
+        {
+            setText(fc.text.text8);
+            fc.text.isText8 = false;
+            return true;
+        }
+        break;
+    }
+
     if (hasBeenModified)
     {
         return true;
@@ -140,4 +209,9 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 void TextWidget::setMarginTextRight(int8_t _margin)
 {
     marginTextRight = _margin;
+}
+
+void TextWidget::setIndexTxtFC(uint8_t _index)
+{
+    indexTxtFC = _index;
 }
