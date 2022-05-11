@@ -82,41 +82,42 @@ void VarioTool::bearingToOrdinal2c(char *bearingTxt, float bearing)
 
     if (bearing >= 0.0 && bearing < 22.5)
     {
-        strncpy(bearingTxt, "N", 1);
-    }
-    if (bearing >= 22.5 && bearing < 67.5)
+        sprintf(bearingTxt, "N");
+        }
+    else if (bearing >= 22.5 && bearing < 67.5)
     {
-        strncpy(bearingTxt, "NE", 2);
+        sprintf(bearingTxt, "NE");
     }
-    if (bearing >= 67.5 && bearing < 112.5)
+    else if (bearing >= 67.5 && bearing < 112.5)
     {
-        strncpy(bearingTxt, "E", 1);
+        sprintf(bearingTxt, "E");
     }
-    if (bearing >= 112.5 && bearing < 157.5)
+    else if (bearing >= 112.5 && bearing < 157.5)
     {
-        strncpy(bearingTxt, "SE", 2);
+        sprintf(bearingTxt, "SE");
     }
-    if (bearing >= 157.5 && bearing < 202.5)
+    else if (bearing >= 157.5 && bearing < 202.5)
     {
-        strncpy(bearingTxt, "S", 1);
+        sprintf(bearingTxt, "S");
     }
-    if (bearing >= 202.5 && bearing < 247.5)
+    else if (bearing >= 202.5 && bearing < 247.5)
     {
-        strncpy(bearingTxt, "SW", 2);
+        sprintf(bearingTxt, "SW");
     }
-    if (bearing >= 247.5 && bearing < 292.5)
+    else if (bearing >= 247.5 && bearing < 292.5)
     {
-        strncpy(bearingTxt, "W", 1);
+        sprintf(bearingTxt, "W");
     }
-    if (bearing >= 292.5 && bearing < 337.5)
+    else if (bearing >= 292.5 && bearing < 337.5)
     {
-        strncpy(bearingTxt, "NW", 2);
+        sprintf(bearingTxt, "NW");
     }
-    if (bearing >= 337.5 && bearing < 360)
+    else if (bearing >= 337.5 && bearing < 360)
     {
-        strncpy(bearingTxt, "N", 1);
+        sprintf(bearingTxt, "N");
     }
-
     else
-        strncpy(bearingTxt, "N", 1);
+    {
+        sprintf(bearingTxt, "N");
+    }
 }

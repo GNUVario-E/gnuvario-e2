@@ -24,7 +24,6 @@ public:
     double getAlti();
     double getTemp();
     double getAccel();
-    double firstAlti();
     int16_t getBearing(void);
 };
 

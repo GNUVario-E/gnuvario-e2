@@ -9,8 +9,7 @@ bool BearingWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
     if (fc.vario.bearing != oldBearing)
     {
-
-        sprintf(localText, "%d", fc.vario.bearing);
+        sprintf(localText, "%s %d", fc.vario.bearingTxt, fc.vario.bearing);
         setText(localText);
         oldBearing = fc.vario.bearing;
 
