@@ -35,24 +35,18 @@ void VarioImu::postInit()
     /* init kalman filter with 0.0 accel */
     double firstAlti = twScheduler.getAlti();
 
-    // if (isnan(firstAlti))
-    // {
-    //     for (int i = 0; i < 4; i++)
-    //     {
-    //         vTaskDelay(pdMS_TO_TICKS(500));
+    if (isnan(firstAlti))
+    {
+        VARIO_DATA_DEBUG_PRINT("Fail firstAlti : ");
+        VARIO_DATA_DEBUG_PRINTLN("reinit");
+        ESP.restart();
+    }
 
-    //         firstAlti = twScheduler.getAlti();
+    VARIO_IMU_DEBUG_PRINT("first altitude: ");
+    VARIO_IMU_DEBUG_PRINTLN(firstAlti);
 
-    //         if (!isnan(firstAlti))
-    //             break;
-    //     }
-    // }
-
-    Serial.print("first altitude: ");
-    Serial.println(firstAlti);
-
-    Serial.print("PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION: ");
-    Serial.println(varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->getValueFloat());
+    VARIO_IMU_DEBUG_PRINT("PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION: ");
+    VARIO_IMU_DEBUG_PRINTLN(varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->getValueFloat());
 
     kalmanvert->init(firstAlti,
                      0.0,
@@ -75,20 +69,20 @@ bool VarioImu::updateData(void)
         twScheduler.getTempAlti(temp, alti);
         accel = twScheduler.getAccel(NULL);
 
-        Serial.print("altitude: ");
-        Serial.println(alti);
+        VARIO_IMU_DEBUG_PRINT("altitude: ");
+        VARIO_IMU_DEBUG_PRINTLN(alti);
 
-        Serial.print("accel: ");
-        Serial.println(accel);
+        VARIO_IMU_DEBUG_PRINT("accel: ");
+        VARIO_IMU_DEBUG_PRINTLN(accel);
 
-        Serial.print("temp: ");
-        Serial.println(temp);
+        VARIO_IMU_DEBUG_PRINT("temp: ");
+        VARIO_IMU_DEBUG_PRINTLN(temp);
 
         return true;
     }
     else if (twScheduler.haveNewAccel())
     {
-        Serial.println("haveNewAccel");
+        VARIO_IMU_DEBUG_PRINTLN("haveNewAccel");
         compteurAccel++;
         twScheduler.resetNewAccel();
         if (compteurAccel > 100)
@@ -100,49 +94,9 @@ bool VarioImu::updateData(void)
     }
     else
     {
-        Serial.println("Ni pression et/ou ni alti");
+        VARIO_IMU_DEBUG_PRINTLN("Ni pression et/ou ni alti");
     }
     return false;
-}
-
-double VarioImu::firstAlti()
-{
-
-    /******************/
-    /* get first data */
-    /******************/
-
-    VARIO_DATA_DEBUG_PRINTLN("Attente premiere mesure alti");
-
-    while (!twScheduler.havePressure())
-    {
-    }
-
-    VARIO_DATA_DEBUG_PRINTLN("première mesure");
-
-    double firstAlti = twScheduler.getAlti();
-
-    if (isnan(firstAlti))
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            delay(1000);
-
-            firstAlti = twScheduler.getAlti();
-            fc.vario.alti = firstAlti;
-            if (!isnan(firstAlti))
-                break;
-        }
-    }
-
-    if (isnan(firstAlti))
-    {
-        VARIO_DATA_DEBUG_PRINT("Fail firstAlti : ");
-        VARIO_DATA_DEBUG_PRINTLN("reinit");
-        ESP.restart();
-    }
-
-    return firstAlti;
 }
 
 double VarioImu::getAlti()
@@ -244,8 +198,8 @@ int16_t VarioImu::getBearing(void)
         }
         bearing = tmpcap;
 
-        Serial.print("bearing: ");
-        Serial.println(bearing);
+        VARIO_DATA_DEBUG_PRINT("bearing: ");
+        VARIO_DATA_DEBUG_PRINTLN(bearing);
     }
     else
     {

@@ -70,9 +70,13 @@ void Variometer::task()
         vTaskDelay(delayT50);
 
         bearing = varioImu->getBearing();
-        fc.vario.bearing = bearing;
-        VarioTool::bearingToOrdinal2c(fc.vario.bearingTxt, bearing);
-
+        if (bearing != -1)
+        {
+            fc.vario.bearing = bearing;
+            VarioTool::bearingToOrdinal2c(fc.vario.bearingTxt, bearing);
+            VARIO_PROG_DEBUG_PRINT("Bearingtxt :");
+            VARIO_PROG_DEBUG_PRINTLN(fc.vario.bearingTxt);
+        }
         // give time to other tasks
         vTaskDelay(delayT50);
     }

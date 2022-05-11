@@ -8,7 +8,7 @@
 #define PROG_DEBUG // debug principal program
 //#define BTN_DEBUG  //Boutons
 //#define HARDWARE_DEBUG
-//#define IMU_DEBUG			  //debug IMU
+#define IMU_DEBUG // debug IMU
 #define CAL_DEBUG
 //#define I2CDEV_SERIAL_DEBUG   //debug I2Cdev
 //#define DEBUG_SERIAL_NMEA_1
@@ -44,6 +44,16 @@
 #define VARIO_PROG_DEBUG_DUMP(x)
 #define VARIO_PROG_DEBUG_DUMP2(x, y)
 #define VARIO_PROG_DEBUG_TRACE()
+#endif
+
+#if !defined(VARIO_DEBUG) || !defined(IMU_DEBUG)
+#define VARIO_IMU_DEBUG_PRINTLN(x)
+#define VARIO_IMU_DEBUG_PRINTLN2(x, y)
+#define VARIO_IMU_DEBUG_PRINT(x)
+#define VARIO_IMU_DEBUG_PRINT2(x, y)
+#define VARIO_IMU_DEBUG_DUMP(x)
+#define VARIO_IMU_DEBUG_DUMP2(x, y)
+#define VARIO_IMU_DEBUG_TRACE()
 #endif
 
 #if !defined(VARIO_DEBUG) || !defined(BTN_DEBUG)
@@ -165,6 +175,16 @@
 #define VARIO_PROG_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_PROG_DEBUG_DUMP2(x, y) DUMP2(x, y)
 #define VARIO_PROG_DEBUG_TRACE(x) TRACE()
+#endif
+
+#if defined(VARIO_DEBUG) && defined(IMU_DEBUG)
+#define VARIO_IMU_DEBUG_PRINTLN(x) Serial.println(x)
+#define VARIO_IMU_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
+#define VARIO_IMU_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_IMU_DEBUG_PRINT2(x, y) Serial.print(x, y)
+#define VARIO_IMU_DEBUG_DUMP(x) DUMP(x)
+#define VARIO_IMU_DEBUG_DUMP2(x, y) DUMP2(x, y)
+#define VARIO_IMU_DEBUG_TRACE(x) TRACE()
 #endif
 
 #if defined(VARIO_DEBUG) && defined(BTN_DEBUG)
