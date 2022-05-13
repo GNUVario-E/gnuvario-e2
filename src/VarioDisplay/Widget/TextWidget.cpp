@@ -90,12 +90,10 @@ void TextWidget::setTitle(char *_title)
     if (_title != nullptr)
     {
         title = _title;
-        // strncpy(title, _title, sizeof(title));
     }
     else
     {
         title = nullptr;
-        // title[0] = '\0';
     }
 }
 
