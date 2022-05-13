@@ -4,3 +4,5 @@
 #include "_volume.h"
 #include "_khm.h"
 #include "_ms.h"
+#include "_hour.h"
+#include "_hour_dot.h"

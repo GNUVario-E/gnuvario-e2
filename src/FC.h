@@ -29,4 +29,6 @@ struct fcdata_t
     bool isFixed;
     power_data power;
     sound_data sound;
+    int8_t time[3] = {0, 0, 0};
+    int8_t flighttime[3] = {0, 0, 0};
 };

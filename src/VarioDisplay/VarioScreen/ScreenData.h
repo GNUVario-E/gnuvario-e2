@@ -81,6 +81,28 @@ struct S_BEARING
     uint8_t altWidgetIndex;
 };
 
+struct S_TIME
+{
+    bool isactif;
+    bool isborder;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+    uint8_t altWidgetIndex;
+};
+
+struct S_FLIGHTTIME
+{
+    bool isactif;
+    bool isborder;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+    uint8_t altWidgetIndex;
+};
+
 struct ScreenData
 {
     S_LOGO logo;
@@ -97,4 +119,6 @@ struct ScreenData
     S_TOOLBAR toolbar;
     S_SPEED speed;
     S_BEARING bearing;
+    S_TIME time;
+    S_FLIGHTTIME flighttime;
 };

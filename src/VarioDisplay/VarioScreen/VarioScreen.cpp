@@ -74,6 +74,14 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     bearingWidget->setIsActif(data.bearing.isactif);
     bearingWidget->setIsBorder(data.bearing.isborder);
 
+    timeWidget = new TimeWidget(_varioLanguage, data.time.altWidgetIndex, data.time.x, data.time.y, data.time.w, data.time.h);
+    timeWidget->setIsActif(data.time.isactif);
+    timeWidget->setIsBorder(data.time.isborder);
+
+    flightTimeWidget = new FlightTimeWidget(_varioLanguage, data.flighttime.altWidgetIndex, data.flighttime.x, data.flighttime.y, data.flighttime.w, data.flighttime.h);
+    flightTimeWidget->setIsActif(data.flighttime.isactif);
+    flightTimeWidget->setIsBorder(data.flighttime.isborder);
+
     tabWidgets[nb_widgets++] = logoWidget;
     tabWidgets[nb_widgets++] = textWidget1;
     tabWidgets[nb_widgets++] = textWidget2;
@@ -88,6 +96,8 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     tabWidgets[nb_widgets++] = toolbarWidget;
     tabWidgets[nb_widgets++] = speedWidget;
     tabWidgets[nb_widgets++] = bearingWidget;
+    tabWidgets[nb_widgets++] = timeWidget;
+    tabWidgets[nb_widgets++] = flightTimeWidget;
 }
 
 uint8_t VarioScreen::getNbWidgets()
@@ -177,4 +187,14 @@ SpeedWidget *VarioScreen::getSpeedWidget()
 BearingWidget *VarioScreen::getBearingWidget()
 {
     return bearingWidget;
+}
+
+TimeWidget *VarioScreen::getTimeWidget()
+{
+    return timeWidget;
+}
+
+FlightTimeWidget *VarioScreen::getFlightTimeWidget()
+{
+    return flightTimeWidget;
 }
