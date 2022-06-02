@@ -17,6 +17,7 @@
 #include "VarioCalibration/VarioCalibration.h"
 #include "Variometer/Variometer.h"
 
+
 class VarioManager : public Observer
 {
 private:
@@ -43,3 +44,12 @@ public:
 
 extern fcdata_t fc;
 extern VarioFSM fsm;
+extern ScreenData bootScreenData;
+extern ScreenData wifiScreenData;
+extern ScreenData calibrationScreenData;
+extern ScreenData vario1ScreenData;
+extern ScreenData vario2ScreenData;
+extern ScreenData vario3ScreenData;
+extern ScreenData soundScreenData;
+extern ScreenData statisticScreenData;
+extern ScreenData rebootScreenData;

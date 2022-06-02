@@ -2,7 +2,7 @@
 
 VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
 {
-    logoWidget = new LogoWidget(_varioLanguage, data.logo.altWidgetIndex, data.logo.x, data.logo.y, data.logo.w, data.logo.h, data.logo.iw, data.logo.ih);
+    logoWidget = new LogoWidget(_varioLanguage, data.logo.altWidgetIndex, data.logo.x, data.logo.y, data.logo.w, data.logo.h);
     logoWidget->setIsActif(data.logo.isactif);
     logoWidget->setIsBorder(data.logo.isborder);
 
