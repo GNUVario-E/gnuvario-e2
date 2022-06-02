@@ -3,7 +3,7 @@
 #include "VarioDebug/VarioDebug.h"
 #include <SD.h>
 
-StaticJsonDocument<4096> VarioTool::jsonDoc;
+StaticJsonDocument<50000> VarioTool::jsonDoc;
 
 void VarioTool::appendChar(char *s, char c)
 {
@@ -83,7 +83,7 @@ void VarioTool::bearingToOrdinal2c(char *bearingTxt, float bearing)
     if (bearing >= 0.0 && bearing < 22.5)
     {
         sprintf(bearingTxt, "N");
-        }
+    }
     else if (bearing >= 22.5 && bearing < 67.5)
     {
         sprintf(bearingTxt, "NE");
