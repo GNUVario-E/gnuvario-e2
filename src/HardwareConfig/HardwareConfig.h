@@ -23,6 +23,9 @@
 
 #define VARIO_MPU_INT_PIN 26
 
+#define NMEA_RX_PIN 33
+#define NMEA_TX_PIN 34
+
 /* Set the freq */
 #define VARIO_TW_FREQ 400000UL
 

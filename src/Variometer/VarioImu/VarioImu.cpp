@@ -190,8 +190,8 @@ int16_t VarioImu::getBearing(void)
         northVectorNorm[1] = northVector[1] / norm;
 
         int16_t tmpcap = atan2(northVectorNorm[1], northVectorNorm[0]) * 180 / M_PI;
-        Serial.print("tmpcap: ");
-        Serial.println(tmpcap);
+        // Serial.print("tmpcap: ");
+        // Serial.println(tmpcap);
         if (tmpcap < 0)
         {
             tmpcap = tmpcap + 360;

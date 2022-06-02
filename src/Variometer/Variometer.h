@@ -3,7 +3,7 @@
 
 #include "kalmanvert/kalmanvert.h"
 #include "VarioImu/VarioImu.h"
-#include "VarioGps/VarioGps.h"
+#include "VarioGPS/VarioGPS.h"
 #include "VarioBeeper/VarioBeeper.h"
 
 class Variometer
@@ -17,7 +17,7 @@ private:
 
     Kalmanvert *kalmanvert;
     VarioImu *varioImu;
-    VarioGps *varioGps;
+    VarioGPS *varioGPS;
     VarioBeeper *varioBeeper;
     //  //démarrage du vario
     //     varioImu = new VarioImu(this, kalmanvert);

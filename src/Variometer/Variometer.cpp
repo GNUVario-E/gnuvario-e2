@@ -63,8 +63,8 @@ void Variometer::task()
             if (calibratedAlti < 0)
                 calibratedAlti = 0;
 
-            Serial.print("velocity:");
-            Serial.println(velocity);
+            // Serial.print("velocity:");
+            // Serial.println(velocity);
         }
         // give time to other tasks
         vTaskDelay(delayT50);
@@ -74,8 +74,8 @@ void Variometer::task()
         {
             fc.vario.bearing = bearing;
             VarioTool::bearingToOrdinal2c(fc.vario.bearingTxt, bearing);
-            VARIO_PROG_DEBUG_PRINT("Bearingtxt :");
-            VARIO_PROG_DEBUG_PRINTLN(fc.vario.bearingTxt);
+            VARIO_DATA_DEBUG_PRINT("Bearingtxt :");
+            VARIO_DATA_DEBUG_PRINTLN(fc.vario.bearingTxt);
         }
         // give time to other tasks
         vTaskDelay(delayT50);
@@ -87,11 +87,14 @@ Variometer::Variometer(VarioBeeper *_varioBeeper)
     kalmanvert = new Kalmanvert();
     varioImu = new VarioImu(kalmanvert);
     varioBeeper = _varioBeeper;
+    varioGPS = new VarioGPS();
 }
 void Variometer::init()
 {
     varioImu->init();
     varioBeeper->startTask();
+    varioGPS->init();
+    varioGPS->startTask();
 }
 
 void Variometer::preTaskInit()

@@ -2,6 +2,14 @@
 
 #include <Arduino.h>
 
+#define FC_GPS_NEW_SAMPLE_LOGGER		0b00000001
+#define FC_GPS_NEW_SAMPLE_WIND			0b00000010
+#define FC_GPS_NEW_SAMPLE_AGL			0b00000100
+#define FC_GPS_NEW_SAMPLE_ODO			0b00001000
+#define FC_GPS_NEW_SAMPLE_ALT           0b00010000
+#define FC_GPS_NEW_SAMPLE_CIRCLE        0b00100000
+#define FC_GPS_NEW_SAMPLE_AIRSPACE      0b01000000
+
 struct power_data
 {
     int capacite = 0;
