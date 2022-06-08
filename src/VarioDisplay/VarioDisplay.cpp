@@ -4,7 +4,6 @@
 
 // select the display class and display driver class in the following file (new style):
 #include "GxEPD2_display_selection_new_style.h"
-#include "VarioDisplay/DisplayData.h"
 #include "version.h"
 #include "VarioDebug/VarioDebug.h"
 

@@ -5,6 +5,7 @@
 #include "freertos/task.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include "VarioDisplay/VarioScreen/VarioScreen.h"
+#include "VarioDisplay/VarioScreen/ScreenData.h"
 
 #define SCREEN_STACK_SIZE 2000
 #define SCREEN_CORE 1
@@ -42,3 +43,13 @@ public:
     VarioScreen *statisticScreen;
     VarioScreen *rebootScreen;
 };
+
+extern ScreenData bootScreenData;
+extern ScreenData wifiScreenData;
+extern ScreenData calibrationScreenData;
+extern ScreenData vario1ScreenData;
+extern ScreenData vario2ScreenData;
+extern ScreenData vario3ScreenData;
+extern ScreenData soundScreenData;
+extern ScreenData statisticScreenData;
+extern ScreenData rebootScreenData;
