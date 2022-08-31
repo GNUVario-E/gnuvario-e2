@@ -34,6 +34,7 @@
 
 #include <Arduino.h>
 #include <SD.h>
+#include "VarioSD/VarioSD.h"
 
 #define FILE_EXTENSION ".HGT"
 #define NO_FILE_FOR_POS -1
@@ -60,4 +61,5 @@ private:
   File currentFile;
 };
 
+// extern VarioSD varioSD;
 #endif // HGT_READER_H

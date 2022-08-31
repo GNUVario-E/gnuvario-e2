@@ -32,6 +32,7 @@
  */
 
 #include "AglManager.h"
+#include "VarioDebug/VarioDebug.h"
 #include <SD.h>
 #define AGL_Directory "/AGL"
 
@@ -55,10 +56,9 @@ bool AglManager::init(void)
     else
         Directory_AGL_Exists = false;
 
-#ifdef AGL_DEBUG
-    SerialPort.print("INIT AGL : Directory exists : ");
-    SerialPort.println(Directory_AGL_Exists);
-#endif // AGL_DEBUG
+    VARIO_AGL_DEBUG_PRINT("INIT AGL : Directory exists : ");
+    VARIO_AGL_DEBUG_PRINTLN(Directory_AGL_Exists);
+
     return Directory_AGL_Exists;
 }
 
@@ -106,15 +106,14 @@ void AglManager::setLongitude(double dLongitude)
 void AglManager::computeHeight()
 //****************************************************************************************************************************
 {
-#ifdef AGL_DEBUG
-    SerialPort.print("ComputeHeight ");
-    SerialPort.print("Alti : ");
-    SerialPort.print(currentAlti);
-    SerialPort.print(", Lat : ");
-    SerialPort.print(currentLat);
-    SerialPort.print(", Long :");
-    SerialPort.println(currentLong);
-#endif // AGL_DEBUG
+
+    VARIO_AGL_DEBUG_PRINT("ComputeHeight ");
+    VARIO_AGL_DEBUG_PRINT("Alti : ");
+    VARIO_AGL_DEBUG_PRINT(currentAlti);
+    VARIO_AGL_DEBUG_PRINT(", Lat : ");
+    VARIO_AGL_DEBUG_PRINT(currentLat);
+    VARIO_AGL_DEBUG_PRINT(", Long :");
+    VARIO_AGL_DEBUG_PRINTLN(currentLong);
 
     if (IsOk())
     {
@@ -141,10 +140,9 @@ void AglManager::computeHeight()
         currentHeight = currentAlti;
         groundLevel = 1;
     }
-#ifdef AGL_DEBUG
-    SerialPort.print("AGL Height ");
-    SerialPort.println(currentHeight);
-#endif // AGL_DEBUG
+
+    VARIO_AGL_DEBUG_PRINT("AGL Height ");
+    VARIO_AGL_DEBUG_PRINTLN(currentHeight);
 }
 
 //****************************************************************************************************************************
@@ -169,10 +167,9 @@ int AglManager::getAgl()
 //****************************************************************************************************************************
 {
     groundLevel = getGroundLevel();
-#ifdef AGL_DEBUG
-    SerialPort.print("AGL Directory exists : ");
-    SerialPort.println(Directory_AGL_Exists);
-#endif // AGL_DEBUG
+
+    VARIO_AGL_DEBUG_PRINT("AGL Directory exists : ");
+    VARIO_AGL_DEBUG_PRINTLN(Directory_AGL_Exists);
 
     if (groundLevel == -1 || currentAltiGps == -1)
         return -1;
@@ -184,11 +181,8 @@ int AglManager::getAgl()
 boolean AglManager::IsOk(void)
 //****************************************************************************************************************************
 {
-
-#ifdef AGL_DEBUG
-    SerialPort.print("AGL Directory exists : ");
-    SerialPort.println(Directory_AGL_Exists);
-#endif // AGL_DEBUG
+    VARIO_AGL_DEBUG_PRINT("AGL Directory exists : ");
+    VARIO_AGL_DEBUG_PRINTLN(Directory_AGL_Exists);
 
     return Directory_AGL_Exists;
 }

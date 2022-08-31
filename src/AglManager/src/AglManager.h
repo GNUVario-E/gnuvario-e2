@@ -35,6 +35,7 @@
 #define AGL_MANAGER_H
 
 #include "HGTReader/src/HGTReader.h"
+#include "VarioSD/VarioSD.h"
 
 class AglManager
 {
