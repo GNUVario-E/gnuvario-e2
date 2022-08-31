@@ -13,23 +13,28 @@ void Subject::registerObserver(Observer *observer)
 
 void Subject::unregisterObserver(Observer *observer)
 {
-    uint8_t removedIndex;
+    uint8_t removedIndex = 0;
+    bool isFound = false;
     for (uint8_t i = 0; i < observerIndex; i++)
     {
         if (mObserver[i] == observer)
         {
             removedIndex = i;
             mObserver[i] = nullptr;
+            isFound = true;
             break;
         }
     }
 
-    //  remove observer from array
-    for (uint8_t i = removedIndex; i < observerIndex; i++)
+    if (isFound)
     {
-        mObserver[i] = mObserver[i + 1];
+        //  remove observer from array
+        for (uint8_t i = removedIndex; i < observerIndex; i++)
+        {
+            mObserver[i] = mObserver[i + 1];
+        }
+        observerIndex = observerIndex - 1;
     }
-    observerIndex = observerIndex - 1;
 }
 
 void Subject::_notifyObserver(uint8_t _val)
