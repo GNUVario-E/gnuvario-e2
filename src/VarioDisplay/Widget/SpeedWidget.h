@@ -16,6 +16,7 @@ public:
         TITLE_NAME_INDEX = TITRE_SPEED;
         initAutoTitleFromIndex();
         setTextSize(4);
+        setText("");
     }
     void addToBuffer(GxEPD2_GFX &_display);
     bool isRefreshNeeded(uint32_t lastDisplayTime);

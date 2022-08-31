@@ -10,7 +10,6 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
 
     if (isMute || (volume == 0))
     {
-
         _display.drawInvertedBitmap(topx, topy, volume0icons, imgWidth, imgHeight, GxEPD_BLACK);
     }
     else if (volume < 5)
@@ -26,16 +25,36 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
         _display.drawInvertedBitmap(topx, topy, volume3icons, imgWidth, imgHeight, GxEPD_BLACK);
     }
 
-    _display.drawInvertedBitmap(topx + (imgWidth)*3, topy, batIcon, imgWidth, imgHeight, GxEPD_BLACK);
-
     _display.setFont(&NotoSans6pt7b);
     _display.setTextSize(1);
 
     int16_t tbx, tby;
     uint16_t tbw, tbh;
+
+    // satellites count
+    if (fc.gps.locTimestamp > getTimeout())
+    {
+        _display.drawInvertedBitmap(topx + (imgWidth)*2, topy, fixicons, imgWidth, imgHeight, GxEPD_BLACK);
+    }
+    else
+    {
+        _display.drawInvertedBitmap(topx + (imgWidth)*2, topy, nofixicons, imgWidth, imgHeight, GxEPD_BLACK);
+    }
+
+    _display.getTextBounds(String(satCount), 0, 0, &tbx, &tby, &tbw, &tbh);
+
+    _display.setCursor(topx + (imgWidth)*2 + (imgWidth / 2 - tbw / 2), topy + imgHeight + 10);
+    _display.print(satCount);
+
+    // Battery
+    _display.drawInvertedBitmap(topx + (imgWidth)*3, topy, batIcon, imgWidth, imgHeight, GxEPD_BLACK);
+
+    _display.setFont(&NotoSans6pt7b);
+    _display.setTextSize(1);
+
     _display.getTextBounds(String(batPct), 0, 0, &tbx, &tby, &tbw, &tbh);
 
-    _display.setCursor(topx + (imgWidth)*3 + (imgWidth / 2 - tbw / 2), topy + 28 + 6);
+    _display.setCursor(topx + (imgWidth)*3 + (imgWidth / 2 - tbw / 2), topy + imgHeight + 10);
     _display.print(batPct);
 
     storeLastDiplayZone(_display, width, height);
@@ -92,6 +111,13 @@ bool ToolbarWidget::isRefreshNeeded(uint32_t lastDisplayTime)
     {
         isMute = fc.sound.isMute;
         oldIsMute = isMute;
+        hasChange = true;
+    }
+
+    if (oldSatCount != fc.gps.satellitesCount)
+    {
+        satCount = fc.gps.satellitesCount;
+        oldSatCount = fc.gps.satellitesCount;
         hasChange = true;
     }
 

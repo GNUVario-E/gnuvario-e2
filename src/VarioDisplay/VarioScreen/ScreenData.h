@@ -26,7 +26,7 @@ struct S_TXT
     uint8_t altWidgetIndex;
 };
 
-struct S_ALT
+struct S_ALTI
 {
     bool isactif;
     bool isborder;
@@ -103,6 +103,50 @@ struct S_FLIGHTTIME
     uint8_t altWidgetIndex;
 };
 
+struct S_LAT
+{
+    bool isactif;
+    bool isborder;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+    uint8_t altWidgetIndex;
+};
+
+struct S_LON
+{
+    bool isactif;
+    bool isborder;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+    uint8_t altWidgetIndex;
+};
+
+struct S_ALTIGPS
+{
+    bool isactif;
+    bool isborder;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+    uint8_t altWidgetIndex;
+};
+
+struct S_AGL
+{
+    bool isactif;
+    bool isborder;
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
+    uint8_t altWidgetIndex;
+};
+
 struct ScreenData
 {
     S_LOGO logo;
@@ -114,11 +158,15 @@ struct ScreenData
     S_TXT txt6;
     S_TXT txt7;
     S_TXT txt8;
-    S_ALT alt;
+    S_ALTI alti;
     S_VARIO vario;
     S_TOOLBAR toolbar;
     S_SPEED speed;
     S_BEARING bearing;
     S_TIME time;
     S_FLIGHTTIME flighttime;
+    S_LAT lat;
+    S_LON lon;
+    S_ALTIGPS altigps;
+    S_AGL agl;
 };

@@ -1,6 +1,6 @@
-#include "AltWidget.h"
+#include "AltiWidget.h"
 
-bool AltWidget::isRefreshNeeded(uint32_t lastDisplayTime)
+bool AltiWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
 
     // title = variol

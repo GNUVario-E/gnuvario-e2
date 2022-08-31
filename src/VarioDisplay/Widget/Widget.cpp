@@ -80,3 +80,8 @@ void Widget::setForceClearZone()
 {
     forceClear = true;
 }
+
+uint32_t Widget::getTimeout()
+{
+    return millis() - 1200;
+}

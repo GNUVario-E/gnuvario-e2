@@ -169,9 +169,14 @@ void VarioManager::onSignalReceived(uint8_t _val)
             break;
         case VARIO_START_ASKED:
             VARIO_CAL_DEBUG_PRINTLN("Démarrage du vario");
-            variometer = new Variometer(varioBeeper);
+            variometer = new Variometer(varioBeeper, varioSD);
             variometer->init();
             variometer->startTask();
+            break;
+        case AGL_INIT_ASKED:
+            VARIO_CAL_DEBUG_PRINTLN("AGL init altitude");
+            variometer->initFromAgl();
+            break;
         default:
             break;
         }

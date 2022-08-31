@@ -8,17 +8,21 @@
 #include "VarioDisplay/Widget/Widget.h"
 #include "VarioDisplay/Widget/LogoWidget.h"
 #include "VarioDisplay/Widget/TextWidget.h"
-#include "VarioDisplay/Widget/AltWidget.h"
+#include "VarioDisplay/Widget/AltiWidget.h"
 #include "VarioDisplay/Widget/VarioWidget.h"
 #include "VarioDisplay/Widget/ToolbarWidget.h"
 #include "VarioDisplay/Widget/SpeedWidget.h"
 #include "VarioDisplay/Widget/BearingWidget.h"
 #include "VarioDisplay/Widget/TimeWidget.h"
 #include "VarioDisplay/Widget/FlightTimeWidget.h"
+#include "VarioDisplay/Widget/LatWidget.h"
+#include "VarioDisplay/Widget/LonWidget.h"
+#include "VarioDisplay/Widget/AltiGpsWidget.h"
+#include "VarioDisplay/Widget/AglWidget.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include <VarioDisplay/VarioScreen/ScreenData.h>
 
-#define NB_WIDGETS 20
+#define NB_WIDGETS 25
 
 class VarioScreen
 {
@@ -33,13 +37,17 @@ private:
     TextWidget *textWidget6;
     TextWidget *textWidget7;
     TextWidget *textWidget8;
-    AltWidget *altWidget;
+    AltiWidget *altiWidget;
     VarioWidget *varioWidget;
     ToolbarWidget *toolbarWidget;
     SpeedWidget *speedWidget;
     BearingWidget *bearingWidget;
     TimeWidget *timeWidget;
     FlightTimeWidget *flightTimeWidget;
+    LatWidget *latWidget;
+    LonWidget *lonWidget;
+    AltiGpsWidget *altiGpsWidget;
+    AglWidget *aglWidget;
     // SoundeditWidget *soundEditWidget;
 
 protected:
@@ -59,11 +67,15 @@ public:
     TextWidget *getTextWidget6();
     TextWidget *getTextWidget7();
     TextWidget *getTextWidget8();
-    AltWidget *getAltWidget();
+    AltiWidget *getAltiWidget();
     VarioWidget *getVarioWidget();
     ToolbarWidget *getToolbarWidget();
     SpeedWidget *getSpeedWidget();
     BearingWidget *getBearingWidget();
     TimeWidget *getTimeWidget();
     FlightTimeWidget *getFlightTimeWidget();
+    LatWidget *getLatWidget();
+    LonWidget *getLonWidget();
+    AltiGpsWidget *getAltiGpsWidget();
+    AglWidget *getAglWidget();
 };

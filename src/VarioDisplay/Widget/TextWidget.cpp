@@ -54,7 +54,7 @@ void TextWidget::addToBuffer(GxEPD2_GFX &_display)
         _display.setTextSize(1);                                    // boundary box window
         _display.getTextBounds(text, 0, 0, &tbx, &tby, &tbw, &tbh); // it works for origin 0, 0, fortunately (negative tby!)
 
-        _display.setCursor(topx - marginTextRight + (width - tbw) / 2, topy + (height - tbh) / 2 + paddingTop + marginTitle * 2);
+        _display.setCursor(topx - marginTextRight + (width - tbw) / 2 - tbx, topy + (height - tbh) / 2 + paddingTop + marginTitle * 2);
         _display.print(text);
 
         storeLastDiplayZone(_display, width, height);

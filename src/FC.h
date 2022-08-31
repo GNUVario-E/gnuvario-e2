@@ -2,18 +2,12 @@
 
 #include <Arduino.h>
 
-#define FC_GPS_NEW_SAMPLE_LOGGER		0b00000001
-#define FC_GPS_NEW_SAMPLE_WIND			0b00000010
-#define FC_GPS_NEW_SAMPLE_AGL			0b00000100
-#define FC_GPS_NEW_SAMPLE_ODO			0b00001000
-#define FC_GPS_NEW_SAMPLE_ALT           0b00010000
-#define FC_GPS_NEW_SAMPLE_CIRCLE        0b00100000
-#define FC_GPS_NEW_SAMPLE_AIRSPACE      0b01000000
-
 struct power_data
 {
     int capacite = 0;
+    uint32_t capaciteTimestamp = 0;
     float tension = .0;
+    uint32_t tensionTimestamp = 0;
 };
 
 struct sound_data
@@ -25,9 +19,12 @@ struct sound_data
 struct vario_data
 {
     int16_t alti;
+    uint32_t altiTimestamp = 0;
     float velocity;
+    uint32_t velocityTimestamp = 0;
     int16_t bearing;
     char bearingTxt[3];
+    uint32_t bearingTimestamp = 0;
 };
 
 struct wifi_data
@@ -57,15 +54,55 @@ struct text_data
     char text8[50];
 };
 
+struct gps_data
+{
+    double locLat = -999;
+    double locLon = -999;
+    uint32_t locTimestamp = 0;
+
+    uint8_t dateDay;
+    uint8_t dateMonth;
+    uint8_t dateYear;
+    uint32_t dateTimestamp = 0;
+
+    uint8_t timeHour;
+    uint8_t timeMinute;
+    uint8_t timeSecond;
+    uint32_t timeTimestamp = 0;
+
+    double kmph;
+    uint32_t kmphTimestamp = 0;
+
+    int32_t headingDeg;
+    char headingTxt[3];
+    uint32_t headingDegTimestamp = 0;
+
+    double altiMeters;
+    uint32_t altiMetersTimestamp = 0;
+
+    double hdop;
+    uint32_t hdopTimestamp = 0;
+
+    uint32_t satellitesCount;
+    uint32_t satellitesTimestamp = 0;
+};
+
+struct agl_data
+{
+    int agl;
+    uint32_t aglTimestamp = 0;
+    int groundLvl = 0;
+};
+
 struct fcdata_t
 {
-    double_t speed;
     vario_data vario;
-    bool isFixed;
     power_data power;
     sound_data sound;
     int8_t time[3] = {0, 0, 0};
     int8_t flighttime[3] = {0, 0, 0};
     wifi_data wifi;
     text_data text;
+    gps_data gps;
+    agl_data agl;
 };

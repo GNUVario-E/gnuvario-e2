@@ -58,6 +58,7 @@ public:
     void setIsBorder(bool _isborder);
     bool getIsActif();
     uint8_t getAltWidgetIndex();
+    uint32_t getTimeout();
 };
 
 extern fcdata_t fc;

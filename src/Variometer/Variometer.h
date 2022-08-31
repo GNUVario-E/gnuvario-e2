@@ -5,7 +5,6 @@
 #include "VarioImu/VarioImu.h"
 #include "VarioGPS/VarioGPS.h"
 #include "VarioBeeper/VarioBeeper.h"
-
 class Variometer
 {
 private:
@@ -19,11 +18,13 @@ private:
     VarioImu *varioImu;
     VarioGPS *varioGPS;
     VarioBeeper *varioBeeper;
+    VarioSD *varioSD;
     //  //démarrage du vario
     //     varioImu = new VarioImu(this, kalmanvert);
 public:
-    Variometer(VarioBeeper *varioBeeper);
+    Variometer(VarioBeeper *varioBeeper, VarioSD *varioSD);
     void init();
     void startTask();
     void debug();
+    void initFromAgl();
 };

@@ -21,6 +21,9 @@ private:
     uint8_t volume = 0;
     uint8_t oldVolume = 0;
 
+    uint32_t satCount = 0;
+    uint32_t oldSatCount = 0;
+
     bool isMute = true;
     bool oldIsMute = true;
 

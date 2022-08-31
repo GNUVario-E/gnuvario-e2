@@ -8,7 +8,7 @@ void VarioFSM::startTask()
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskFSM started");
 
-    xTaskCreate(this->startTaskImpl, "TaskFSM", 2000, this, FSM_TASK_PRIORITY, &_taskFSMHandle);
+    xTaskCreate(this->startTaskImpl, "TaskFSM", 3000, this, FSM_TASK_PRIORITY, &_taskFSMHandle);
     vTaskDelay(delayT50);
     xTaskNotify(VarioFSM::_taskFSMHandle, 0, eNoAction);
 }
@@ -249,6 +249,12 @@ void VarioFSM::onSignalReceived(uint8_t _val)
         // toggle mute
         VARIO_FSM_DEBUG_PRINTLN("toggle mute");
         _notifyObserver(VOLUME_TOGGLE_MUTE_ASKED);
+    }
+    else if ((fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)) && _val == BTN_LONG_A)
+    {
+        // toggle mute
+        VARIO_FSM_DEBUG_PRINTLN("AGL_INIT_ASKED");
+        _notifyObserver(AGL_INIT_ASKED);
     }
     else if (fsm.is_in_state(_state_sound_edit))
     {

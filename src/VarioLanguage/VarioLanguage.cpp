@@ -9,6 +9,7 @@
 #define DEFAULT_TITRE_TIME "Heure"
 #define DEFAULT_TITRE_TDV "Temps de vol"
 #define DEFAULT_TITRE_ALTI "Alti"
+#define DEFAULT_TITRE_ALTIGPS "Alti GPS"
 #define DEFAULT_TITRE_AGL "Alti Sol"
 #define DEFAULT_TITRE_VARIO "Vario"
 #define DEFAULT_TITRE_SPEED "Vitesse"
@@ -17,7 +18,7 @@
 #define DEFAULT_TITRE_CAP "Cap"
 #define DEFAULT_TITRE_LAT "Lat"
 #define DEFAULT_TITRE_LONG "Long"
-#define DEFAULT_TITRE_COMPAS "Compas"
+#define DEFAULT_TITRE_COMPAS "Boussole"
 #define DEFAULT_TITRE_STAT "Statistique"
 #define DEFAULT_TITRE_DATE "Date"
 #define DEFAULT_TITRE_HEURE "Heure"
@@ -116,6 +117,7 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "TIME", TITRE_TIME, MAX_CAR_TITRE_TIME);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "TDV", TITRE_TDV, MAX_CAR_TITRE_TDV);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "ALTI", TITRE_ALTI, MAX_CAR_TITRE_ALTI);
+	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "ALTIGPS", TITRE_ALTIGPS, MAX_CAR_TITRE_ALTIGPS);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "AGL", TITRE_AGL, MAX_CAR_TITRE_AGL);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "VARIO", TITRE_VARIO, MAX_CAR_TITRE_VARIO);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "SPEED", TITRE_SPEED, MAX_CAR_TITRE_SPEED);
@@ -201,6 +203,7 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 	Titre["TIME"] = TITRE_TAB[TITRE_TIME];
 	Titre["TDV"] = TITRE_TAB[TITRE_TDV];
 	Titre["ALTI"] = TITRE_TAB[TITRE_ALTI];
+	Titre["ALTIGPS"] = TITRE_TAB[TITRE_ALTIGPS];
 	Titre["AGL"] = TITRE_TAB[TITRE_AGL];
 	Titre["VARIO"] = TITRE_TAB[TITRE_VARIO];
 	Titre["SPEED"] = TITRE_TAB[TITRE_SPEED];
@@ -264,6 +267,7 @@ void VarioLanguage::setDefaultValue()
 	strcpy(TITRE_TAB[TITRE_TIME], DEFAULT_TITRE_TIME);
 	strcpy(TITRE_TAB[TITRE_TDV], DEFAULT_TITRE_TDV);
 	strcpy(TITRE_TAB[TITRE_ALTI], DEFAULT_TITRE_ALTI);
+	strcpy(TITRE_TAB[TITRE_ALTIGPS], DEFAULT_TITRE_ALTIGPS);
 	strcpy(TITRE_TAB[TITRE_AGL], DEFAULT_TITRE_AGL);
 	strcpy(TITRE_TAB[TITRE_VARIO], DEFAULT_TITRE_VARIO);
 	strcpy(TITRE_TAB[TITRE_SPEED], DEFAULT_TITRE_SPEED);

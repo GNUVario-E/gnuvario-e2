@@ -5,7 +5,6 @@
 #include "Variometer/IntTW/IntTW.h"
 #include "Variometer/ms5611TW/ms5611TW.h"
 #include "Variometer/vertaccel/vertaccel.h"
-#include "VarioManager.h"
 #include "Variometer/kalmanvert/kalmanvert.h"
 #include "VarioManager.h"
 

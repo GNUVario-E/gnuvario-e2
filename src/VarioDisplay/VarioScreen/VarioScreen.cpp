@@ -54,9 +54,9 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     textWidget8->setText("TEXTE 8");
     // textWidget8->setBlinkFreq(2);
 
-    altWidget = new AltWidget(_varioLanguage, data.alt.altWidgetIndex, data.alt.x, data.alt.y, data.alt.w, data.alt.h);
-    altWidget->setIsActif(data.alt.isactif);
-    altWidget->setIsBorder(data.alt.isborder);
+    altiWidget = new AltiWidget(_varioLanguage, data.alti.altWidgetIndex, data.alti.x, data.alti.y, data.alti.w, data.alti.h);
+    altiWidget->setIsActif(data.alti.isactif);
+    altiWidget->setIsBorder(data.alti.isborder);
 
     varioWidget = new VarioWidget(_varioLanguage, data.vario.altWidgetIndex, data.vario.x, data.vario.y, data.vario.w, data.vario.h);
     varioWidget->setIsActif(data.vario.isactif);
@@ -82,6 +82,22 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     flightTimeWidget->setIsActif(data.flighttime.isactif);
     flightTimeWidget->setIsBorder(data.flighttime.isborder);
 
+    latWidget = new LatWidget(_varioLanguage, data.lat.altWidgetIndex, data.lat.x, data.lat.y, data.lat.w, data.lat.h);
+    latWidget->setIsActif(data.lat.isactif);
+    latWidget->setIsBorder(data.lat.isborder);
+
+    lonWidget = new LonWidget(_varioLanguage, data.lat.altWidgetIndex, data.lon.x, data.lon.y, data.lon.w, data.lon.h);
+    lonWidget->setIsActif(data.lon.isactif);
+    lonWidget->setIsBorder(data.lon.isborder);
+
+    altiGpsWidget = new AltiGpsWidget(_varioLanguage, data.altigps.altWidgetIndex, data.altigps.x, data.altigps.y, data.altigps.w, data.altigps.h);
+    altiGpsWidget->setIsActif(data.altigps.isactif);
+    altiGpsWidget->setIsBorder(data.altigps.isborder);
+
+    aglWidget = new AglWidget(_varioLanguage, data.agl.altWidgetIndex, data.agl.x, data.agl.y, data.agl.w, data.agl.h);
+    aglWidget->setIsActif(data.agl.isactif);
+    aglWidget->setIsBorder(data.agl.isborder);
+
     tabWidgets[nb_widgets++] = logoWidget;
     tabWidgets[nb_widgets++] = textWidget1;
     tabWidgets[nb_widgets++] = textWidget2;
@@ -91,13 +107,17 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     tabWidgets[nb_widgets++] = textWidget6;
     tabWidgets[nb_widgets++] = textWidget7;
     tabWidgets[nb_widgets++] = textWidget8;
-    tabWidgets[nb_widgets++] = altWidget;
+    tabWidgets[nb_widgets++] = altiWidget;
     tabWidgets[nb_widgets++] = varioWidget;
     tabWidgets[nb_widgets++] = toolbarWidget;
     tabWidgets[nb_widgets++] = speedWidget;
     tabWidgets[nb_widgets++] = bearingWidget;
     tabWidgets[nb_widgets++] = timeWidget;
     tabWidgets[nb_widgets++] = flightTimeWidget;
+    tabWidgets[nb_widgets++] = latWidget;
+    tabWidgets[nb_widgets++] = lonWidget;
+    tabWidgets[nb_widgets++] = altiGpsWidget;
+    tabWidgets[nb_widgets++] = aglWidget;
 }
 
 uint8_t VarioScreen::getNbWidgets()
@@ -164,9 +184,9 @@ TextWidget *VarioScreen::getTextWidget8()
     return textWidget8;
 }
 
-AltWidget *VarioScreen::getAltWidget()
+AltiWidget *VarioScreen::getAltiWidget()
 {
-    return altWidget;
+    return altiWidget;
 }
 
 VarioWidget *VarioScreen::getVarioWidget()
@@ -197,4 +217,24 @@ TimeWidget *VarioScreen::getTimeWidget()
 FlightTimeWidget *VarioScreen::getFlightTimeWidget()
 {
     return flightTimeWidget;
+}
+
+LatWidget *VarioScreen::getLatWidget()
+{
+    return latWidget;
+}
+
+LonWidget *VarioScreen::getLonWidget()
+{
+    return lonWidget;
+}
+
+AltiGpsWidget *VarioScreen::getAltiGpsWidget()
+{
+    return altiGpsWidget;
+}
+
+AglWidget *VarioScreen::getAglWidget()
+{
+    return aglWidget;
 }

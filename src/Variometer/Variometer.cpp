@@ -46,8 +46,6 @@ void Variometer::task()
                 altiFiltered = alti; // first reading so set filtered to reading
             }
 
-            fc.vario.alti = round(altiFiltered);
-
             accel = varioImu->getAccel();
 
             unsigned long myTime = millis();
@@ -62,6 +60,8 @@ void Variometer::task()
 
             if (calibratedAlti < 0)
                 calibratedAlti = 0;
+
+            fc.vario.alti = round(calibratedAlti);
 
             // Serial.print("velocity:");
             // Serial.println(velocity);
@@ -82,13 +82,15 @@ void Variometer::task()
     }
 }
 
-Variometer::Variometer(VarioBeeper *_varioBeeper)
+Variometer::Variometer(VarioBeeper *_varioBeeper, VarioSD *_varioSD)
 {
+    varioBeeper = _varioBeeper;
     kalmanvert = new Kalmanvert();
     varioImu = new VarioImu(kalmanvert);
-    varioBeeper = _varioBeeper;
     varioGPS = new VarioGPS();
+    varioSD = _varioSD;
 }
+
 void Variometer::init()
 {
     varioImu->init();
@@ -100,4 +102,24 @@ void Variometer::init()
 void Variometer::preTaskInit()
 {
     varioImu->postInit();
+}
+
+void Variometer::initFromAgl()
+{
+    if (fc.gps.locTimestamp > (millis() - 1200) && fc.agl.aglTimestamp > (millis() - 1200))
+    {
+        int groundLevel = fc.agl.groundLvl;
+        if (groundLevel != -1)
+        {
+            kalmanvert->calibratePosition(fc.agl.groundLvl);
+
+            VARIO_AGL_DEBUG_PRINT("groundLvl:");
+            VARIO_AGL_DEBUG_PRINTLN(groundLevel);
+
+            varioBeeper->generateTone(523, 250);
+            varioBeeper->generateTone(659, 250);
+            varioBeeper->generateTone(784, 250);
+            varioBeeper->generateTone(1046, 250);
+        }
+    }
 }
