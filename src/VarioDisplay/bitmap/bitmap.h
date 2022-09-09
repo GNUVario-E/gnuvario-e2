@@ -7,3 +7,4 @@
 #include "_hour.h"
 #include "_hour_dot.h"
 #include "_gps.h"
+#include "_record.h"
