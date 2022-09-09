@@ -4,7 +4,7 @@
 #include "VarioTool/VarioTool.h"
 
 #define COEF_ALTI_FILTERED 0.1
-#define VARIO_TASK_PRIORITY 10
+#define VARIO_TASK_PRIORITY 11
 
 void Variometer::startTask()
 {
@@ -54,14 +54,14 @@ void Variometer::task()
             velocity = kalmanvert->getVelocity();
 
             varioBeeper->setVelocity(velocity);
-            fc.vario.velocity = velocity;
+            fc.setVarioVelocity(velocity, millis());
 
             calibratedAlti = kalmanvert->getCalibratedPosition();
 
             if (calibratedAlti < 0)
                 calibratedAlti = 0;
 
-            fc.vario.alti = round(calibratedAlti);
+            fc.setVarioAlti(round(calibratedAlti), millis());
 
             // Serial.print("velocity:");
             // Serial.println(velocity);
@@ -72,10 +72,12 @@ void Variometer::task()
         bearing = varioImu->getBearing();
         if (bearing != -1)
         {
-            fc.vario.bearing = bearing;
-            VarioTool::bearingToOrdinal2c(fc.vario.bearingTxt, bearing);
+            char bearingTxt[3];
+            VarioTool::bearingToOrdinal2c(bearingTxt, bearing);
+            fc.setVarioBearing(bearing, bearingTxt, millis());
+
             VARIO_DATA_DEBUG_PRINT("Bearingtxt :");
-            VARIO_DATA_DEBUG_PRINTLN(fc.vario.bearingTxt);
+            VARIO_DATA_DEBUG_PRINTLN(bearingTxt);
         }
         // give time to other tasks
         vTaskDelay(delayT50);
@@ -85,10 +87,10 @@ void Variometer::task()
 Variometer::Variometer(VarioBeeper *_varioBeeper, VarioSD *_varioSD)
 {
     varioBeeper = _varioBeeper;
+    varioSD = _varioSD;
     kalmanvert = new Kalmanvert();
     varioImu = new VarioImu(kalmanvert);
     varioGPS = new VarioGPS();
-    varioSD = _varioSD;
 }
 
 void Variometer::init()
@@ -106,15 +108,15 @@ void Variometer::preTaskInit()
 
 void Variometer::initFromAgl()
 {
-    if (fc.gps.locTimestamp > (millis() - 1200) && fc.agl.aglTimestamp > (millis() - 1200))
+    if (fc.getGpsIsFixed() && fc.getGpsLocTimestamp() > (millis() - 1200) && fc.getAglAltTimestamp() > (millis() - 1200))
     {
-        int groundLevel = fc.agl.groundLvl;
+        int groundLevel = fc.getAglGroundLvl();
         if (groundLevel != -1)
         {
-            kalmanvert->calibratePosition(fc.agl.groundLvl);
+            kalmanvert->calibratePosition(fc.getAglGroundLvl());
 
             VARIO_AGL_DEBUG_PRINT("groundLvl:");
-            VARIO_AGL_DEBUG_PRINTLN(groundLevel);
+            VARIO_AGL_DEBUG_PRINTLN(fc.getAglGroundLvl());
 
             varioBeeper->generateTone(523, 250);
             varioBeeper->generateTone(659, 250);

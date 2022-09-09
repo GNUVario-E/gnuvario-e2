@@ -4,7 +4,6 @@
 #include "HardwareConfig/HardwareConfig.h"
 #include <TinyGPS++.h>
 #include "FC.h"
-#include "AglManager/src/AglManager.h"
 
 #define GPS_BAUD 9600
 
@@ -17,7 +16,6 @@ private:
     static void startTaskImpl(void *);
     void task();
     uint32_t startTaskTime;
-    AglManager *aglManager;
 
 public:
     VarioGPS();
@@ -26,4 +24,4 @@ public:
     void displayInfo();
 };
 
-extern fcdata_t fc;
+extern FC fc;

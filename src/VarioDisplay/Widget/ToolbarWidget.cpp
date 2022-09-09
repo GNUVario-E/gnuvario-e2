@@ -31,8 +31,20 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
     int16_t tbx, tby;
     uint16_t tbw, tbh;
 
+    // wait for record and record in progress
+    if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > (millis() - getTimeout()) && !fc.getIsFlightStart())
+    {
+        // wait for start
+        _display.drawInvertedBitmap(topx + (imgWidth), topy, waitrecordicons, imgWidth, imgHeight, GxEPD_BLACK);
+    }
+    else if (fc.getIsFlightStart())
+    {
+        // record in progress
+        _display.drawInvertedBitmap(topx + (imgWidth), topy, recordicons, imgWidth, imgHeight, GxEPD_BLACK);
+    }
+
     // satellites count
-    if (fc.gps.locTimestamp > getTimeout())
+    if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > getTimeout())
     {
         _display.drawInvertedBitmap(topx + (imgWidth)*2, topy, fixicons, imgWidth, imgHeight, GxEPD_BLACK);
     }
@@ -70,19 +82,19 @@ bool ToolbarWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
     bool hasChange = false;
 
-    if (fc.power.capacite >= 75)
+    if (fc.getPowerCapacite() >= 75)
     {
         batIcon = bat4icons;
     }
-    else if (fc.power.capacite >= 50)
+    else if (fc.getPowerCapacite() >= 50)
     {
         batIcon = bat3icons;
     }
-    else if (fc.power.capacite >= 25)
+    else if (fc.getPowerCapacite() >= 25)
     {
         batIcon = bat2icons;
     }
-    else if (fc.power.capacite >= 10)
+    else if (fc.getPowerCapacite() >= 10)
     {
         batIcon = bat1icons;
     }
@@ -93,31 +105,31 @@ bool ToolbarWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         hasChange = true;
     }
 
-    if (oldBatPct != fc.power.capacite)
+    if (oldBatPct != fc.getPowerCapacite())
     {
-        batPct = fc.power.capacite;
+        batPct = fc.getPowerCapacite();
         oldBatPct = batPct;
         hasChange = true;
     }
 
-    if (oldVolume != fc.sound.volume)
+    if (oldVolume != fc.getSoundVolume())
     {
-        volume = fc.sound.volume;
+        volume = fc.getSoundVolume();
         oldVolume = volume;
         hasChange = true;
     }
 
-    if (oldIsMute != fc.sound.isMute)
+    if (oldIsMute != fc.getSoundIsMute())
     {
-        isMute = fc.sound.isMute;
+        isMute = fc.getSoundIsMute();
         oldIsMute = isMute;
         hasChange = true;
     }
 
-    if (oldSatCount != fc.gps.satellitesCount)
+    if (oldSatCount != fc.getGpsSatellitesCount())
     {
-        satCount = fc.gps.satellitesCount;
-        oldSatCount = fc.gps.satellitesCount;
+        satCount = fc.getGpsSatellitesCount();
+        oldSatCount = fc.getGpsSatellitesCount();
         hasChange = true;
     }
 

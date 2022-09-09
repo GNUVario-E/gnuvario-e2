@@ -28,6 +28,7 @@ public:
     void generateTone(uint32_t freqHz, int ms);
     void generateTone(uint32_t freqHz, int ms, uint8_t volume);
     void generateToneSuccess();
+    void generateToneSoftFailure();
     void generateToneFailure();
     void setVolume(uint8_t newVolume = BEEP_DEFAULT_VOLUME);
     void increaseVolume();
@@ -38,4 +39,4 @@ public:
     bool isMute(void);
 };
 
-extern fcdata_t fc;
+extern FC fc;

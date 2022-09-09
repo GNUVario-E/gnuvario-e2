@@ -3,15 +3,14 @@
 bool AltiGpsWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
 
-    // title = variol
-    if (fc.gps.altiMetersTimestamp > getTimeout())
+    if (fc.getGpsAltiMetersTimestamp() > getTimeout())
     {
-        if (fc.gps.altiMeters != oldAlt)
+        if (fc.getGpsAltiMeters() != oldAlt)
         {
-            sprintf(localText, "%d m", (int)fc.gps.altiMeters);
+            sprintf(localText, "%d m", (int)fc.getGpsAltiMeters());
 
             setText(localText);
-            oldAlt = fc.gps.altiMeters;
+            oldAlt = fc.getGpsAltiMeters();
 
             return true;
         }

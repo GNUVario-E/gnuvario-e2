@@ -11,13 +11,13 @@ void SpeedWidget::addToBuffer(GxEPD2_GFX &_display)
 
 bool SpeedWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
-    if (fc.gps.kmphTimestamp > getTimeout())
+    if (fc.getGpsKmphTimestamp() > getTimeout())
     {
-        if (fc.gps.kmph != oldSpeed)
+        if (fc.getGpsKmph() != oldSpeed)
         {
-            sprintf(localText, "%d.%02d ", (int)fc.gps.kmph, (int)(fabsf(fc.gps.kmph) * 100) % 100);
+            sprintf(localText, "%d ", (int)fc.getGpsKmph());
             setText(localText);
-            oldSpeed = fc.gps.kmph;
+            oldSpeed = fc.getGpsKmph();
 
             return true;
         }

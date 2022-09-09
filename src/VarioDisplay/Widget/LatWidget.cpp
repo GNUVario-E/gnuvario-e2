@@ -3,14 +3,14 @@
 bool LatWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
 
-    if (fc.gps.locTimestamp > getTimeout())
+    if (fc.getGpsLocTimestamp() > getTimeout())
     {
-        if (fc.gps.locLat != oldLat)
+        if (fc.getGpsLat() != oldLat)
         {
-            sprintf(localText, "%d.%06d", (int)fc.gps.locLat, (int)(fc.gps.locLat * 1000000) % 1000000);
+            sprintf(localText, "%d.%06d", (int)fc.getGpsLat(), (int)(fc.getGpsLat() * 1000000) % 1000000);
 
             setText(localText);
-            oldLat = fc.gps.locLat;
+            oldLat = fc.getGpsLat();
 
             return true;
         }

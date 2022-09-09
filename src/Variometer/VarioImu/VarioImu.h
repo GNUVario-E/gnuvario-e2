@@ -27,4 +27,4 @@ public:
     int16_t getBearing(void);
 };
 
-extern fcdata_t fc;
+extern FC fc;

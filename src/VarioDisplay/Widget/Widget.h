@@ -61,4 +61,4 @@ public:
     uint32_t getTimeout();
 };
 
-extern fcdata_t fc;
+extern FC fc;

@@ -2,15 +2,14 @@
 
 bool AglWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
-    if (fc.agl.aglTimestamp > getTimeout())
+    if (fc.getAglAltTimestamp() > getTimeout())
     {
-        if (fc.agl.agl != oldAlt)
+        if (fc.getAglAlt() != oldAlt)
         {
-            // sprintf(localText, "Alt : %d", fc.alt);
-            sprintf(localText, "%d m", fc.agl.agl);
+            sprintf(localText, "%d m", fc.getAglAlt());
 
             setText(localText);
-            oldAlt = fc.agl.agl;
+            oldAlt = fc.getAglAlt();
 
             return true;
         }

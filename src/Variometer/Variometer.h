@@ -5,6 +5,8 @@
 #include "VarioImu/VarioImu.h"
 #include "VarioGPS/VarioGPS.h"
 #include "VarioBeeper/VarioBeeper.h"
+#include "VarioSD/VarioSD.h"
+
 class Variometer
 {
 private:

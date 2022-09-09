@@ -16,7 +16,7 @@ void VarioButton::startTask()
 {
 	// task creation
 	VARIO_PROG_DEBUG_PRINTLN("TaskVarioButton started");
-	xTaskCreate(this->startTaskImpl, "TaskVarioButton", 2048, this, BUTTON_TASK_PRIORITY, &_taskVarioButtonHandle);
+	xTaskCreate(this->startTaskImpl, "TaskVarioButton", 4096, this, BUTTON_TASK_PRIORITY, &_taskVarioButtonHandle);
 }
 
 void VarioButton::startTaskImpl(void *parm)

@@ -2,14 +2,14 @@
 
 bool LonWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
-    if (fc.gps.locTimestamp > getTimeout())
+    if (fc.getGpsLocTimestamp() > getTimeout())
     {
-        if (fc.gps.locLon != oldLon)
+        if (fc.getGpsLon() != oldLon)
         {
-            sprintf(localText, "%d.%06d", (int)fc.gps.locLon, (int)(fc.gps.locLon * 1000000) % 1000000);
+            sprintf(localText, "%d.%06d", (int)fc.getGpsLon(), (int)(fc.getGpsLon() * 1000000) % 1000000);
 
             setText(localText);
-            oldLon = fc.gps.locLon;
+            oldLon = fc.getGpsLon();
 
             return true;
         }

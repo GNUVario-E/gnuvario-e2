@@ -34,4 +34,4 @@ public:
     bool begin();
 };
 
-extern fcdata_t fc;
+extern FC fc;

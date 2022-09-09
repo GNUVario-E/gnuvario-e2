@@ -9,7 +9,7 @@
 
 const TickType_t delayT1000 = pdMS_TO_TICKS(1000);
 
-fcdata_t fc;
+FC fc;
 
 VarioManager vm;
 VarioFSM fsm;

@@ -160,11 +160,8 @@ bool VarioWifi::connectToWifi()
     VARIO_WIFI_DEBUG_PRINTLN(WiFi.SSID());
     VARIO_WIFI_DEBUG_PRINT("Use IP address :");
     VARIO_WIFI_DEBUG_PRINTLN(WiFi.localIP().toString());
-    fc.text.isText1 = true;
-    fc.text.isText2 = true;
-    WiFi.SSID().toCharArray(fc.text.text2, sizeof(WiFi.SSID()));
-    fc.text.isText3 = true;
-    sprintf(fc.text.text3, "%s", WiFi.localIP().toString().c_str());
+    fc.setText1(true, (char *)WiFi.SSID().c_str());
+    fc.setText3(true, (char *)WiFi.localIP().toString().c_str());
 
     return true;
 }

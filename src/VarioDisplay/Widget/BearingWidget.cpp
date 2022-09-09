@@ -8,35 +8,35 @@ void BearingWidget::addToBuffer(GxEPD2_GFX &_display)
 bool BearingWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
 
-    if (fc.gps.kmph > 5 && fc.gps.kmphTimestamp > getTimeout() && fc.gps.headingDegTimestamp > getTimeout())
+    if (fc.getGpsKmph() > 5 && fc.getGpsKmphTimestamp() > getTimeout() && fc.getGpsHeadingDegTimestamp() > getTimeout())
     {
         // cas ou on a une vitesse GPS supérieur à 5km/h valide depuis moins d'une seconde
-        if (fc.gps.headingDeg != oldBearing)
+        if (fc.getGpsHeadingDeg() != oldBearing)
         {
             if (TITLE_NAME_INDEX != TITRE_CAP)
             {
                 TITLE_NAME_INDEX = TITRE_CAP;
                 initAutoTitleFromIndex();
             }
-            sprintf(localText, "%s %d", fc.gps.headingTxt, fc.gps.headingDeg);
+            sprintf(localText, "%s %d", fc.getGpsHeadingTxt(), fc.getGpsHeadingDeg());
             setText(localText);
-            oldBearing = fc.gps.headingDeg;
+            oldBearing = fc.getGpsHeadingDeg();
 
             return true;
         }
     }
     else
     {
-        if (fc.vario.bearing != oldBearing)
+        if (fc.getVarioBearing() != oldBearing)
         {
             if (TITLE_NAME_INDEX != TITRE_COMPAS)
             {
                 TITLE_NAME_INDEX = TITRE_COMPAS;
                 initAutoTitleFromIndex();
             }
-            sprintf(localText, "%s %d", fc.vario.bearingTxt, fc.vario.bearing);
+            sprintf(localText, "%s %d", fc.getVarioBearingTxt(), fc.getVarioBearing());
             setText(localText);
-            oldBearing = fc.vario.bearing;
+            oldBearing = fc.getVarioBearing();
 
             return true;
         }

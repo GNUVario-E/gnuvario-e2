@@ -76,14 +76,17 @@ void VarioDisplay::buildScreens()
     bootScreen->getTextWidget4()->setText(tmpbuffer);
     bootScreen->getTextWidget4()->setTextSize(1);
 
-    sprintf(tmpbuffer, "%d%% (%.2fV)", fc.power.capacite, fc.power.tension);
+    sprintf(tmpbuffer, "%d%% (%.2fV)", fc.getPowerCapacite(), fc.getPowerTension());
     bootScreen->getTextWidget5()->setText(tmpbuffer);
 
     // construction de l'écran WIFI
     wifiScreen = new VarioScreen(wifiScreenData, varioLanguage);
     wifiScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_CONNECT));
     wifiScreen->getTextWidget1()->setIndexTxtFC(1);
-    sprintf(fc.text.text1, "%s", varioLanguage->getText(TITRE_CONNECTA));
+
+    fc.setText1(false, varioLanguage->getText(TITRE_CONNECTA));
+
+    // sprintf(fc.text.text1, "%s", varioLanguage->getText(TITRE_CONNECTA));
     wifiScreen->getTextWidget2()->setText("");
     wifiScreen->getTextWidget2()->setTextSize(1);
     wifiScreen->getTextWidget2()->setIndexTxtFC(2);
@@ -124,7 +127,7 @@ void VarioDisplay::screenTask(void *parameter)
         /* launch interrupt */
         if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
         {
-            VARIO_PROG_DEBUG_PRINTLN("screen refresh");
+            // VARIO_PROG_DEBUG_PRINTLN("screen refresh");
 
             display.setFullWindow();
             display.display(true); // partial update
@@ -171,7 +174,7 @@ void VarioDisplay::bufferTask()
                     uint8_t altWidgetIndex = _currentScreen->tabWidgets[i]->getAltWidgetIndex();
                     if (altWidgetIndex != 99)
                     {
-                        Serial.println("Activation du widget " + String(altWidgetIndex) + " avec ancien wigdet =" + String(i));
+                        // Serial.println("Activation du widget " + String(altWidgetIndex) + " avec ancien wigdet =" + String(i));
                         tabToggle[nbToggle][0] = i;
                         tabToggle[nbToggle][1] = altWidgetIndex;
                         nbToggle++;
@@ -204,7 +207,7 @@ void VarioDisplay::bufferTask()
                     }
                 }
 
-                Serial.println("needRefresh");
+                // Serial.println("needRefresh");
                 xSemaphoreGive(screenMutex);
                 updateScreen();
                 notifyTask = false; // task will be notified at the end of the screen refresh

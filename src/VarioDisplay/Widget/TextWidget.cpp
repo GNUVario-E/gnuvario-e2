@@ -121,66 +121,66 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
     switch (indexTxtFC)
     {
     case 1:
-        if (fc.text.isText1)
+        if (fc.getIsText1())
         {
-            setText(fc.text.text1);
-            fc.text.isText1 = false;
+            setText(fc.getText1());
+            fc.setText1(false, "");
             return true;
         }
         break;
     case 2:
-        if (fc.text.isText2)
+        if (fc.getIsText2())
         {
-            setText(fc.text.text2);
-            fc.text.isText2 = false;
+            setText(fc.getText2());
+            fc.setText2(false, "");
             return true;
         }
         break;
     case 3:
-        if (fc.text.isText3)
+        if (fc.getIsText3())
         {
-            setText(fc.text.text3);
-            fc.text.isText3 = false;
+            setText(fc.getText3());
+            fc.setText3(false, "");
             return true;
         }
         break;
     case 4:
-        if (fc.text.isText4)
+        if (fc.getIsText4())
         {
-            setText(fc.text.text4);
-            fc.text.isText4 = false;
+            setText(fc.getText4());
+            fc.setText4(false, "");
             return true;
         }
         break;
     case 5:
-        if (fc.text.isText5)
+        if (fc.getIsText5())
         {
-            setText(fc.text.text5);
-            fc.text.isText5 = false;
+            setText(fc.getText5());
+            fc.setText5(false, "");
             return true;
         }
         break;
     case 6:
-        if (fc.text.isText6)
+        if (fc.getIsText6())
         {
-            setText(fc.text.text6);
-            fc.text.isText6 = false;
+            setText(fc.getText6());
+            fc.setText6(false, "");
             return true;
         }
         break;
     case 7:
-        if (fc.text.isText7)
+        if (fc.getIsText7())
         {
-            setText(fc.text.text7);
-            fc.text.isText7 = false;
+            setText(fc.getText7());
+            fc.setText7(false, "");
             return true;
         }
         break;
     case 8:
-        if (fc.text.isText8)
+        if (fc.getIsText8())
         {
-            setText(fc.text.text8);
-            fc.text.isText8 = false;
+            setText(fc.getText8());
+            fc.setText8(false, "");
             return true;
         }
         break;

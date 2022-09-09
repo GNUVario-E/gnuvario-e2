@@ -83,7 +83,7 @@ void VarioTool::bearingToOrdinal2c(char *bearingTxt, float bearing)
     if (bearing >= 0.0 && bearing < 22.5)
     {
         sprintf(bearingTxt, "N");
-        }
+    }
     else if (bearing >= 22.5 && bearing < 67.5)
     {
         sprintf(bearingTxt, "NE");
@@ -120,4 +120,14 @@ void VarioTool::bearingToOrdinal2c(char *bearingTxt, float bearing)
     {
         sprintf(bearingTxt, "N");
     }
+}
+
+String VarioTool::getDeviceID()
+{
+    char deviceid[21];
+    uint64_t chipid;
+    chipid = ESP.getEfuseMac();
+    sprintf(deviceid, "%" PRIu64, chipid);
+    String thisID(deviceid);
+    return thisID;
 }

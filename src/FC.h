@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-
+#include "Observer/Subject.h"
 struct power_data
 {
     int capacite = 0;
@@ -56,6 +56,9 @@ struct text_data
 
 struct gps_data
 {
+    bool isFixed = false;
+    uint32_t isFixedTimestamp = 0;
+
     double locLat = -999;
     double locLon = -999;
     uint32_t locTimestamp = 0;
@@ -89,9 +92,17 @@ struct gps_data
 
 struct agl_data
 {
-    int agl;
-    uint32_t aglTimestamp = 0;
+    int aglAlt = -1;
+    uint32_t aglAltTimestamp = 0;
     int groundLvl = 0;
+    uint32_t aglGroundLvlTimestamp = 0;
+};
+
+struct flight_data
+{
+    bool isFlightStart = false;
+    uint32_t flightStartFistTimestamp;
+    int8_t flightStartTime[3] = {0, 0, 0};
 };
 
 struct fcdata_t
@@ -99,10 +110,158 @@ struct fcdata_t
     vario_data vario;
     power_data power;
     sound_data sound;
-    int8_t time[3] = {0, 0, 0};
-    int8_t flighttime[3] = {0, 0, 0};
     wifi_data wifi;
     text_data text;
     gps_data gps;
     agl_data agl;
+    flight_data flight;
+};
+
+class FC : public Subject
+{
+private:
+    fcdata_t fcdata;
+    int8_t tzn;
+    void checkFlightStart();
+
+public:
+    FC();
+
+    void setTzn(int8_t tzn);
+
+    // POWER
+    void setPowerCapacite(int capacite, uint32_t capaciteTimestamp);
+    int getPowerCapacite();
+    uint32_t getPowerCapaciteTimestamp();
+
+    void setPowerTension(float tension, uint32_t tensionTimestamp);
+    float getPowerTension();
+    uint32_t getPowerTensionTimestamp();
+
+    // SOUND
+    void setSoundIsMute(bool isMute);
+    void setSoundVolume(float volume);
+    bool getSoundIsMute();
+    float getSoundVolume();
+
+    // VARIO
+    void setVarioAlti(int16_t alti, uint32_t altiTimestamp);
+    int16_t getVarioAlti();
+    uint32_t getVarioAltiTimestamp();
+
+    void setVarioVelocity(float velocity, uint32_t velocityTimestamp);
+    float getVarioVelocity();
+    uint32_t getVarioVelocityTimestamp();
+
+    void setVarioBearing(int16_t bearing, char bearingTxt[3], uint32_t bearingTimestamp);
+    int16_t getVarioBearing();
+    char *getVarioBearingTxt();
+    uint32_t getVarioBearingTimestamp();
+
+    // WIFI
+    void setWifiConnected(bool connected);
+    void setWifiSsid(char ssid[32]);
+    void setWifiIp(char ip[16]);
+    bool getWifiConnected();
+    char *getWifiSsid();
+    char *getWifiIp();
+
+    // TEXT
+    void setText1(bool isText, const char *text);
+    bool getIsText1();
+    char *getText1();
+
+    void setText2(bool isText, const char *text);
+    bool getIsText2();
+    char *getText2();
+
+    void setText3(bool isText, const char *text);
+    bool getIsText3();
+    char *getText3();
+
+    void setText4(bool isText, const char *text);
+    bool getIsText4();
+    char *getText4();
+
+    void setText5(bool isText, const char *text);
+    bool getIsText5();
+    char *getText5();
+
+    void setText6(bool isText, const char *text);
+    bool getIsText6();
+    char *getText6();
+
+    void setText7(bool isText, const char *text);
+    bool getIsText7();
+    char *getText7();
+
+    void setText8(bool isText, const char *text);
+    bool getIsText8();
+    char *getText8();
+
+    // GPS
+    void setGpsIsFixed(bool isFixed, uint32_t isFixedTimestamp);
+    bool getGpsIsFixed();
+    uint32_t getGpsIsFixedTimestamp();
+
+    void setGpsLocation(double locLat, double locLon, uint32_t locTimestamp);
+    void setGpsLocTimestamp(uint32_t locTimestamp);
+    double getGpsLat();
+    double getGpsLon();
+    uint32_t getGpsLocTimestamp();
+
+    void setGpsDate(uint8_t dateDay, uint8_t dateMonth, uint8_t dateYear, uint32_t dateTimestamp);
+    void setGpsDateTimestamp(uint32_t dateTimestamp);
+    uint8_t getGpsDateDay();
+    uint8_t getGpsDateMonth();
+    uint8_t getGpsDateYear();
+    uint32_t getDateTimestamp();
+
+    void setGpsTimeUTC(uint8_t timeHour, uint8_t timeMinute, uint8_t timeSecond, uint32_t timeTimestamp);
+    void setGpsTimeTimestamp(uint32_t timeTimestamp);
+    uint8_t getGpsTimeHour();
+    uint8_t getGpsTimeHourUTC();
+    uint8_t getGpsTimeMinute();
+    uint8_t getGpsTimeSecond();
+    uint32_t getGpsTimeTimestamp();
+
+    void setGpsKmph(double kmph, uint32_t kmphTimestamp);
+    void setGpsKmphTimestamp(uint32_t kmphTimestamp);
+    double getGpsKmph();
+    uint32_t getGpsKmphTimestamp();
+
+    void setGpsHeading(int32_t headingDeg, const char *headingTxt, uint32_t headingDegTimestamp);
+    void setGpsHeadingTimestamp(uint32_t headingDegTimestamp);
+    int32_t getGpsHeadingDeg();
+    char *getGpsHeadingTxt();
+    uint32_t getGpsHeadingDegTimestamp();
+
+    void setGpsAltiMeters(double altiMeters, uint32_t altiMetersTimestamp);
+    void setGpsAltiMetersTimestamp(uint32_t altiMetersTimestamp);
+    double getGpsAltiMeters();
+    uint32_t getGpsAltiMetersTimestamp();
+
+    void setGpsHdop(double hdop, uint32_t hdopTimestamp);
+    void setGpsHdopTimestamp(uint32_t hdopTimestamp);
+    double getGpsHdop();
+    uint32_t getGpsHdopTimestamp();
+
+    void setGpsSatellitesCount(uint32_t satellitesCount, uint32_t satellitesTimestamp);
+    void setGpsSatellitesCountTimestamp(uint32_t satellitesTimestamp);
+    uint32_t getGpsSatellitesCount();
+    uint32_t getGpsSatellitesTimestamp();
+
+    // AGL
+    void setAglAlt(int aglAlt, uint32_t aglAltTimestamp);
+    int getAglAlt();
+    uint32_t getAglAltTimestamp();
+    void setAglGroundLvl(int groundLvl, uint32_t aglGroundLvlTimestamp);
+    int getAglGroundLvl();
+    uint32_t getAglGroundLvlTimestamp();
+
+    bool getIsFlightStart();
+    uint32_t getFlightDurationSecond();
+    uint8_t getFlightTimeDurationHour();
+    uint8_t getFlightTimeDurationMinute();
+    uint8_t getFlightTimeDurationSecond();
 };

@@ -3,6 +3,7 @@
 #include "VarioManager.h"
 #include "VarioDebug/VarioDebug.h"
 #include "event.h"
+
 // TaskHandle_t VarioManager::vmTaskHandler;
 // SemaphoreHandle_t VarioManager::vmMutex;
 
@@ -130,24 +131,24 @@ void VarioManager::timer10s()
 
 void VarioManager::setPowerDataToFC()
 {
-    if (fc.power.tension != 0)
+    if (fc.getPowerTension() != 0)
     {
         // lissage
-        fc.power.tension = fc.power.tension + 0.1 * (varioPower->getTension() - fc.power.tension);
+        fc.setPowerTension(fc.getPowerTension() + 0.1 * (varioPower->getTension() - fc.getPowerTension()), millis());
     }
     else
     {
-        fc.power.tension = varioPower->getTension();
+        fc.setPowerTension(varioPower->getTension(), millis());
     }
 
-    if (fc.power.capacite != 0)
+    if (fc.getPowerCapacite() != 0)
     {
         // lissage
-        fc.power.capacite = fc.power.capacite + 0.1 * (varioPower->getCapacitePct() - fc.power.capacite);
+        fc.setPowerCapacite(fc.getPowerCapacite() + 0.1 * (varioPower->getCapacitePct() - fc.getPowerCapacite()), millis());
     }
     else
     {
-        fc.power.capacite = varioPower->getCapacitePct();
+        fc.setPowerCapacite(varioPower->getCapacitePct(), millis());
     }
 }
 
@@ -155,30 +156,68 @@ void VarioManager::onSignalReceived(uint8_t _val)
 {
     switch (_val)
     {
+    case WIFI_START_ASKED:
+        VARIO_WIFI_DEBUG_PRINTLN("Démarrage du wifi");
+        varioWifi = new VarioWifi();
+        varioWifi->startTask();
+        break;
+    case CALIBRATION_START_ASKED:
+        VARIO_CAL_DEBUG_PRINTLN("Démarrage de la calibration");
+        varioCalibration = new VarioCalibration();
+        varioCalibration->begin(varioBeeper);
+        varioCalibration->startTask();
+        break;
+    case VARIO_START_ASKED:
+        VARIO_CAL_DEBUG_PRINTLN("Démarrage du vario");
+        variometer = new Variometer(varioBeeper, varioSD);
+        fc.registerObserver(this);
+        variometer->init();
+        variometer->startTask();
+
+        aglManager = new AglManager();
+        aglManager->init();
+
+        break;
+    case AGL_INIT_ASKED:
+        VARIO_CAL_DEBUG_PRINTLN("AGL init altitude");
+        variometer->initFromAgl();
+
+        break;
+    case GPS_NEW_POSITION:
+        aglManager->setLatitude(fc.getGpsLat());
+        aglManager->setLongitude(fc.getGpsLon());
+        fc.setAglAlt(aglManager->getAgl(), millis());
+        break;
+    case GPS_NO_POSITION:
+        aglManager->setLatitude(-1);
+        aglManager->setLongitude(-1);
+        fc.setAglAlt(-1, 0);
+        break;
+    case GPS_NEW_ALTI_METERS:
+        aglManager->setAltiGps(fc.getGpsAltiMeters());
+        aglManager->setAlti(fc.getVarioAlti());
+        fc.setAglGroundLvl(aglManager->getGroundLevel(), millis());
+        break;
+    case VARIO_NEW_ALTI:
+        break;
+    case GPS_FIXED:
+        varioBeeper->generateToneSuccess();
+        break;
+    case GPS_LOST_FIXED:
+        varioBeeper->generateToneSoftFailure();
+        break;
+    case FLIGHT_START:
+        varioBeeper->generateToneSuccess();
+        varioBeeper->generateToneSuccess();
+        // start IGC recording
+        varioIgc = new VarioIgc();
+        if (varioIgc->createNewIgcFile(varioData.getParam(PARAM_PILOT_NAME)->getValueChar(), varioData.getParam(PARAM_GLIDER_NAME1)->getValueChar(), fc.getGpsDateDay(), fc.getGpsDateMonth(), fc.getGpsDateYear(), varioData.getParam(PARAM_TIME_ZONE)->getValueInt8()))
         {
-        case WIFI_START_ASKED:
-            VARIO_WIFI_DEBUG_PRINTLN("Démarrage du wifi");
-            varioWifi = new VarioWifi();
-            varioWifi->startTask();
-            break;
-        case CALIBRATION_START_ASKED:
-            VARIO_CAL_DEBUG_PRINTLN("Démarrage de la calibration");
-            varioCalibration = new VarioCalibration();
-            varioCalibration->begin(varioBeeper);
-            varioCalibration->startTask();
-            break;
-        case VARIO_START_ASKED:
-            VARIO_CAL_DEBUG_PRINTLN("Démarrage du vario");
-            variometer = new Variometer(varioBeeper, varioSD);
-            variometer->init();
-            variometer->startTask();
-            break;
-        case AGL_INIT_ASKED:
-            VARIO_CAL_DEBUG_PRINTLN("AGL init altitude");
-            variometer->initFromAgl();
-            break;
-        default:
-            break;
-        }
+            varioIgc->startTask();
+        };
+
+        break;
+    default:
+        break;
     }
 }

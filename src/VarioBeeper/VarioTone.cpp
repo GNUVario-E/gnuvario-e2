@@ -7,7 +7,7 @@ VarioTone::VarioTone()
 void VarioTone::init(uint8_t baseVolume)
 {
     _volume = baseVolume;
-    fc.sound.volume = _volume;
+    fc.setSoundVolume(_volume);
 }
 
 void VarioTone::generateTone(uint32_t fHz, int ms)
@@ -54,9 +54,41 @@ void VarioTone::generateToneSuccess()
 
         VARIO_SOUND_DEBUG_PRINTLN("suspend task");
     }
+    generateTone(220, 100);
+    delay(50);
     generateTone(440, 100);
-    delay(100);
+    delay(50);
     generateTone(880, 100);
+    
+    
+    if (_taskVarioBeeperHandle != NULL)
+    {
+        vTaskResume(_taskVarioBeeperHandle);
+    }
+}
+
+void VarioTone::generateToneSoftFailure()
+{
+    if (_taskVarioBeeperHandle != NULL)
+    {
+        vTaskSuspend(_taskVarioBeeperHandle);
+
+        VARIO_SOUND_DEBUG_PRINTLN("suspend task");
+    }
+
+    uint16_t fHz = 300;
+    enableAmp();
+    delay(80);
+
+    while (fHz > 150)
+    {
+        toneAC(fHz, _volume);
+        fHz -= 5;
+        vTaskDelay(delayT10); // time for amp to get on
+    }
+
+    disableAmp();
+
     if (_taskVarioBeeperHandle != NULL)
     {
         vTaskResume(_taskVarioBeeperHandle);
@@ -106,7 +138,7 @@ void VarioTone::setVolume(uint8_t newVolume)
         _volume = newVolume;
     }
 
-    fc.sound.volume = _volume;
+    fc.setSoundVolume(_volume);
 }
 
 void VarioTone::increaseVolume()
@@ -128,13 +160,13 @@ void VarioTone::mute()
 {
     noToneAC();
     _muted = true;
-    fc.sound.isMute = _muted;
+    fc.setSoundIsMute(_muted);
 }
 
 void VarioTone::unMute()
 {
     _muted = false;
-    fc.sound.isMute = _muted;
+    fc.setSoundIsMute(_muted);
 }
 
 bool VarioTone::isMute(void)

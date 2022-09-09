@@ -13,4 +13,5 @@ public:
     static void deleteRecursive(const char *path);
     static StaticJsonDocument<4096> jsonDoc;
     static void bearingToOrdinal2c(char *bearingTxt, float bearing);
+    static String getDeviceID();
 };

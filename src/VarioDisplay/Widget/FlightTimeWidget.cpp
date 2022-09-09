@@ -14,15 +14,30 @@ bool FlightTimeWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
 
     // title = variol
-    if (fc.time[0] != oldTime[0] || fc.time[1] != oldTime[1] || fc.time[2] != oldTime[2])
+    if (fc.getIsFlightStart())
     {
-        sprintf(localText, "%02d %02d", fc.time[0], fc.time[1]);
-        setText(localText);
-        oldTime[0] = fc.time[0];
-        oldTime[1] = fc.time[1];
-        oldTime[2] = fc.time[2];
+        if (fc.getFlightTimeDurationHour() > 1 && (fc.getFlightTimeDurationHour() != oldTime[0] || fc.getFlightTimeDurationMinute() != oldTime[1]))
+        {
+            // more than one hour of flight
+            sprintf(localText, "%02d %02d", fc.getFlightTimeDurationHour(), fc.getFlightTimeDurationMinute());
+            setText(localText);
+            oldTime[0] = fc.getFlightTimeDurationHour();
+            oldTime[1] = fc.getFlightTimeDurationMinute();
+            oldTime[2] = fc.getFlightDurationSecond();
 
-        return true;
+            return true;
+        }
+        else if (fc.getFlightTimeDurationHour() < 1 && (fc.getFlightTimeDurationMinute() != oldTime[1] || fc.getFlightDurationSecond() != oldTime[2]))
+        {
+            // less than one hour of flight
+            sprintf(localText, "%02d %02d", fc.getFlightTimeDurationMinute(), fc.getFlightDurationSecond());
+            setText(localText);
+            oldTime[0] = fc.getFlightTimeDurationHour();
+            oldTime[1] = fc.getFlightTimeDurationMinute();
+            oldTime[2] = fc.getFlightDurationSecond();
+
+            return true;
+        }
     }
     else
     {
