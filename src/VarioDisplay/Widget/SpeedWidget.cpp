@@ -24,7 +24,11 @@ bool SpeedWidget::isRefreshNeeded(uint32_t lastDisplayTime)
     }
     else
     {
-        setText("");
+        if (strcmp(empty, getText()))
+        {
+            setText("");
+            return true;
+        }
     }
 
     return TextWidget::isRefreshNeeded(lastDisplayTime);

@@ -34,7 +34,7 @@
 //#define TWOWIRESCH_DEBUG
 //#define POWER_DEBUG
 //#define MEMORY_DEBUG
-// #define FSM_DEBUG
+#define FSM_DEBUG
 
 #if !defined(VARIO_DEBUG) || !defined(PROG_DEBUG)
 #define VARIO_PROG_DEBUG_PRINTLN(x)
