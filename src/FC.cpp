@@ -2,24 +2,39 @@
 #include "event.h"
 
 #define TIMEOUT_DATA 1200
+#define MIN_SPEED_TAKEOFF 0.0
+#define MIN_VARIO_TAKEOFF 0.1
+#define MIN_DURATION_TAKEOFF 2000
 
 void FC::setTzn(int8_t _tzn)
 {
     tzn = _tzn;
 }
 
-void FC::checkFlightStart()
+void FC::checkFlightStart(bool forceManualStart)
 {
+    bool doStart = false;
     if (!fcdata.flight.isFlightStart)
     {
         uint32_t currentMillis = millis();
-        if (fcdata.gps.isFixed && fcdata.gps.locTimestamp > (currentMillis - TIMEOUT_DATA) && fcdata.gps.kmphTimestamp > (currentMillis - TIMEOUT_DATA) && fcdata.gps.kmph > 5 && abs(fcdata.vario.velocity) > 0.5)
+        if (fcdata.gps.isFixed && fcdata.gps.locTimestamp > (currentMillis - TIMEOUT_DATA) && fcdata.gps.kmphTimestamp > (currentMillis - TIMEOUT_DATA))
         {
-            if (fcdata.flight.flightStartFistTimestamp == (uint32_t)ULONG_MAX)
+            if (forceManualStart)
             {
-                fcdata.flight.flightStartFistTimestamp = millis();
+                doStart = true;
             }
-            if (fcdata.flight.flightStartFistTimestamp < (currentMillis - 3000))
+            else if (fcdata.gps.kmph >= MIN_SPEED_TAKEOFF && abs(fcdata.vario.velocity) >= MIN_VARIO_TAKEOFF)
+            {
+                if (fcdata.flight.flightStartFistTimestamp == (uint32_t)ULONG_MAX)
+                {
+                    fcdata.flight.flightStartFistTimestamp = millis();
+                }
+                else if (fcdata.flight.flightStartFistTimestamp < (currentMillis - MIN_DURATION_TAKEOFF))
+                {
+                    doStart = true;
+                }
+            }
+            if (doStart)
             {
                 fcdata.flight.isFlightStart = true;
                 fcdata.flight.flightStartTime[0] = fcdata.gps.timeHour;
@@ -118,7 +133,7 @@ void FC::setVarioVelocity(float velocity, uint32_t velocityTimestamp)
 {
     fcdata.vario.velocity = velocity;
     fcdata.vario.velocityTimestamp = velocityTimestamp;
-    checkFlightStart();
+    checkFlightStart(false);
 }
 
 float FC::getVarioVelocity()
@@ -461,7 +476,7 @@ void FC::setGpsKmph(double kmph, uint32_t kmphTimestamp)
 {
     fcdata.gps.kmph = kmph;
     fcdata.gps.kmphTimestamp = kmphTimestamp;
-    checkFlightStart();
+    checkFlightStart(false);
 }
 
 void FC::setGpsKmphTimestamp(uint32_t kmphTimestamp)
@@ -613,10 +628,15 @@ bool FC::getIsFlightStart()
 
 uint32_t FC::getFlightDurationSecond()
 {
-    return (fcdata.gps.timeHour * 60 * 60 + fcdata.gps.timeMinute * 60 + fcdata.gps.timeSecond) - (fcdata.flight.flightStartTime[0] * 60 * 60 + fcdata.flight.flightStartTime[1] * 60 + fcdata.flight.flightStartTime[0]);
+    return (fcdata.gps.timeHour * 60 * 60 + fcdata.gps.timeMinute * 60 + fcdata.gps.timeSecond) - (fcdata.flight.flightStartTime[0] * 60 * 60 + fcdata.flight.flightStartTime[1] * 60 + fcdata.flight.flightStartTime[2]);
 }
+
 uint8_t FC::getFlightTimeDurationHour()
 {
+    Serial.print("getFlightDurationSecond");
+    Serial.println(getFlightDurationSecond());
+    Serial.print("getFlightTimeDurationHour");
+    Serial.println((getFlightDurationSecond() / 60 / 60));
     return getFlightDurationSecond() / 60 / 60;
 }
 
@@ -627,5 +647,5 @@ uint8_t FC::getFlightTimeDurationMinute()
 
 uint8_t FC::getFlightTimeDurationSecond()
 {
-    return getFlightDurationSecond() - getFlightTimeDurationHour() * 60 - getFlightTimeDurationMinute() * 60 * 60;
+    return getFlightDurationSecond() - getFlightTimeDurationMinute() * 60 - getFlightTimeDurationHour() * 60 * 60;
 }

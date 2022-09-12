@@ -10,7 +10,7 @@ void Variometer::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("Task Vario started");
-    xTaskCreate(this->startTaskImpl, "TaskVario", 2000, this, VARIO_TASK_PRIORITY, &_taskVarioHandle);
+    xTaskCreate(this->startTaskImpl, "TaskVario", 4096, this, VARIO_TASK_PRIORITY, &_taskVarioHandle);
 }
 
 void Variometer::startTaskImpl(void *parm)

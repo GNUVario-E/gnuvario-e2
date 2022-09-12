@@ -217,6 +217,9 @@ void VarioManager::onSignalReceived(uint8_t _val)
         };
 
         break;
+    case FLIGHT_START_ASKED:
+        fc.checkFlightStart(true);
+        break;
     default:
         break;
     }

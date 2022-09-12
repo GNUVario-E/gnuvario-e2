@@ -128,7 +128,7 @@ void VarioFSM::vario1_on_enter()
 
 void VarioFSM::vario1_on()
 {
-    VARIO_FSM_DEBUG_PRINTLN("vario1_on");
+    // VARIO_FSM_DEBUG_PRINTLN("vario1_on");
 }
 
 void VarioFSM::vario1_on_exit()
@@ -144,7 +144,7 @@ void VarioFSM::vario2_on_enter()
 
 void VarioFSM::vario2_on()
 {
-    VARIO_FSM_DEBUG_PRINTLN("vario2_on");
+    // VARIO_FSM_DEBUG_PRINTLN("vario2_on");
 }
 
 void VarioFSM::vario2_on_exit()
@@ -160,7 +160,7 @@ void VarioFSM::vario3_on_enter()
 
 void VarioFSM::vario3_on()
 {
-    VARIO_FSM_DEBUG_PRINTLN("vario3_on");
+    // VARIO_FSM_DEBUG_PRINTLN("vario3_on");
 }
 
 void VarioFSM::vario3_on_exit()
@@ -244,17 +244,23 @@ void VarioFSM::reboot_on_exit()
 
 void VarioFSM::onSignalReceived(uint8_t _val)
 {
-    if ((fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)) && _val == BTN_SHORT_B)
+    if (_val == BTN_SHORT_B && (fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)))
     {
         // toggle mute
         VARIO_FSM_DEBUG_PRINTLN("toggle mute");
         _notifyObserver(VOLUME_TOGGLE_MUTE_ASKED);
     }
-    else if ((fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)) && _val == BTN_LONG_A)
+    else if (_val == BTN_LONG_A && (fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)))
     {
         // toggle mute
         VARIO_FSM_DEBUG_PRINTLN("AGL_INIT_ASKED");
         _notifyObserver(AGL_INIT_ASKED);
+    }
+    else if (_val == BTN_LONG_C && (fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)))
+    {
+        // toggle mute
+        VARIO_FSM_DEBUG_PRINTLN("FLIGHT_START_ASKED");
+        _notifyObserver(FLIGHT_START_ASKED);
     }
     else if (fsm.is_in_state(_state_sound_edit))
     {

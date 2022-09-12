@@ -32,19 +32,19 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
     uint16_t tbw, tbh;
 
     // wait for record and record in progress
-    if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > (millis() - getTimeout()) && !fc.getIsFlightStart())
+    if (isReadyToStartRecording)
     {
         // wait for start
         _display.drawInvertedBitmap(topx + (imgWidth), topy, waitrecordicons, imgWidth, imgHeight, GxEPD_BLACK);
     }
-    else if (fc.getIsFlightStart())
+    else if (isFlightIsStarted)
     {
         // record in progress
         _display.drawInvertedBitmap(topx + (imgWidth), topy, recordicons, imgWidth, imgHeight, GxEPD_BLACK);
     }
 
     // satellites count
-    if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > getTimeout())
+    if (isGpsFixed)
     {
         _display.drawInvertedBitmap(topx + (imgWidth)*2, topy, fixicons, imgWidth, imgHeight, GxEPD_BLACK);
     }
@@ -130,6 +130,44 @@ bool ToolbarWidget::isRefreshNeeded(uint32_t lastDisplayTime)
     {
         satCount = fc.getGpsSatellitesCount();
         oldSatCount = fc.getGpsSatellitesCount();
+        hasChange = true;
+    }
+
+    isReadyToStartRecording = false;
+    isFlightIsStarted = false;
+    if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > (millis() - getTimeout()) && !fc.getIsFlightStart())
+    {
+        isReadyToStartRecording = true;
+    }
+    else if (fc.getIsFlightStart())
+    {
+        isFlightIsStarted = true;
+    }
+
+    if (oldIsReadyToStartRecording != isReadyToStartRecording)
+    {
+        oldIsReadyToStartRecording = isReadyToStartRecording;
+        hasChange = true;
+    }
+
+    if (oldIsFlightIsStarted != isFlightIsStarted)
+    {
+        oldIsFlightIsStarted = isFlightIsStarted;
+        hasChange = true;
+    }
+
+    if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > getTimeout())
+    {
+        isGpsFixed = true;
+    }
+    else
+    {
+        isGpsFixed = false;
+    }
+
+    if (oldIsGpsFixed != isGpsFixed)
+    {
+        oldIsGpsFixed = isGpsFixed;
         hasChange = true;
     }
 

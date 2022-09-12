@@ -122,12 +122,13 @@ class FC : public Subject
 private:
     fcdata_t fcdata;
     int8_t tzn;
-    void checkFlightStart();
 
 public:
     FC();
 
     void setTzn(int8_t tzn);
+
+    void checkFlightStart(bool forceManualStart);
 
     // POWER
     void setPowerCapacite(int capacite, uint32_t capaciteTimestamp);

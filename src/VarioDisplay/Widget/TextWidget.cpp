@@ -80,6 +80,11 @@ void TextWidget::setText(const char *_text)
     strncpy(text, _text, sizeof(text));
 }
 
+const char *TextWidget::getText()
+{
+    return text;
+}
+
 void TextWidget::setTextSize(uint8_t _size)
 {
     fontSize = _size;

@@ -12,29 +12,31 @@ void FlightTimeWidget::addToBuffer(GxEPD2_GFX &_display)
 
 bool FlightTimeWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
+    uint8_t h = fc.getFlightTimeDurationHour();
+    uint8_t m = fc.getFlightTimeDurationMinute();
+    uint8_t s = fc.getFlightTimeDurationSecond();
 
-    // title = variol
-    if (fc.getIsFlightStart())
+    if (fc.getIsFlightStart() && fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > getTimeout())
     {
-        if (fc.getFlightTimeDurationHour() > 1 && (fc.getFlightTimeDurationHour() != oldTime[0] || fc.getFlightTimeDurationMinute() != oldTime[1]))
+        if (h >= 1 && (h != oldTime[0] || m != oldTime[1]))
         {
-            // more than one hour of flight
-            sprintf(localText, "%02d %02d", fc.getFlightTimeDurationHour(), fc.getFlightTimeDurationMinute());
+            // more than one hour of flight hh:mm
+            sprintf(localText, "%02d %02d", h, m);
             setText(localText);
-            oldTime[0] = fc.getFlightTimeDurationHour();
-            oldTime[1] = fc.getFlightTimeDurationMinute();
-            oldTime[2] = fc.getFlightDurationSecond();
+            oldTime[0] = h;
+            oldTime[1] = m;
+            oldTime[2] = s;
 
             return true;
         }
-        else if (fc.getFlightTimeDurationHour() < 1 && (fc.getFlightTimeDurationMinute() != oldTime[1] || fc.getFlightDurationSecond() != oldTime[2]))
+        else if (h < 1 && (fc.getFlightTimeDurationMinute() != oldTime[1] || s != oldTime[2]))
         {
-            // less than one hour of flight
-            sprintf(localText, "%02d %02d", fc.getFlightTimeDurationMinute(), fc.getFlightDurationSecond());
+            // less than one hour of flight mm:ss
+            sprintf(localText, "%02d %02d", m, s);
             setText(localText);
-            oldTime[0] = fc.getFlightTimeDurationHour();
-            oldTime[1] = fc.getFlightTimeDurationMinute();
-            oldTime[2] = fc.getFlightDurationSecond();
+            oldTime[0] = 0;
+            oldTime[1] = m;
+            oldTime[2] = s;
 
             return true;
         }
