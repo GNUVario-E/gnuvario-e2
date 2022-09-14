@@ -13,18 +13,19 @@ bool SpeedWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
     if (fc.getGpsKmphTimestamp() > getTimeout())
     {
-        if (fc.getGpsKmph() != oldSpeed)
+        int speed = fc.getGpsKmph();
+        if (speed != oldSpeed)
         {
-            sprintf(localText, "%d ", (int)fc.getGpsKmph());
+            sprintf(localText, "%d ", speed);
             setText(localText);
-            oldSpeed = fc.getGpsKmph();
+            oldSpeed = speed;
 
             return true;
         }
     }
     else
     {
-        if (strcmp(empty, getText()))
+        if (strcmp(empty, getText()) != 0)
         {
             setText("");
             return true;

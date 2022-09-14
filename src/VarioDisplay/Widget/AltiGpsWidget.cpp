@@ -17,7 +17,7 @@ bool AltiGpsWidget::isRefreshNeeded(uint32_t lastDisplayTime)
     }
     else
     {
-        if (strcmp(empty, getText()))
+        if (strcmp(empty, getText()) != 0)
         {
             setText("");
             return true;
