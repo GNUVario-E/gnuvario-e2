@@ -30,6 +30,7 @@ public:
     void init(VarioLanguage *varioLanguage);
     void displayScreen(VarioScreen *screen);
     void stopDisplay();
+    void powerOff();
 
     VarioScreen *_currentScreen;
     VarioScreen *wifiScreen;
@@ -41,4 +42,5 @@ public:
     VarioScreen *soundScreen;
     VarioScreen *statisticScreen;
     VarioScreen *rebootScreen;
+    VarioScreen *messageScreen;
 };

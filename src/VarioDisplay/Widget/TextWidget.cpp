@@ -123,6 +123,8 @@ void TextWidget::setBlinkFreq(uint8_t freq)
 bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
 
+    bool hasChange = false;
+
     switch (indexTxtFC)
     {
     case 1:
@@ -130,7 +132,7 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         {
             setText(fc.getText1());
             fc.setText1(false, "");
-            return true;
+            hasChange = true;
         }
         break;
     case 2:
@@ -138,7 +140,7 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         {
             setText(fc.getText2());
             fc.setText2(false, "");
-            return true;
+            hasChange = true;
         }
         break;
     case 3:
@@ -146,7 +148,7 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         {
             setText(fc.getText3());
             fc.setText3(false, "");
-            return true;
+            hasChange = true;
         }
         break;
     case 4:
@@ -154,7 +156,7 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         {
             setText(fc.getText4());
             fc.setText4(false, "");
-            return true;
+            hasChange = true;
         }
         break;
     case 5:
@@ -162,7 +164,7 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         {
             setText(fc.getText5());
             fc.setText5(false, "");
-            return true;
+            hasChange = true;
         }
         break;
     case 6:
@@ -170,7 +172,7 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         {
             setText(fc.getText6());
             fc.setText6(false, "");
-            return true;
+            hasChange = true;
         }
         break;
     case 7:
@@ -178,7 +180,7 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         {
             setText(fc.getText7());
             fc.setText7(false, "");
-            return true;
+            hasChange = true;
         }
         break;
     case 8:
@@ -186,9 +188,13 @@ bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         {
             setText(fc.getText8());
             fc.setText8(false, "");
-            return true;
+            hasChange = true;
         }
         break;
+    }
+    if (hasChange)
+    {
+        return true;
     }
 
     if (hasBeenModified)

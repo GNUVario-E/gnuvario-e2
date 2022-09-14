@@ -208,3 +208,26 @@ ScreenData rebootScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99}
 };
+
+ScreenData messageScreenData = {
+    logo : {true, true, 0, 0, 128, 296, 94, 74, 99},
+    txt1 : {true, true, 0, 230, 128, 41, 99},
+    txt2 : {true, false, 0, 270, 128, 41, 99},
+    txt3 : {false, true, 20, 130, 100, 41, 99},
+    txt4 : {false, true, 20, 130, 100, 41, 99},
+    txt5 : {false, true, 20, 130, 100, 41, 99},
+    txt6 : {false, true, 20, 130, 100, 41, 99},
+    txt7 : {false, true, 20, 130, 100, 41, 99},
+    txt8 : {false, true, 20, 130, 100, 41, 99},
+    alti : {false, true, 0, 170, 65, 40, 99},
+    vario : {false, true, 64, 170, 64, 40, 99},
+    toolbar : {false, true, 0, 210, 128, 51, 99},
+    speed : {false, true, 0, 210, 128, 51, 99},
+    bearing : {false, true, 0, 210, 128, 51, 99},
+    time : {false, true, 0, 210, 128, 51, 99},
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
+};

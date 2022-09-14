@@ -113,6 +113,16 @@ void VarioDisplay::buildScreens()
     // construction de l'écran de reboot
     rebootScreen = new VarioScreen(rebootScreenData, varioLanguage);
     rebootScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_REDEMAR));
+
+    // construction de l'écran de message
+    messageScreen = new VarioScreen(messageScreenData, varioLanguage);
+    messageScreen->getTextWidget1()->setText("");
+    messageScreen->getTextWidget1()->setTextSize(1);
+    messageScreen->getTextWidget1()->setIndexTxtFC(1);
+
+    messageScreen->getTextWidget2()->setText("");
+    messageScreen->getTextWidget2()->setTextSize(1);
+    messageScreen->getTextWidget2()->setIndexTxtFC(2);
 }
 
 /**
@@ -284,4 +294,9 @@ void VarioDisplay::stopDisplay()
         vTaskDelete(bufferTaskHandler);
         bufferTaskHandler = NULL;
     }
+}
+
+void VarioDisplay::powerOff()
+{
+    display.powerOff();
 }
