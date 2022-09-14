@@ -27,6 +27,7 @@ private:
     void timer10s();
     void setPowerDataToFC();
     void addLineToIgc();
+    void deepSleep(const char *msg);
 
 public:
     VarioManager();

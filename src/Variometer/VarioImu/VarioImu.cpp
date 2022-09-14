@@ -207,3 +207,8 @@ int16_t VarioImu::getBearing(void)
 
     return bearing;
 }
+
+void VarioImu::disableAcquisition()
+{
+    twScheduler.disableAcquisition();
+}

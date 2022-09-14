@@ -59,8 +59,7 @@ void VarioTone::generateToneSuccess()
     generateTone(440, 100);
     delay(50);
     generateTone(880, 100);
-    
-    
+
     if (_taskVarioBeeperHandle != NULL)
     {
         vTaskResume(_taskVarioBeeperHandle);
@@ -160,12 +159,14 @@ void VarioTone::mute()
 {
     noToneAC();
     _muted = true;
+    disableAmp();
     fc.setSoundIsMute(_muted);
 }
 
 void VarioTone::unMute()
 {
     _muted = false;
+    enableAmp();
     fc.setSoundIsMute(_muted);
 }
 

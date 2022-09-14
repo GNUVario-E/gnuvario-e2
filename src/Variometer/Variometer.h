@@ -29,4 +29,5 @@ public:
     void startTask();
     void debug();
     void initFromAgl();
+    void disableAcquisition();
 };

@@ -125,3 +125,8 @@ void Variometer::initFromAgl()
         }
     }
 }
+
+void Variometer::disableAcquisition()
+{
+    varioImu->disableAcquisition();
+}

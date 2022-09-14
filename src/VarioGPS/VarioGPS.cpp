@@ -142,7 +142,7 @@ void VarioGPS::displayInfo()
         VARIO_GPS_DEBUG_PRINTLN();
         if (gps.speed.isUpdated())
         {
-            fc.setGpsKmph(gps.speed.kmph(), millis() - gps.speed.age());
+            fc.setGpsKmph(gps.speed.kmph(), (millis() - gps.speed.age()));
             VARIO_GPS_DEBUG_PRINT("speed: ");
             VARIO_GPS_DEBUG_PRINTLN(gps.speed.kmph());
         }

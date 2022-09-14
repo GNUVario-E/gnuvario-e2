@@ -3,9 +3,9 @@
 #include "VarioManager.h"
 #include "VarioDebug/VarioDebug.h"
 #include "event.h"
+#include "driver/rtc_io.h"
 
-// TaskHandle_t VarioManager::vmTaskHandler;
-// SemaphoreHandle_t VarioManager::vmMutex;
+#define POWER_DOWN_TENSION 3.5
 
 VarioManager::VarioManager()
 {
@@ -105,11 +105,11 @@ void VarioManager::launchTimers()
 {
     TimerHandle_t timerHndl10Sec;
     timerHndl10Sec = xTimerCreate(
-        "timer10Sec",              /* name */
-        pdMS_TO_TICKS(10000),      /* period/time */
-        pdTRUE,                    /* auto reload */
-        static_cast<void *>(this), /* timer ID */
-        startTimers10sImpl);       /* callback */
+        "timer10Sec",         /* name */
+        pdMS_TO_TICKS(10000), /* period/time */
+        pdTRUE,               /* auto reload */
+        (void *)this,         /* timer ID */
+        startTimers10sImpl); /* callback */
 
     if (xTimerStart(timerHndl10Sec, 0) != pdPASS)
     {
@@ -118,10 +118,13 @@ void VarioManager::launchTimers()
     }
 }
 
-void VarioManager::startTimers10sImpl(void *parm)
+void VarioManager::startTimers10sImpl(TimerHandle_t timerHndl10Sec)
 {
     // wrapper for timer
-    static_cast<VarioManager *>(parm)->timer10s();
+    VarioManager *obj;
+    obj = (VarioManager *)pvTimerGetTimerID(timerHndl10Sec);
+    // pvTimerGetTimerID(timerHndl10Sec);
+    obj->timer10s();
 }
 
 void VarioManager::timer10s()
@@ -133,6 +136,11 @@ void VarioManager::setPowerDataToFC()
 {
     if (fc.getPowerTension() != 0)
     {
+        if (fc.getPowerTension() < POWER_DOWN_TENSION)
+        {
+            deepSleep("Low battery");
+        }
+
         // lissage
         fc.setPowerTension(fc.getPowerTension() + 0.1 * (varioPower->getTension() - fc.getPowerTension()), millis());
     }
@@ -181,7 +189,6 @@ void VarioManager::onSignalReceived(uint8_t _val)
     case AGL_INIT_ASKED:
         VARIO_CAL_DEBUG_PRINTLN("AGL init altitude");
         variometer->initFromAgl();
-
         break;
     case GPS_NEW_POSITION:
         aglManager->setLatitude(fc.getGpsLat());
@@ -214,13 +221,46 @@ void VarioManager::onSignalReceived(uint8_t _val)
         if (varioIgc->createNewIgcFile(varioData.getParam(PARAM_PILOT_NAME)->getValueChar(), varioData.getParam(PARAM_GLIDER_NAME1)->getValueChar(), fc.getGpsDateDay(), fc.getGpsDateMonth(), fc.getGpsDateYear(), varioData.getParam(PARAM_TIME_ZONE)->getValueInt8()))
         {
             varioIgc->startTask();
-        };
+        }
 
         break;
     case FLIGHT_START_ASKED:
         fc.checkFlightStart(true);
         break;
+    case DEEP_SLEEP_ASKED:
+        deepSleep("Low battery");
+        break;
     default:
         break;
     }
+}
+
+void VarioManager::deepSleep(const char *msg)
+{
+    varioBeeper->generateToneFailure();
+
+    esp_sleep_enable_ext0_wakeup(GPIO_BUTTON_B, 0); // 1 = High, 0 = PIN_BUTTON_B
+
+    fc.setText1(true, msg);
+    varioDisplay->displayScreen(varioDisplay->messageScreen);
+
+    delay(1000);
+
+    pinMode(PIN_POWER, OUTPUT);
+    digitalWrite(PIN_POWER, !PIN_POWER_STATE); // turn off POWER
+
+    varioBeeper->mute();
+
+    variometer->disableAcquisition();
+
+    rtc_gpio_isolate(GPIO_BUTTON_A);
+    rtc_gpio_isolate(GPIO_BUTTON_C);
+
+    rtc_gpio_isolate(GPIO_MPU_INT_PIN);
+
+    varioDisplay->powerOff();
+
+    delay(1000);
+
+    esp_deep_sleep_start();
 }
