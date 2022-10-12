@@ -55,7 +55,7 @@ void VarioGPS::task()
         }
 
         // give time to other tasks
-        vTaskDelay(delayT500);
+        vTaskDelay(delayT100);
     }
 }
 
