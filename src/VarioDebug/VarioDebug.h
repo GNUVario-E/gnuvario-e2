@@ -8,8 +8,8 @@
 #define PROG_DEBUG // debug principal program
 //#define BTN_DEBUG  //Boutons
 //#define HARDWARE_DEBUG
-#define IMU_DEBUG // debug IMU
-#define CAL_DEBUG
+// #define IMU_DEBUG // debug IMU
+// #define CAL_DEBUG
 //#define I2CDEV_SERIAL_DEBUG   //debug I2Cdev
 //#define DEBUG_SERIAL_NMEA_1
 //#define SCREEN_DEBUG
@@ -22,19 +22,19 @@
 //#define ACCEL_DEBUG
 //#define EEPROM_DEBUG
 //#define NMEAPARSER_DEBUG
-#define SDCARD_DEBUG
-#define IGC_DEBUG
+// #define SDCARD_DEBUG
+// #define IGC_DEBUG
 // #define DATA_DEBUG
 //#define BT_DEBUG
-#define WIFI_DEBUG
+// #define WIFI_DEBUG
 //#define SOUND_DEBUG
-#define AGL_DEBUG
+// #define AGL_DEBUG
 //#define SQL_DEBUG
 //#define BEARING_DEBUG
 //#define TWOWIRESCH_DEBUG
 //#define POWER_DEBUG
 //#define MEMORY_DEBUG
-#define FSM_DEBUG
+// #define FSM_DEBUG
 
 #if !defined(VARIO_DEBUG) || !defined(PROG_DEBUG)
 #define VARIO_PROG_DEBUG_PRINTLN(x)
