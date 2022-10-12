@@ -28,6 +28,7 @@ bool SpeedWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         if (strcmp(empty, getText()) != 0)
         {
             setText("");
+
             return true;
         }
     }

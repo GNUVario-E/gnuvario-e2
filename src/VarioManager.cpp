@@ -35,6 +35,7 @@ boolean VarioManager::init()
         VARIO_PROG_DEBUG_PRINTLN("Echec initialisation SD");
         varioBeeper->generateToneFailure();
         esp_deep_sleep_start();
+
         return false;
     }
     else
@@ -47,8 +48,10 @@ boolean VarioManager::init()
 
     if (!varioSettings.init())
     {
+        // Cannot read settings
         varioBeeper->generateToneFailure();
         esp_deep_sleep_start();
+        
         return false;
     }
 
@@ -109,7 +112,7 @@ void VarioManager::launchTimers()
         pdMS_TO_TICKS(10000), /* period/time */
         pdTRUE,               /* auto reload */
         (void *)this,         /* timer ID */
-        startTimers10sImpl); /* callback */
+        startTimers10sImpl);  /* callback */
 
     if (xTimerStart(timerHndl10Sec, 0) != pdPASS)
     {

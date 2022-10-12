@@ -633,10 +633,6 @@ uint32_t FC::getFlightDurationSecond()
 
 uint8_t FC::getFlightTimeDurationHour()
 {
-    Serial.print("getFlightDurationSecond");
-    Serial.println(getFlightDurationSecond());
-    Serial.print("getFlightTimeDurationHour");
-    Serial.println((getFlightDurationSecond() / 60 / 60));
     return getFlightDurationSecond() / 60 / 60;
 }
 
