@@ -3,7 +3,7 @@
 #include <VarioDisplay/VarioScreen/ScreenData.h>
 
 ScreenData bootScreenData = {
-    logo : {true, false, 0, 0, 128, 130, 94, 74, 99},
+    logo : {true, false, 0, 0, 128, 130, 99},
     txt1 : {true, false, 0, 120, 128, 21, 99},
     txt2 : {true, false, 0, 160, 128, 21, 99},
     txt3 : {true, false, 0, 180, 128, 21, 99},
@@ -49,7 +49,7 @@ ScreenData wifiScreenData = {
 };
 
 ScreenData calibrationScreenData = {
-    logo : {true, true, 0, 0, 128, 296, 94, 74, 99},
+    logo : {true, true, 0, 0, 128, 296, 99},
     txt1 : {true, false, 0, 230, 128, 41, 99},
     txt2 : {false, true, 20, 130, 100, 41, 99},
     txt3 : {false, true, 20, 130, 100, 41, 99},
@@ -72,7 +72,7 @@ ScreenData calibrationScreenData = {
 };
 
 ScreenData vario1ScreenData = {
-    logo : {false, true, 0, 0, 128, 91, 94, 74, 99},
+    logo : {false, true, 0, 0, 128, 91, 99},
     txt1 : {false, true, 0, 146, 128, 51, 99},
     txt2 : {false, true, 0, 196, 128, 51, 99},
     txt3 : {false, true, 0, 246, 128, 50, 99},
@@ -118,7 +118,7 @@ ScreenData vario2ScreenData = {
 };
 
 ScreenData vario3ScreenData = {
-    logo : {true, true, 0, 0, 128, 296, 94, 74, 99},
+    logo : {true, true, 0, 0, 128, 296, 99},
     txt1 : {false, true, 0, 100, 128, 20, 99},
     txt2 : {false, true, 29, 210, 100, 21, 99},
     txt3 : {false, true, 20, 130, 100, 41, 99},
@@ -141,7 +141,7 @@ ScreenData vario3ScreenData = {
 };
 
 ScreenData soundScreenData = {
-    logo : {true, true, 0, 0, 128, 296, 94, 74, 99},
+    logo : {true, true, 0, 0, 128, 296, 99},
     txt1 : {true, false, 0, 230, 128, 41, 99},
     txt2 : {false, true, 20, 130, 100, 41, 99},
     txt3 : {false, true, 20, 130, 100, 41, 99},
@@ -164,7 +164,7 @@ ScreenData soundScreenData = {
 };
 
 ScreenData statisticScreenData = {
-    logo : {false, true, 0, 0, 128, 296, 94, 74, 99},
+    logo : {false, true, 0, 0, 128, 296, 99},
     txt1 : {true, false, 0, 0, 128, 21, 99},
     txt2 : {true, false, 0, 20, 128, 21, 99},
     txt3 : {true, false, 0, 40, 128, 21, 99},
@@ -187,7 +187,7 @@ ScreenData statisticScreenData = {
 };
 
 ScreenData rebootScreenData = {
-    logo : {true, true, 0, 0, 128, 296, 94, 74, 99},
+    logo : {true, true, 0, 0, 128, 296, 99},
     txt1 : {true, false, 0, 230, 128, 41, 99},
     txt2 : {false, true, 20, 130, 100, 41, 99},
     txt3 : {false, true, 20, 130, 100, 41, 99},

@@ -48,3 +48,12 @@ public:
 
 extern FC fc;
 extern VarioFSM fsm;
+extern ScreenData bootScreenData;
+extern ScreenData wifiScreenData;
+extern ScreenData calibrationScreenData;
+extern ScreenData vario1ScreenData;
+extern ScreenData vario2ScreenData;
+extern ScreenData vario3ScreenData;
+extern ScreenData soundScreenData;
+extern ScreenData statisticScreenData;
+extern ScreenData rebootScreenData;

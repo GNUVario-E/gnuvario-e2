@@ -1,5 +1,4 @@
 #include <Arduino.h>
-
 #include "VarioManager.h"
 #include "VarioDebug/VarioDebug.h"
 #include "event.h"
@@ -65,9 +64,11 @@ boolean VarioManager::init()
     char fileParams[] = "/params.jso";
     char fileWifi[] = "/wifi.cfg";
     char fileCalib[] = "/variocal.cfg";
+    char fileScreen[] = "/screen.json";
     varioSettings.loadConfigurationVario(fileParams);
     varioSettings.readSDSettings(fileWifi);
     varioSettings.readSDSettings(fileCalib);
+    varioSettings.loadScreenVario(fileScreen);
 
     varioButton->registerObserver(&fsm);
     varioButton->startTask();

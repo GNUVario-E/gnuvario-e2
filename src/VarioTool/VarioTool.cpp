@@ -3,7 +3,7 @@
 #include "VarioDebug/VarioDebug.h"
 #include <SD.h>
 
-StaticJsonDocument<4096> VarioTool::jsonDoc;
+StaticJsonDocument<50000> VarioTool::jsonDoc;
 
 void VarioTool::appendChar(char *s, char c)
 {
