@@ -50,7 +50,7 @@ boolean VarioManager::init()
         // Cannot read settings
         varioBeeper->generateToneFailure();
         esp_deep_sleep_start();
-        
+
         return false;
     }
 

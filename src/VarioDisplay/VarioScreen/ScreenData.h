@@ -25,7 +25,7 @@ struct ScreenData
     S_WIDGET_DATA txt6;
     S_WIDGET_DATA txt7;
     S_WIDGET_DATA txt8;
-    S_WIDGET_DATA alt;
+    S_WIDGET_DATA alti;
     S_WIDGET_DATA vario;
     S_WIDGET_DATA toolbar;
     S_WIDGET_DATA speed;

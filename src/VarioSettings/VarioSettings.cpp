@@ -261,7 +261,8 @@ void VarioSettings::loadScreenVario(char *filename)
       "vario3",
       "sound",
       "statistic",
-      "reboot"};
+      "reboot",
+      "message"};
 
   JsonObject obj;
 
@@ -291,6 +292,9 @@ void VarioSettings::loadScreenVario(char *filename)
 
   obj = VarioTool::jsonDoc[section[8]];
   setScreenDataValues(&obj, &rebootScreenData);
+
+  obj = VarioTool::jsonDoc[section[9]];
+  setScreenDataValues(&obj, &messageScreenData);
 
   // Clearing Buffer
   VarioTool::jsonDoc.clear();
@@ -327,8 +331,8 @@ void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
   objInside = obj->getMember("txt8");
   screenData->txt8 = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("alt");
-  screenData->alt = getScreenDataInsideValues(&objInside);
+  objInside = obj->getMember("alti");
+  screenData->alti = getScreenDataInsideValues(&objInside);
 
   objInside = obj->getMember("vario");
   screenData->vario = getScreenDataInsideValues(&objInside);
@@ -347,6 +351,18 @@ void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
 
   objInside = obj->getMember("flighttime");
   screenData->flighttime = getScreenDataInsideValues(&objInside);
+
+  objInside = obj->getMember("lat");
+  screenData->lat = getScreenDataInsideValues(&objInside);
+
+  objInside = obj->getMember("lon");
+  screenData->lon = getScreenDataInsideValues(&objInside);
+
+  objInside = obj->getMember("altigps");
+  screenData->altigps = getScreenDataInsideValues(&objInside);
+
+  objInside = obj->getMember("agl");
+  screenData->agl = getScreenDataInsideValues(&objInside);
 }
 
 S_WIDGET_DATA VarioSettings::getScreenDataInsideValues(JsonObject *objInside)

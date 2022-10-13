@@ -26,7 +26,7 @@ ScreenData bootScreenData = {
 };
 
 ScreenData wifiScreenData = {
-    logo : {true, false, 0, 0, 128, 240, 94, 74, 99},
+    logo : {true, false, 0, 0, 128, 240, 94},
     txt1 : {true, false, 0, 180, 128, 41, 99},
     txt2 : {true, false, 0, 220, 128, 41, 99},
     txt3 : {true, false, 0, 260, 128, 40, 99},
@@ -95,7 +95,7 @@ ScreenData vario1ScreenData = {
 };
 
 ScreenData vario2ScreenData = {
-    logo : {false, true, 0, 246, 128, 50, 94, 74, 99},
+    logo : {false, true, 0, 246, 128, 50, 94},
     txt1 : {false, true, 0, 46, 128, 51, 99},
     txt2 : {false, true, 0, 96, 128, 51, 99},
     txt3 : {false, true, 20, 130, 100, 41, 99},
@@ -210,7 +210,7 @@ ScreenData rebootScreenData = {
 };
 
 ScreenData messageScreenData = {
-    logo : {true, true, 0, 0, 128, 296, 94, 74, 99},
+    logo : {true, true, 0, 0, 128, 296, 94},
     txt1 : {true, true, 0, 230, 128, 41, 99},
     txt2 : {true, false, 0, 270, 128, 41, 99},
     txt3 : {false, true, 20, 130, 100, 41, 99},
