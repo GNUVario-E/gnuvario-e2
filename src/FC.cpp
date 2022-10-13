@@ -2,8 +2,8 @@
 #include "event.h"
 
 #define TIMEOUT_DATA 1200
-#define MIN_SPEED_TAKEOFF 0.0
-#define MIN_VARIO_TAKEOFF 0.1
+#define MIN_SPEED_TAKEOFF 5.0
+#define MIN_VARIO_TAKEOFF 0.5
 #define MIN_DURATION_TAKEOFF 2000
 
 void FC::setTzn(int8_t _tzn)
