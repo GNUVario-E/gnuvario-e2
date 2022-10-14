@@ -368,13 +368,13 @@ void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
 S_WIDGET_DATA VarioSettings::getScreenDataInsideValues(JsonObject *objInside)
 {
   char key[][30] = {
-      "active",
-      "border",
-      "topx",
-      "topy",
-      "width",
-      "height",
-      "alt_index"};
+      "a",
+      "b",
+      "x",
+      "y",
+      "w",
+      "h",
+      "n"};
 
   return {objInside->getMember(key[0]).as<bool>(),
           objInside->getMember(key[1]).as<bool>(),
