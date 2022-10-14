@@ -378,11 +378,11 @@ S_WIDGET_DATA VarioSettings::getScreenDataInsideValues(JsonObject *objInside)
 
   return {objInside->getMember(key[0]).as<bool>(),
           objInside->getMember(key[1]).as<bool>(),
-          objInside->getMember(key[2]).as<unsigned long>(),
-          objInside->getMember(key[3]).as<unsigned long>(),
-          objInside->getMember(key[4]).as<unsigned long>(),
-          objInside->getMember(key[5]).as<unsigned long>(),
-          objInside->getMember(key[6]).as<unsigned long>()};
+          objInside->getMember(key[2]).as<unsigned short>(),
+          objInside->getMember(key[3]).as<unsigned short>(),
+          objInside->getMember(key[4]).as<unsigned short>(),
+          objInside->getMember(key[5]).as<unsigned short>(),
+          objInside->getMember(key[6]).as<unsigned char>()};
 }
 
 // Saves the configuration to a file
