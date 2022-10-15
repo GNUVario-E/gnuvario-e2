@@ -8,7 +8,10 @@
 
 bool VarioSD::init(void)
 {
+  // issue with SD not resolved
+  // https://github.com/espressif/arduino-esp32/issues/2171
   spiSdCard.begin(PIN_SDCARD_SCK, PIN_SDCARD_MISO, PIN_SDCARD_MOSI, PIN_SDCARD_CS);
+
   return (SD.begin(PIN_SDCARD_CS, spiSdCard, 80000000));
 }
 
@@ -45,8 +48,8 @@ bool VarioSD::info(void)
     VARIO_PROG_DEBUG_PRINTLN("UNKNOWN");
   }
 
-  uint64_t cardSize = SD.cardSize() / (1024 * 1024);
 #ifdef SDCARD_DEBUG
+  uint64_t cardSize = SD.cardSize() / (1024 * 1024);
   Serial.printf("SD Card Size: %lluMB\n", cardSize);
 #endif
 

@@ -51,7 +51,7 @@
 /* scheduler task parameters */
 #define TWO_WIRE_SCHEDULER_STACK_SIZE 2000
 #define TWO_WIRE_SCHEDULER_CORE 1
-#define TWO_WIRE_SCHEDULER_PRIORITY 10
+#define TWO_WIRE_SCHEDULER_PRIORITY 12
 
 /* timer used */
 #define TWO_WIRE_SCHEDULER_TIMER_NUM 3

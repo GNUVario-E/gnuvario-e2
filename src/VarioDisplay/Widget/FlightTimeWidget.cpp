@@ -12,17 +12,34 @@ void FlightTimeWidget::addToBuffer(GxEPD2_GFX &_display)
 
 bool FlightTimeWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
+    uint8_t h = fc.getFlightTimeDurationHour();
+    uint8_t m = fc.getFlightTimeDurationMinute();
+    uint8_t s = fc.getFlightTimeDurationSecond();
 
-    // title = variol
-    if (fc.time[0] != oldTime[0] || fc.time[1] != oldTime[1] || fc.time[2] != oldTime[2])
+    if (fc.getIsFlightStart() && fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > getTimeout())
     {
-        sprintf(localText, "%02d %02d", fc.time[0], fc.time[1]);
-        setText(localText);
-        oldTime[0] = fc.time[0];
-        oldTime[1] = fc.time[1];
-        oldTime[2] = fc.time[2];
+        if (h >= 1 && (h != oldTime[0] || m != oldTime[1]))
+        {
+            // more than one hour of flight hh:mm
+            sprintf(localText, "%02d %02d", h, m);
+            setText(localText);
+            oldTime[0] = h;
+            oldTime[1] = m;
+            oldTime[2] = s;
 
-        return true;
+            return true;
+        }
+        else if (h < 1 && (fc.getFlightTimeDurationMinute() != oldTime[1] || s != oldTime[2]))
+        {
+            // less than one hour of flight mm:ss
+            sprintf(localText, "%02d %02d", m, s);
+            setText(localText);
+            oldTime[0] = 0;
+            oldTime[1] = m;
+            oldTime[2] = s;
+
+            return true;
+        }
     }
     else
     {

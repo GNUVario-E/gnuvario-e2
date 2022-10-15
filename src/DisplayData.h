@@ -12,17 +12,21 @@ ScreenData bootScreenData = {
     txt6 : {false, true, 20, 130, 100, 41, 99},
     txt7 : {false, true, 0, 270, 128, 41, 5},
     txt8 : {false, true, 20, 130, 100, 41, 99},
-    alt : {false, true, 0, 170, 65, 40, 99},
+    alti : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
     toolbar : {false, true, 0, 210, 128, 51, 99},
     speed : {false, true, 0, 210, 128, 51, 99},
     bearing : {false, true, 0, 210, 128, 51, 99},
     time : {false, true, 0, 210, 128, 51, 99},
-    flighttime : {false, true, 0, 210, 128, 51, 99}
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData wifiScreenData = {
-    logo : {true, true, 0, 0, 128, 240, 99},
+    logo : {true, false, 0, 0, 128, 240, 94},
     txt1 : {true, false, 0, 180, 128, 41, 99},
     txt2 : {true, false, 0, 220, 128, 41, 99},
     txt3 : {true, false, 0, 260, 128, 40, 99},
@@ -31,13 +35,17 @@ ScreenData wifiScreenData = {
     txt6 : {false, true, 20, 130, 100, 41, 99},
     txt7 : {false, true, 20, 130, 100, 41, 99},
     txt8 : {false, true, 20, 130, 100, 41, 99},
-    alt : {false, true, 0, 170, 65, 40, 99},
+    alti : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
     toolbar : {false, true, 0, 210, 128, 51, 99},
     speed : {false, true, 0, 210, 128, 51, 99},
     bearing : {false, true, 0, 210, 128, 51, 99},
     time : {false, true, 0, 210, 128, 51, 99},
-    flighttime : {false, true, 0, 210, 128, 51, 99}
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData calibrationScreenData = {
@@ -50,51 +58,63 @@ ScreenData calibrationScreenData = {
     txt6 : {false, true, 20, 130, 100, 41, 99},
     txt7 : {false, true, 20, 130, 100, 41, 99},
     txt8 : {false, true, 20, 130, 100, 41, 99},
-    alt : {false, true, 0, 170, 65, 40, 99},
+    alti : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
     toolbar : {false, true, 0, 210, 128, 51, 99},
     speed : {false, true, 0, 210, 128, 51, 99},
     bearing : {false, true, 0, 210, 128, 51, 99},
     time : {false, true, 0, 210, 128, 51, 99},
-    flighttime : {false, true, 0, 210, 128, 51, 99}
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData vario1ScreenData = {
     logo : {false, true, 0, 0, 128, 91, 99},
     txt1 : {false, true, 0, 146, 128, 51, 99},
-    txt2 : {true, true, 0, 196, 128, 51, 99},
+    txt2 : {false, true, 0, 196, 128, 51, 99},
     txt3 : {false, true, 0, 246, 128, 50, 99},
     txt4 : {false, true, 20, 130, 100, 41, 99},
     txt5 : {false, true, 20, 130, 100, 41, 99},
     txt6 : {false, true, 20, 130, 100, 41, 99},
     txt7 : {false, true, 20, 130, 100, 41, 99},
     txt8 : {false, true, 20, 130, 100, 41, 99},
-    alt : {true, true, 0, 46, 128, 51, 99},
+    alti : {true, true, 0, 46, 128, 51, 18},
     vario : {true, true, 0, 96, 128, 51, 99},
     toolbar : {true, true, 0, 0, 128, 47, 99},
-    speed : {false, true, 0, 210, 128, 51, 99},
+    speed : {true, true, 0, 196, 128, 51, 99},
     bearing : {true, true, 0, 246, 128, 50, 99},
-    time : {true, true, 0, 146, 128, 51, 15},
-    flighttime : {false, true, 0, 146, 128, 51, 14}
+    time : {false, true, 0, 146, 128, 51, 15},
+    flighttime : {true, true, 0, 146, 128, 51, 14},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 46, 128, 51, 19},
+    agl : {false, true, 0, 46, 128, 51, 9}
 };
 
 ScreenData vario2ScreenData = {
-    logo : {false, true, 0, 246, 128, 50, 99},
-    txt1 : {true, true, 0, 46, 128, 51, 99},
-    txt2 : {true, true, 0, 96, 128, 51, 99},
+    logo : {false, true, 0, 246, 128, 50, 94},
+    txt1 : {false, true, 0, 46, 128, 51, 99},
+    txt2 : {false, true, 0, 96, 128, 51, 99},
     txt3 : {false, true, 20, 130, 100, 41, 99},
     txt4 : {false, true, 20, 130, 100, 41, 99},
     txt5 : {false, true, 20, 130, 100, 41, 99},
     txt6 : {false, true, 20, 130, 100, 41, 99},
     txt7 : {false, true, 20, 130, 100, 41, 99},
     txt8 : {false, true, 20, 130, 100, 41, 99},
-    alt : {true, true, 0, 146, 128, 51, 99},
+    alti : {true, true, 0, 146, 128, 51, 99},
     vario : {true, true, 0, 196, 128, 51, 99},
     toolbar : {true, true, 0, 0, 128, 47, 99},
     speed : {true, true, 0, 246, 128, 50, 99},
     bearing : {false, true, 0, 210, 128, 51, 99},
     time : {false, true, 0, 210, 128, 51, 99},
-    flighttime : {false, true, 0, 210, 128, 51, 99}
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {true, true, 0, 46, 128, 51, 99},
+    lon : {true, true, 0, 96, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData vario3ScreenData = {
@@ -107,13 +127,17 @@ ScreenData vario3ScreenData = {
     txt6 : {false, true, 20, 130, 100, 41, 99},
     txt7 : {false, true, 20, 130, 100, 41, 99},
     txt8 : {false, true, 20, 130, 100, 41, 99},
-    alt : {false, true, 10, 230, 100, 20, 99},
+    alti : {false, true, 10, 230, 100, 20, 99},
     vario : {false, true, 10, 190, 100, 20, 99},
     toolbar : {false, true, 0, 230, 128, 41, 99},
     speed : {false, true, 0, 210, 128, 51, 99},
     bearing : {false, true, 0, 210, 128, 51, 99},
     time : {false, true, 0, 210, 128, 51, 99},
-    flighttime : {false, true, 0, 210, 128, 51, 99}
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData soundScreenData = {
@@ -126,13 +150,17 @@ ScreenData soundScreenData = {
     txt6 : {false, true, 20, 130, 100, 41, 99},
     txt7 : {false, true, 20, 130, 100, 41, 99},
     txt8 : {false, true, 20, 130, 100, 41, 99},
-    alt : {false, true, 0, 170, 65, 40, 99},
+    alti : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
     toolbar : {false, true, 0, 210, 128, 51, 99},
     speed : {false, true, 0, 210, 128, 51, 99},
     bearing : {false, true, 0, 210, 128, 51, 99},
     time : {false, true, 0, 210, 128, 51, 99},
-    flighttime : {false, true, 0, 210, 128, 51, 99}
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData statisticScreenData = {
@@ -145,13 +173,17 @@ ScreenData statisticScreenData = {
     txt6 : {true, false, 0, 100, 128, 21, 99},
     txt7 : {true, false, 0, 120, 128, 21, 99},
     txt8 : {true, false, 0, 140, 128, 21, 99},
-    alt : {false, true, 0, 170, 65, 40, 99},
+    alti : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
     toolbar : {false, true, 0, 210, 128, 51, 99},
     speed : {false, true, 0, 210, 128, 51, 99},
     bearing : {false, true, 0, 210, 128, 51, 99},
     time : {false, true, 0, 210, 128, 51, 99},
-    flighttime : {false, true, 0, 210, 128, 51, 99}
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
 };
 
 ScreenData rebootScreenData = {
@@ -164,11 +196,38 @@ ScreenData rebootScreenData = {
     txt6 : {false, true, 20, 130, 100, 41, 99},
     txt7 : {false, true, 20, 130, 100, 41, 99},
     txt8 : {false, true, 20, 130, 100, 41, 99},
-    alt : {false, true, 0, 170, 65, 40, 99},
+    alti : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
     toolbar : {false, true, 0, 210, 128, 51, 99},
     speed : {false, true, 0, 210, 128, 51, 99},
     bearing : {false, true, 0, 210, 128, 51, 99},
     time : {false, true, 0, 210, 128, 51, 99},
-    flighttime : {false, true, 0, 210, 128, 51, 99}
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
+};
+
+ScreenData messageScreenData = {
+    logo : {true, true, 0, 0, 128, 296, 94},
+    txt1 : {true, true, 0, 230, 128, 41, 99},
+    txt2 : {true, false, 0, 270, 128, 41, 99},
+    txt3 : {false, true, 20, 130, 100, 41, 99},
+    txt4 : {false, true, 20, 130, 100, 41, 99},
+    txt5 : {false, true, 20, 130, 100, 41, 99},
+    txt6 : {false, true, 20, 130, 100, 41, 99},
+    txt7 : {false, true, 20, 130, 100, 41, 99},
+    txt8 : {false, true, 20, 130, 100, 41, 99},
+    alti : {false, true, 0, 170, 65, 40, 99},
+    vario : {false, true, 64, 170, 64, 40, 99},
+    toolbar : {false, true, 0, 210, 128, 51, 99},
+    speed : {false, true, 0, 210, 128, 51, 99},
+    bearing : {false, true, 0, 210, 128, 51, 99},
+    time : {false, true, 0, 210, 128, 51, 99},
+    flighttime : {false, true, 0, 210, 128, 51, 99},
+    lat : {false, true, 0, 210, 128, 51, 99},
+    lon : {false, true, 0, 210, 128, 51, 99},
+    altigps : {false, true, 0, 210, 128, 51, 99},
+    agl : {false, true, 0, 210, 128, 51, 99}
 };

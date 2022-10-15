@@ -16,8 +16,8 @@
 #include "VarioButton/VarioButton.h"
 #include "VarioCalibration/VarioCalibration.h"
 #include "Variometer/Variometer.h"
-
-
+#include "AglManager/src/AglManager.h"
+#include "VarioIgc/VarioIgc.h"
 class VarioManager : public Observer
 {
 private:
@@ -26,6 +26,8 @@ private:
     static void startTimers10sImpl(void *);
     void timer10s();
     void setPowerDataToFC();
+    void addLineToIgc();
+    void deepSleep(const char *msg);
 
 public:
     VarioManager();
@@ -38,11 +40,13 @@ public:
     VarioLanguage *varioLanguage;
     VarioCalibration *varioCalibration;
     Variometer *variometer;
+    AglManager *aglManager;
+    VarioIgc *varioIgc;
     boolean init();
     void onSignalReceived(uint8_t _val);
 };
 
-extern fcdata_t fc;
+extern FC fc;
 extern VarioFSM fsm;
 extern ScreenData bootScreenData;
 extern ScreenData wifiScreenData;
@@ -53,3 +57,4 @@ extern ScreenData vario3ScreenData;
 extern ScreenData soundScreenData;
 extern ScreenData statisticScreenData;
 extern ScreenData rebootScreenData;
+extern ScreenData messageScreenData;

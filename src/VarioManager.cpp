@@ -2,8 +2,9 @@
 #include "VarioManager.h"
 #include "VarioDebug/VarioDebug.h"
 #include "event.h"
-// TaskHandle_t VarioManager::vmTaskHandler;
-// SemaphoreHandle_t VarioManager::vmMutex;
+#include "driver/rtc_io.h"
+
+#define POWER_DOWN_TENSION 3.5
 
 VarioManager::VarioManager()
 {
@@ -33,6 +34,7 @@ boolean VarioManager::init()
         VARIO_PROG_DEBUG_PRINTLN("Echec initialisation SD");
         varioBeeper->generateToneFailure();
         esp_deep_sleep_start();
+
         return false;
     }
     else
@@ -45,8 +47,10 @@ boolean VarioManager::init()
 
     if (!varioSettings.init())
     {
+        // Cannot read settings
         varioBeeper->generateToneFailure();
         esp_deep_sleep_start();
+
         return false;
     }
 
@@ -105,11 +109,11 @@ void VarioManager::launchTimers()
 {
     TimerHandle_t timerHndl10Sec;
     timerHndl10Sec = xTimerCreate(
-        "timer10Sec",              /* name */
-        pdMS_TO_TICKS(10000),      /* period/time */
-        pdTRUE,                    /* auto reload */
-        static_cast<void *>(this), /* timer ID */
-        startTimers10sImpl);       /* callback */
+        "timer10Sec",         /* name */
+        pdMS_TO_TICKS(10000), /* period/time */
+        pdTRUE,               /* auto reload */
+        (void *)this,         /* timer ID */
+        startTimers10sImpl);  /* callback */
 
     if (xTimerStart(timerHndl10Sec, 0) != pdPASS)
     {
@@ -118,10 +122,13 @@ void VarioManager::launchTimers()
     }
 }
 
-void VarioManager::startTimers10sImpl(void *parm)
+void VarioManager::startTimers10sImpl(TimerHandle_t timerHndl10Sec)
 {
     // wrapper for timer
-    static_cast<VarioManager *>(parm)->timer10s();
+    VarioManager *obj;
+    obj = (VarioManager *)pvTimerGetTimerID(timerHndl10Sec);
+    // pvTimerGetTimerID(timerHndl10Sec);
+    obj->timer10s();
 }
 
 void VarioManager::timer10s()
@@ -131,24 +138,29 @@ void VarioManager::timer10s()
 
 void VarioManager::setPowerDataToFC()
 {
-    if (fc.power.tension != 0)
+    if (fc.getPowerTension() != 0)
     {
+        if (fc.getPowerTension() < POWER_DOWN_TENSION)
+        {
+            deepSleep("Low battery");
+        }
+
         // lissage
-        fc.power.tension = fc.power.tension + 0.1 * (varioPower->getTension() - fc.power.tension);
+        fc.setPowerTension(fc.getPowerTension() + 0.1 * (varioPower->getTension() - fc.getPowerTension()), millis());
     }
     else
     {
-        fc.power.tension = varioPower->getTension();
+        fc.setPowerTension(varioPower->getTension(), millis());
     }
 
-    if (fc.power.capacite != 0)
+    if (fc.getPowerCapacite() != 0)
     {
         // lissage
-        fc.power.capacite = fc.power.capacite + 0.1 * (varioPower->getCapacitePct() - fc.power.capacite);
+        fc.setPowerCapacite(fc.getPowerCapacite() + 0.1 * (varioPower->getCapacitePct() - fc.getPowerCapacite()), millis());
     }
     else
     {
-        fc.power.capacite = varioPower->getCapacitePct();
+        fc.setPowerCapacite(varioPower->getCapacitePct(), millis());
     }
 }
 
@@ -156,25 +168,103 @@ void VarioManager::onSignalReceived(uint8_t _val)
 {
     switch (_val)
     {
+    case WIFI_START_ASKED:
+        VARIO_WIFI_DEBUG_PRINTLN("Démarrage du wifi");
+        varioWifi = new VarioWifi();
+        varioWifi->startTask();
+        break;
+    case CALIBRATION_START_ASKED:
+        VARIO_CAL_DEBUG_PRINTLN("Démarrage de la calibration");
+        varioCalibration = new VarioCalibration();
+        varioCalibration->begin(varioBeeper);
+        varioCalibration->startTask();
+        break;
+    case VARIO_START_ASKED:
+        VARIO_CAL_DEBUG_PRINTLN("Démarrage du vario");
+        variometer = new Variometer(varioBeeper, varioSD);
+        fc.registerObserver(this);
+        variometer->init();
+        variometer->startTask();
+
+        aglManager = new AglManager();
+        aglManager->init();
+
+        break;
+    case AGL_INIT_ASKED:
+        VARIO_CAL_DEBUG_PRINTLN("AGL init altitude");
+        variometer->initFromAgl();
+        break;
+    case GPS_NEW_POSITION:
+        aglManager->setLatitude(fc.getGpsLat());
+        aglManager->setLongitude(fc.getGpsLon());
+        fc.setAglAlt(aglManager->getAgl(), millis());
+        break;
+    case GPS_NO_POSITION:
+        aglManager->setLatitude(-1);
+        aglManager->setLongitude(-1);
+        fc.setAglAlt(-1, 0);
+        break;
+    case GPS_NEW_ALTI_METERS:
+        aglManager->setAltiGps(fc.getGpsAltiMeters());
+        aglManager->setAlti(fc.getVarioAlti());
+        fc.setAglGroundLvl(aglManager->getGroundLevel(), millis());
+        break;
+    case VARIO_NEW_ALTI:
+        break;
+    case GPS_FIXED:
+        varioBeeper->generateToneSuccess();
+        break;
+    case GPS_LOST_FIXED:
+        varioBeeper->generateToneSoftFailure();
+        break;
+    case FLIGHT_START:
+        varioBeeper->generateToneSuccess();
+        varioBeeper->generateToneSuccess();
+        // start IGC recording
+        varioIgc = new VarioIgc();
+        if (varioIgc->createNewIgcFile(varioData.getParam(PARAM_PILOT_NAME)->getValueChar(), varioData.getParam(PARAM_GLIDER_NAME1)->getValueChar(), fc.getGpsDateDay(), fc.getGpsDateMonth(), fc.getGpsDateYear(), varioData.getParam(PARAM_TIME_ZONE)->getValueInt8()))
         {
-        case WIFI_START_ASKED:
-            VARIO_WIFI_DEBUG_PRINTLN("Démarrage du wifi");
-            varioWifi = new VarioWifi();
-            varioWifi->startTask();
-            break;
-        case CALIBRATION_START_ASKED:
-            VARIO_CAL_DEBUG_PRINTLN("Démarrage de la calibration");
-            varioCalibration = new VarioCalibration();
-            varioCalibration->begin(varioBeeper);
-            varioCalibration->startTask();
-            break;
-        case VARIO_START_ASKED:
-            VARIO_CAL_DEBUG_PRINTLN("Démarrage du vario");
-            variometer = new Variometer(varioBeeper);
-            variometer->init();
-            variometer->startTask();
-        default:
-            break;
+            varioIgc->startTask();
         }
+
+        break;
+    case FLIGHT_START_ASKED:
+        fc.checkFlightStart(true);
+        break;
+    case DEEP_SLEEP_ASKED:
+        deepSleep("Low battery");
+        break;
+    default:
+        break;
     }
+}
+
+void VarioManager::deepSleep(const char *msg)
+{
+    varioBeeper->generateToneFailure();
+
+    esp_sleep_enable_ext0_wakeup(GPIO_BUTTON_B, 0); // 1 = High, 0 = PIN_BUTTON_B
+
+    fc.setText1(true, msg);
+    varioDisplay->displayScreen(varioDisplay->messageScreen);
+
+    delay(1000);
+
+    pinMode(PIN_POWER, OUTPUT);
+    digitalWrite(PIN_POWER, !PIN_POWER_STATE); // turn off POWER
+
+    varioBeeper->mute();
+
+    variometer->disableAcquisition();
+
+    rtc_gpio_isolate(GPIO_BUTTON_A);
+    rtc_gpio_isolate(GPIO_BUTTON_C);
+
+    rtc_gpio_isolate(GPIO_MPU_INT_PIN);
+
+    varioDisplay->powerOff();
+
+    delay(1000);
+
+    esp_deep_sleep_start();
 }

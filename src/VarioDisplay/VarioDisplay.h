@@ -31,6 +31,7 @@ public:
     void init(VarioLanguage *varioLanguage);
     void displayScreen(VarioScreen *screen);
     void stopDisplay();
+    void powerOff();
 
     VarioScreen *_currentScreen;
     VarioScreen *wifiScreen;
@@ -42,6 +43,7 @@ public:
     VarioScreen *soundScreen;
     VarioScreen *statisticScreen;
     VarioScreen *rebootScreen;
+    VarioScreen *messageScreen;
 };
 
 extern ScreenData bootScreenData;
@@ -53,3 +55,4 @@ extern ScreenData vario3ScreenData;
 extern ScreenData soundScreenData;
 extern ScreenData statisticScreenData;
 extern ScreenData rebootScreenData;
+extern ScreenData messageScreenData;

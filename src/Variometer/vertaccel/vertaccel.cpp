@@ -218,12 +218,12 @@ void Vertaccel::compute(int16_t *imuAccel, int32_t *imuQuat, double *vertVector,
   calibratedAccel *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
   accel[2] = ((double)calibratedAccel) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_ACCEL_SCALE_SHIFT)));
 
-  Serial.print("imuAccel0:");
-  Serial.println(imuAccel[0]);
-  Serial.print("imuAccel1:");
-  Serial.println(imuAccel[1]);
-  Serial.print("imuAccel2:");
-  Serial.println(imuAccel[2]);
+  // Serial.print("imuAccel0:");
+  // Serial.println(imuAccel[0]);
+  // Serial.print("imuAccel1:");
+  // Serial.println(imuAccel[1]);
+  // Serial.print("imuAccel2:");
+  // Serial.println(imuAccel[2]);
 #else
   /* inline for optimization */
   int64_t calibratedAccel;

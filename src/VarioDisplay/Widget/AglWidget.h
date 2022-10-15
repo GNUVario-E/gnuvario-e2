@@ -3,7 +3,7 @@
 #include "TextWidget.h"
 #include "VarioDisplay/bitmap/bitmap.h"
 
-class AltWidget : public TextWidget
+class AglWidget : public TextWidget
 {
 private:
     char localText[20];
@@ -11,9 +11,9 @@ private:
     int16_t oldAlt = -999;
 
 public:
-    AltWidget(VarioLanguage *_variolanguage, uint8_t altWidgetIndex, int16_t topx, int16_t topy, int16_t width, int16_t height) : TextWidget(_variolanguage, altWidgetIndex, topx, topy, width, height)
+    AglWidget(VarioLanguage *_variolanguage, uint8_t altWidgetIndex, int16_t topx, int16_t topy, int16_t width, int16_t height) : TextWidget(_variolanguage, altWidgetIndex, topx, topy, width, height)
     {
-        TITLE_NAME_INDEX = TITRE_ALTI;
+        TITLE_NAME_INDEX = TITRE_AGL;
         initAutoTitleFromIndex();
         setTextSize(4);
     }

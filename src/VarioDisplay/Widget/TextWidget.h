@@ -16,6 +16,7 @@ private:
 protected:
     char text[50];
     char *title = nullptr;
+    const char *empty = "";
 
 public:
     TextWidget(VarioLanguage *_variolanguage, uint8_t altWidgetIndex, int16_t topx, int16_t topy, int16_t width, int16_t height) : Widget(_variolanguage, altWidgetIndex, topx, topy, width, height)
@@ -23,6 +24,7 @@ public:
     }
     void addToBuffer(GxEPD2_GFX &_display);
     void setText(const char *text);
+    const char *getText();
     void setTextSize(uint8_t size);
     void setTitle(char *title);
     void initAutoTitleFromIndex();

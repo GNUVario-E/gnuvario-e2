@@ -5,7 +5,6 @@
 #include "Variometer/IntTW/IntTW.h"
 #include "Variometer/ms5611TW/ms5611TW.h"
 #include "Variometer/vertaccel/vertaccel.h"
-#include "VarioManager.h"
 #include "Variometer/kalmanvert/kalmanvert.h"
 #include "VarioManager.h"
 
@@ -190,8 +189,8 @@ int16_t VarioImu::getBearing(void)
         northVectorNorm[1] = northVector[1] / norm;
 
         int16_t tmpcap = atan2(northVectorNorm[1], northVectorNorm[0]) * 180 / M_PI;
-        Serial.print("tmpcap: ");
-        Serial.println(tmpcap);
+        // Serial.print("tmpcap: ");
+        // Serial.println(tmpcap);
         if (tmpcap < 0)
         {
             tmpcap = tmpcap + 360;
@@ -207,4 +206,9 @@ int16_t VarioImu::getBearing(void)
     }
 
     return bearing;
+}
+
+void VarioImu::disableAcquisition()
+{
+    twScheduler.disableAcquisition();
 }

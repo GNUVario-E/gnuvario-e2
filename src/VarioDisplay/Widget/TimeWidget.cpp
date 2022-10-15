@@ -13,21 +13,26 @@ void TimeWidget::addToBuffer(GxEPD2_GFX &_display)
 bool TimeWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
 
-    // title = variol
-    if (fc.time[0] != oldTime[0] || fc.time[1] != oldTime[1] || fc.time[2] != oldTime[2])
+    if (fc.getGpsTimeTimestamp() > getTimeout())
     {
-        sprintf(localText, "%02d %02d", fc.time[0], fc.time[1]);
-        setText(localText);
-        oldTime[0] = fc.time[0];
-        oldTime[1] = fc.time[1];
-        oldTime[2] = fc.time[2];
+        if (fc.getGpsTimeHour() != oldTime[0] || fc.getGpsTimeMinute() != oldTime[1] || fc.getGpsTimeSecond() != oldTime[2])
+        {
+            sprintf(localText, "%02d  %02d", fc.getGpsTimeHour(), fc.getGpsTimeMinute());
+            setText(localText);
+            oldTime[0] = fc.getGpsTimeHour();
+            oldTime[1] = fc.getGpsTimeMinute();
+            oldTime[2] = fc.getGpsTimeSecond();
 
-        return true;
+            return true;
+        }
     }
     else
     {
-        sprintf(localText, "00 00");
-        setText(localText);
+        if (strcmp(empty, getText()) != 0)
+        {
+            setText("");
+            return true;
+        }
     }
 
     return TextWidget::isRefreshNeeded(lastDisplayTime);

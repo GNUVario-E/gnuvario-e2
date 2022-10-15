@@ -8,7 +8,7 @@ class TimeWidget : public TextWidget
 private:
     char localText[20];
     uint8_t blinkFreq = 0;
-    int8_t oldTime[3] = {0, 0, 0};
+    uint8_t oldTime[3] = {0, 0, 0};
 
 public:
     TimeWidget(VarioLanguage *_variolanguage, uint8_t altWidgetIndex, int16_t topx, int16_t topy, int16_t width, int16_t height) : TextWidget(_variolanguage, altWidgetIndex, topx, topy, width, height)

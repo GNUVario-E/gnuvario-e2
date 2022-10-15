@@ -54,7 +54,7 @@ void TextWidget::addToBuffer(GxEPD2_GFX &_display)
         _display.setTextSize(1);                                    // boundary box window
         _display.getTextBounds(text, 0, 0, &tbx, &tby, &tbw, &tbh); // it works for origin 0, 0, fortunately (negative tby!)
 
-        _display.setCursor(topx - marginTextRight + (width - tbw) / 2, topy + (height - tbh) / 2 + paddingTop + marginTitle * 2);
+        _display.setCursor(topx - marginTextRight + (width - tbw) / 2 - tbx, topy + (height - tbh) / 2 + paddingTop + marginTitle * 2);
         _display.print(text);
 
         storeLastDiplayZone(_display, width, height);
@@ -78,6 +78,11 @@ void TextWidget::addToBuffer(GxEPD2_GFX &_display)
 void TextWidget::setText(const char *_text)
 {
     strncpy(text, _text, sizeof(text));
+}
+
+const char *TextWidget::getText()
+{
+    return text;
 }
 
 void TextWidget::setTextSize(uint8_t _size)
@@ -118,72 +123,78 @@ void TextWidget::setBlinkFreq(uint8_t freq)
 bool TextWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
 
+    bool hasChange = false;
+
     switch (indexTxtFC)
     {
     case 1:
-        if (fc.text.isText1)
+        if (fc.getIsText1())
         {
-            setText(fc.text.text1);
-            fc.text.isText1 = false;
-            return true;
+            setText(fc.getText1());
+            fc.setText1(false, "");
+            hasChange = true;
         }
         break;
     case 2:
-        if (fc.text.isText2)
+        if (fc.getIsText2())
         {
-            setText(fc.text.text2);
-            fc.text.isText2 = false;
-            return true;
+            setText(fc.getText2());
+            fc.setText2(false, "");
+            hasChange = true;
         }
         break;
     case 3:
-        if (fc.text.isText3)
+        if (fc.getIsText3())
         {
-            setText(fc.text.text3);
-            fc.text.isText3 = false;
-            return true;
+            setText(fc.getText3());
+            fc.setText3(false, "");
+            hasChange = true;
         }
         break;
     case 4:
-        if (fc.text.isText4)
+        if (fc.getIsText4())
         {
-            setText(fc.text.text4);
-            fc.text.isText4 = false;
-            return true;
+            setText(fc.getText4());
+            fc.setText4(false, "");
+            hasChange = true;
         }
         break;
     case 5:
-        if (fc.text.isText5)
+        if (fc.getIsText5())
         {
-            setText(fc.text.text5);
-            fc.text.isText5 = false;
-            return true;
+            setText(fc.getText5());
+            fc.setText5(false, "");
+            hasChange = true;
         }
         break;
     case 6:
-        if (fc.text.isText6)
+        if (fc.getIsText6())
         {
-            setText(fc.text.text6);
-            fc.text.isText6 = false;
-            return true;
+            setText(fc.getText6());
+            fc.setText6(false, "");
+            hasChange = true;
         }
         break;
     case 7:
-        if (fc.text.isText7)
+        if (fc.getIsText7())
         {
-            setText(fc.text.text7);
-            fc.text.isText7 = false;
-            return true;
+            setText(fc.getText7());
+            fc.setText7(false, "");
+            hasChange = true;
         }
         break;
     case 8:
-        if (fc.text.isText8)
+        if (fc.getIsText8())
         {
-            setText(fc.text.text8);
-            fc.text.isText8 = false;
-            return true;
+            setText(fc.getText8());
+            fc.setText8(false, "");
+            hasChange = true;
         }
         break;
+    }
+    if (hasChange)
+    {
+        return true;
     }
 
     if (hasBeenModified)

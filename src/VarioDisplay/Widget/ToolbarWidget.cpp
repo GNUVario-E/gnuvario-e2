@@ -10,7 +10,6 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
 
     if (isMute || (volume == 0))
     {
-
         _display.drawInvertedBitmap(topx, topy, volume0icons, imgWidth, imgHeight, GxEPD_BLACK);
     }
     else if (volume < 5)
@@ -26,16 +25,48 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
         _display.drawInvertedBitmap(topx, topy, volume3icons, imgWidth, imgHeight, GxEPD_BLACK);
     }
 
-    _display.drawInvertedBitmap(topx + (imgWidth)*3, topy, batIcon, imgWidth, imgHeight, GxEPD_BLACK);
-
     _display.setFont(&NotoSans6pt7b);
     _display.setTextSize(1);
 
     int16_t tbx, tby;
     uint16_t tbw, tbh;
+
+    // wait for record and record in progress
+    if (isReadyToStartRecording)
+    {
+        // wait for start
+        _display.drawInvertedBitmap(topx + (imgWidth), topy, waitrecordicons, imgWidth, imgHeight, GxEPD_BLACK);
+    }
+    else if (isFlightIsStarted)
+    {
+        // record in progress
+        _display.drawInvertedBitmap(topx + (imgWidth), topy, recordicons, imgWidth, imgHeight, GxEPD_BLACK);
+    }
+
+    // satellites count
+    if (isGpsFixed)
+    {
+        _display.drawInvertedBitmap(topx + (imgWidth)*2, topy, fixicons, imgWidth, imgHeight, GxEPD_BLACK);
+    }
+    else
+    {
+        _display.drawInvertedBitmap(topx + (imgWidth)*2, topy, nofixicons, imgWidth, imgHeight, GxEPD_BLACK);
+    }
+
+    _display.getTextBounds(String(satCount), 0, 0, &tbx, &tby, &tbw, &tbh);
+
+    _display.setCursor(topx + (imgWidth)*2 + (imgWidth / 2 - tbw / 2), topy + imgHeight + 10);
+    _display.print(satCount);
+
+    // Battery
+    _display.drawInvertedBitmap(topx + (imgWidth)*3, topy, batIcon, imgWidth, imgHeight, GxEPD_BLACK);
+
+    _display.setFont(&NotoSans6pt7b);
+    _display.setTextSize(1);
+
     _display.getTextBounds(String(batPct), 0, 0, &tbx, &tby, &tbw, &tbh);
 
-    _display.setCursor(topx + (imgWidth)*3 + (imgWidth / 2 - tbw / 2), topy + 28 + 6);
+    _display.setCursor(topx + (imgWidth)*3 + (imgWidth / 2 - tbw / 2), topy + imgHeight + 10);
     _display.print(batPct);
 
     storeLastDiplayZone(_display, width, height);
@@ -51,19 +82,19 @@ bool ToolbarWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
     bool hasChange = false;
 
-    if (fc.power.capacite >= 75)
+    if (fc.getPowerCapacite() >= 75)
     {
         batIcon = bat4icons;
     }
-    else if (fc.power.capacite >= 50)
+    else if (fc.getPowerCapacite() >= 50)
     {
         batIcon = bat3icons;
     }
-    else if (fc.power.capacite >= 25)
+    else if (fc.getPowerCapacite() >= 25)
     {
         batIcon = bat2icons;
     }
-    else if (fc.power.capacite >= 10)
+    else if (fc.getPowerCapacite() >= 10)
     {
         batIcon = bat1icons;
     }
@@ -74,24 +105,69 @@ bool ToolbarWidget::isRefreshNeeded(uint32_t lastDisplayTime)
         hasChange = true;
     }
 
-    if (oldBatPct != fc.power.capacite)
+    if (oldBatPct != fc.getPowerCapacite())
     {
-        batPct = fc.power.capacite;
+        batPct = fc.getPowerCapacite();
         oldBatPct = batPct;
         hasChange = true;
     }
 
-    if (oldVolume != fc.sound.volume)
+    if (oldVolume != fc.getSoundVolume())
     {
-        volume = fc.sound.volume;
+        volume = fc.getSoundVolume();
         oldVolume = volume;
         hasChange = true;
     }
 
-    if (oldIsMute != fc.sound.isMute)
+    if (oldIsMute != fc.getSoundIsMute())
     {
-        isMute = fc.sound.isMute;
+        isMute = fc.getSoundIsMute();
         oldIsMute = isMute;
+        hasChange = true;
+    }
+
+    if (oldSatCount != fc.getGpsSatellitesCount())
+    {
+        satCount = fc.getGpsSatellitesCount();
+        oldSatCount = fc.getGpsSatellitesCount();
+        hasChange = true;
+    }
+
+    isReadyToStartRecording = false;
+    isFlightIsStarted = false;
+    if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > (millis() - getTimeout()) && !fc.getIsFlightStart())
+    {
+        isReadyToStartRecording = true;
+    }
+    else if (fc.getIsFlightStart())
+    {
+        isFlightIsStarted = true;
+    }
+
+    if (oldIsReadyToStartRecording != isReadyToStartRecording)
+    {
+        oldIsReadyToStartRecording = isReadyToStartRecording;
+        hasChange = true;
+    }
+
+    if (oldIsFlightIsStarted != isFlightIsStarted)
+    {
+        oldIsFlightIsStarted = isFlightIsStarted;
+        hasChange = true;
+    }
+
+    if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > getTimeout())
+    {
+        isGpsFixed = true;
+    }
+    else
+    {
+        isGpsFixed = false;
+    }
+
+    if (oldIsGpsFixed != isGpsFixed)
+    {
+        oldIsGpsFixed = isGpsFixed;
         hasChange = true;
     }
 

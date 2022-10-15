@@ -25,6 +25,7 @@ public:
     double getTemp();
     double getAccel();
     int16_t getBearing(void);
+    void disableAcquisition();
 };
 
-extern fcdata_t fc;
+extern FC fc;

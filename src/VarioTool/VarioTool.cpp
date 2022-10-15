@@ -121,3 +121,13 @@ void VarioTool::bearingToOrdinal2c(char *bearingTxt, float bearing)
         sprintf(bearingTxt, "N");
     }
 }
+
+String VarioTool::getDeviceID()
+{
+    char deviceid[21];
+    uint64_t chipid;
+    chipid = ESP.getEfuseMac();
+    sprintf(deviceid, "%" PRIu64, chipid);
+    String thisID(deviceid);
+    return thisID;
+}

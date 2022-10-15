@@ -11,18 +11,18 @@ void VarioWidget::addToBuffer(GxEPD2_GFX &_display)
 
 bool VarioWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
-    if (fc.vario.velocity != oldVario)
+    if (fc.getVarioVelocity() != oldVario)
     {
-        float positiveVelocity = fabsf(fc.vario.velocity);
+        float positiveVelocity = fabsf(fc.getVarioVelocity());
         char sign[] = "+";
-        if (fc.vario.velocity < 0)
+        if (fc.getVarioVelocity() < 0)
         {
             sign[0] = '-';
         }
 
         sprintf(localText, "%s %d.%d", sign, (int)(positiveVelocity), (int)((positiveVelocity - (int)(positiveVelocity)) * 10));
         setText(localText);
-        oldVario = fc.vario.velocity;
+        oldVario = fc.getVarioVelocity();
 
         return true;
     }

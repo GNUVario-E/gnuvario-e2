@@ -4,13 +4,13 @@
 #include "VarioTool/VarioTool.h"
 
 #define COEF_ALTI_FILTERED 0.1
-#define VARIO_TASK_PRIORITY 10
+#define VARIO_TASK_PRIORITY 11
 
 void Variometer::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("Task Vario started");
-    xTaskCreate(this->startTaskImpl, "TaskVario", 2000, this, VARIO_TASK_PRIORITY, &_taskVarioHandle);
+    xTaskCreate(this->startTaskImpl, "TaskVario", 4096, this, VARIO_TASK_PRIORITY, &_taskVarioHandle);
 }
 
 void Variometer::startTaskImpl(void *parm)
@@ -46,8 +46,6 @@ void Variometer::task()
                 altiFiltered = alti; // first reading so set filtered to reading
             }
 
-            fc.vario.alti = round(altiFiltered);
-
             accel = varioImu->getAccel();
 
             unsigned long myTime = millis();
@@ -56,15 +54,17 @@ void Variometer::task()
             velocity = kalmanvert->getVelocity();
 
             varioBeeper->setVelocity(velocity);
-            fc.vario.velocity = velocity;
+            fc.setVarioVelocity(velocity, millis());
 
             calibratedAlti = kalmanvert->getCalibratedPosition();
 
             if (calibratedAlti < 0)
                 calibratedAlti = 0;
 
-            Serial.print("velocity:");
-            Serial.println(velocity);
+            fc.setVarioAlti(round(calibratedAlti), millis());
+
+            // Serial.print("velocity:");
+            // Serial.println(velocity);
         }
         // give time to other tasks
         vTaskDelay(delayT50);
@@ -72,29 +72,61 @@ void Variometer::task()
         bearing = varioImu->getBearing();
         if (bearing != -1)
         {
-            fc.vario.bearing = bearing;
-            VarioTool::bearingToOrdinal2c(fc.vario.bearingTxt, bearing);
-            VARIO_PROG_DEBUG_PRINT("Bearingtxt :");
-            VARIO_PROG_DEBUG_PRINTLN(fc.vario.bearingTxt);
+            char bearingTxt[3];
+            VarioTool::bearingToOrdinal2c(bearingTxt, bearing);
+            fc.setVarioBearing(bearing, bearingTxt, millis());
+
+            VARIO_DATA_DEBUG_PRINT("Bearingtxt :");
+            VARIO_DATA_DEBUG_PRINTLN(bearingTxt);
         }
         // give time to other tasks
         vTaskDelay(delayT50);
     }
 }
 
-Variometer::Variometer(VarioBeeper *_varioBeeper)
+Variometer::Variometer(VarioBeeper *_varioBeeper, VarioSD *_varioSD)
 {
+    varioBeeper = _varioBeeper;
+    varioSD = _varioSD;
     kalmanvert = new Kalmanvert();
     varioImu = new VarioImu(kalmanvert);
-    varioBeeper = _varioBeeper;
+    varioGPS = new VarioGPS();
 }
+
 void Variometer::init()
 {
     varioImu->init();
     varioBeeper->startTask();
+    varioGPS->init();
+    varioGPS->startTask();
 }
 
 void Variometer::preTaskInit()
 {
     varioImu->postInit();
+}
+
+void Variometer::initFromAgl()
+{
+    if (fc.getGpsIsFixed() && fc.getGpsLocTimestamp() > (millis() - 1200) && fc.getAglAltTimestamp() > (millis() - 1200))
+    {
+        int groundLevel = fc.getAglGroundLvl();
+        if (groundLevel != -1)
+        {
+            kalmanvert->calibratePosition(fc.getAglGroundLvl());
+
+            VARIO_AGL_DEBUG_PRINT("groundLvl:");
+            VARIO_AGL_DEBUG_PRINTLN(fc.getAglGroundLvl());
+
+            varioBeeper->generateTone(523, 250);
+            varioBeeper->generateTone(659, 250);
+            varioBeeper->generateTone(784, 250);
+            varioBeeper->generateTone(1046, 250);
+        }
+    }
+}
+
+void Variometer::disableAcquisition()
+{
+    varioImu->disableAcquisition();
 }

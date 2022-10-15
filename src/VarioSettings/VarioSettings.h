@@ -34,4 +34,5 @@ extern ScreenData vario3ScreenData;
 extern ScreenData soundScreenData;
 extern ScreenData statisticScreenData;
 extern ScreenData rebootScreenData;
+extern ScreenData messageScreenData;
 #endif
