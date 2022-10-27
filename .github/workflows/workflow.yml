@@ -1,0 +1,14 @@
+name: GNU Vario e2 CI
+on:
+  push:
+    branches:
+      - test
+  pull_request:
+    branches:
+      - test
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: esp-idf build
+      uses: sebastianPsm/esp-idf-ci-action@1
