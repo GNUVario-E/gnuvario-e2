@@ -6,9 +6,22 @@ on:
   pull_request:
     branches:
       - test
+
 jobs:
-  build:
+  build:     
     runs-on: ubuntu-latest
     steps:
-    - name: esp-idf build
-      uses: sebastianPsm/esp-idf-ci-action@1
+      - uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+      - name: Install dependencies
+        run: |
+          pip install -U https://github.com/platformio/platformio/archive/develop.zip
+          pio pkg install --global --platform symlink://.
+      - name: Build
+        run: |
+          pio run --environment esp32dev
