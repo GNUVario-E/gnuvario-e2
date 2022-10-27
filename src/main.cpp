@@ -8,6 +8,10 @@
 
 const TickType_t delayT1000 = pdMS_TO_TICKS(1000);
 
+
+// une erreur de compilation pour test
+ZZ toto;
+
 FC fc;
 
 VarioManager vm;
