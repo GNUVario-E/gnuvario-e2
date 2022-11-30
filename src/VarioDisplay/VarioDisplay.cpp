@@ -40,7 +40,7 @@ void VarioDisplay::init(VarioLanguage *_varioLanguage)
     display.init();
     display.setRotation(0);
     display.setTextColor(GxEPD_BLACK);
-    display.setFont(&FreeSans6pt7b);
+    display.setFont(&NotoSans6pt7b);
     display.setTextSize(1);
 
     // premier affichage full
