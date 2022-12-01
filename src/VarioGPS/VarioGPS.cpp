@@ -14,8 +14,9 @@ VarioGPS::VarioGPS()
 void VarioGPS::init()
 {
     Serial2.begin(9600, SERIAL_8N1, NMEA_RX_PIN, NMEA_TX_PIN);
-    VARIO_GPS_DEBUG_PRINTLN("Serial Txd is on pin: " + String(TX));
+
     VARIO_GPS_DEBUG_PRINTLN("Serial Rxd is on pin: " + String(RX));
+    VARIO_GPS_DEBUG_PRINTLN("Serial Txd is on pin: " + String(TX));
 }
 
 void VarioGPS::startTask()

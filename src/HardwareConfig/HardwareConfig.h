@@ -29,7 +29,7 @@
 #define GPIO_MPU_INT_PIN GPIO_NUM_26
 
 #define NMEA_RX_PIN 33
-#define NMEA_TX_PIN 34
+#define NMEA_TX_PIN -1
 
 /* Set the freq */
 #define VARIO_TW_FREQ 400000UL
