@@ -18,16 +18,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/***************************************************************************************************/
-/*                                INTTW                                                            */
-/*                                                                                                 */
-/*  Ver     Date                                                                                   */
-/*  1.0                                                                                            */
-/*                                                                                                 */
-/*  1.0.1   28/07/2019   Ajout reinit i2c                                                          */
-/*                                                                                                 */
-/***************************************************************************************************/
-
 #include "IntTW.h"
 
 #include <Arduino.h>
@@ -52,9 +42,8 @@ IntTW intTW;
 
 void IntTW::begin(bool internalPullUp)
 {
-
   /* init TW */
-  i2c = i2cInit(INTTW_I2C_BUS_NUM, VARIO_TW_SDA_PIN, VARIO_TW_SCL_PIN, VARIO_TW_FREQ);
+  i2cInit(INTTW_I2C_BUS_NUM, VARIO_TW_SDA_PIN, VARIO_TW_SCL_PIN, VARIO_TW_FREQ);
 }
 
 void IntTW::setTxBuffer(uint8_t *buff)
@@ -153,11 +142,11 @@ void IntTW::start(uint8_t *commands, uint8_t commandLength, uint8_t commandFlags
     /********************/
     if (action == INTTW_WRITE)
     {
-      twError = i2cWrite(i2c, address, commandDestP, count, sendStop, INTTW_TIMEOUT_MS);
+      twError = i2cWrite(INTTW_I2C_BUS_NUM, address, commandDestP, count, INTTW_TIMEOUT_MS);
     }
     else
     {
-      twError = i2cRead(i2c, address, commandDestP, count, sendStop, INTTW_TIMEOUT_MS, &readCount);
+      twError = i2cRead(INTTW_I2C_BUS_NUM, address, commandDestP, count, INTTW_TIMEOUT_MS, &readCount);
     }
   }
 
@@ -168,16 +157,17 @@ void IntTW::start(uint8_t *commands, uint8_t commandLength, uint8_t commandFlags
   if (successCallback)
   {
     successCallback();
+    i2c_err_t
   }
 #else
-  if ((twError == I2C_ERROR_OK) && successCallback)
+  if ((twError == ESP_OK) && successCallback)
   {
     successCallback();
   }
   else
   {
-    i2cRelease(i2c);
-    i2c = i2cInit(INTTW_I2C_BUS_NUM, VARIO_TW_SDA_PIN, VARIO_TW_SCL_PIN, VARIO_TW_FREQ);
+    i2cDeinit(INTTW_I2C_BUS_NUM);
+    i2cInit(INTTW_I2C_BUS_NUM, VARIO_TW_SDA_PIN, VARIO_TW_SCL_PIN, VARIO_TW_FREQ);
   }
 #endif
 }
@@ -192,7 +182,7 @@ bool IntTW::transmitting(void)
 bool IntTW::succeeded(void)
 {
 
-  return (twError == I2C_ERROR_OK);
+  return (twError == ESP_OK);
 }
 
 /* never keeping bus */
@@ -201,7 +191,7 @@ void IntTW::stop(void)
 }
 void IntTW::release(void)
 {
-  i2cRelease(i2c);
+  i2cDeinit(INTTW_I2C_BUS_NUM);
 }
 
 /**********************/

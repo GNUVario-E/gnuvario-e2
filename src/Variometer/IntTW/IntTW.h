@@ -152,8 +152,7 @@ public:
 private:
   uint8_t *volatile txBuffer;
   uint8_t volatile *volatile rxBuffer;
-  i2c_t *i2c;
-  i2c_err_t volatile twError;
+  esp_err_t volatile twError;
 };
 
 extern IntTW intTW;
