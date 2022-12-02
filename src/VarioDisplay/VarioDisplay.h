@@ -20,6 +20,7 @@ private:
     static void screenTask(void *parameter);
     static void startTaskBuffer(void *);
     static uint32_t lastDisplayTime;
+    static uint16_t minTimeRefresh ;
     void bufferTask();
     void buildScreens();
     void updateScreen(void);
@@ -32,6 +33,7 @@ public:
     void displayScreen(VarioScreen *screen);
     void stopDisplay();
     void powerOff();
+    void setMinTimeRefresh(uint16_t minTimeRefresh);
 
     VarioScreen *_currentScreen;
     VarioScreen *wifiScreen;

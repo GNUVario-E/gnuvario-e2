@@ -12,6 +12,8 @@ TaskHandle_t VarioDisplay::screenTaskHandler;
 TaskHandle_t VarioDisplay::bufferTaskHandler;
 
 uint32_t VarioDisplay::lastDisplayTime = 0;
+uint16_t VarioDisplay::minTimeRefresh = 0;
+bool forceIgnoreMinTimeRefresh = false;
 
 /**
  * Initialisetion des différents objets
@@ -137,11 +139,16 @@ void VarioDisplay::screenTask(void *parameter)
         if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
         {
             // VARIO_PROG_DEBUG_PRINTLN("screen refresh");
+            // no more than once per second
+            if (forceIgnoreMinTimeRefresh || (millis() - lastDisplayTime > minTimeRefresh))
+            {
+                display.setFullWindow();
+                display.display(true); // partial update
 
-            display.setFullWindow();
-            display.display(true); // partial update
-
-            display.powerOff();
+                display.powerOff();
+                lastDisplayTime = millis();
+                forceIgnoreMinTimeRefresh = false;
+            }
 
             xSemaphoreGive(screenMutex);
         }
@@ -277,6 +284,7 @@ void VarioDisplay::displayScreen(VarioScreen *screen)
     if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
     {
         // Serial.println("mutex displayScreen");
+        forceIgnoreMinTimeRefresh = true;
         display.fillScreen(GxEPD_WHITE);
         xSemaphoreGive(screenMutex);
 
@@ -298,4 +306,9 @@ void VarioDisplay::stopDisplay()
 void VarioDisplay::powerOff()
 {
     display.powerOff();
+}
+
+void VarioDisplay::setMinTimeRefresh(uint16_t _minTimeRefresh)
+{
+    minTimeRefresh = _minTimeRefresh;
 }
