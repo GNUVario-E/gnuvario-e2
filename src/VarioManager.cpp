@@ -181,6 +181,7 @@ void VarioManager::onSignalReceived(uint8_t _val)
         break;
     case VARIO_START_ASKED:
         VARIO_CAL_DEBUG_PRINTLN("Démarrage du vario");
+        varioDisplay->setMinTimeRefresh(1000);
         variometer = new Variometer(varioBeeper, varioSD);
         fc.registerObserver(this);
         variometer->init();
