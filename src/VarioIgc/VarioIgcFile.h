@@ -13,6 +13,7 @@ private:
     bool getNextFileName(char *filename, uint8_t day, uint8_t month, uint8_t year);
     void initHeaders(const char *pilot, const char *glider, uint8_t day, uint8_t month, uint8_t year);
     bool appendToFile(const char *message);
+    char tmpPath[25];
 
 public:
     VarioIgcFile();

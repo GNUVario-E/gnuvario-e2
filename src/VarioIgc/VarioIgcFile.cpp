@@ -21,9 +21,11 @@ bool VarioIgcFile::createNewIgcFile(uint8_t day, uint8_t month, uint8_t year)
     VARIO_IGC_DEBUG_PRINT("filename to create:");
     VARIO_IGC_DEBUG_PRINTLN(filename);
 
-    String path = String(flightDir) + "/" + filename;
+    strcpy(tmpPath, flightDir);
+    strcat(tmpPath, "/");
+    strcat(tmpPath, filename);
 
-    if ((currentFile = SD.open(path.c_str(), FILE_WRITE)))
+    if ((currentFile = SD.open(tmpPath, FILE_WRITE)))
     {
         currentFile.close();
         isCreated = true;
@@ -41,8 +43,6 @@ bool VarioIgcFile::createNewIgcFile(uint8_t day, uint8_t month, uint8_t year)
 
 bool VarioIgcFile::getNextFileName(char *filename, uint8_t day, uint8_t month, uint8_t year)
 {
-    Serial.println("getNextFileName");
-
     // 22090701.IGC
     char lFilename[13];
     uint16_t suffix = 0;
@@ -61,8 +61,12 @@ bool VarioIgcFile::getNextFileName(char *filename, uint8_t day, uint8_t month, u
         sprintf(lFilename, "%02d%02d%02d%02d.IGC", year, month, day, i);
         VARIO_IGC_DEBUG_PRINT("lFilename:");
         VARIO_IGC_DEBUG_PRINTLN(lFilename);
-        String path = String(flightDir) + "/" + lFilename;
-        if (!SD.exists(path))
+
+        strcpy(tmpPath, flightDir);
+        strcat(tmpPath, "/");
+        strcat(tmpPath, lFilename);
+
+        if (!SD.exists(tmpPath))
         {
             num = i;
             strcpy(filename, lFilename);
