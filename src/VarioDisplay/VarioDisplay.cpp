@@ -12,6 +12,7 @@ TaskHandle_t VarioDisplay::screenTaskHandler;
 TaskHandle_t VarioDisplay::bufferTaskHandler;
 
 uint32_t VarioDisplay::lastDisplayTime = 0;
+uint32_t VarioDisplay::lastDisplayTimeToggle = 0;
 uint16_t VarioDisplay::minTimeRefresh = 0;
 bool forceIgnoreMinTimeRefresh = false;
 
@@ -139,16 +140,11 @@ void VarioDisplay::screenTask(void *parameter)
         if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
         {
             // VARIO_PROG_DEBUG_PRINTLN("screen refresh");
-            // no more than once per second
-            if (forceIgnoreMinTimeRefresh || (millis() - lastDisplayTime > minTimeRefresh))
-            {
-                display.setFullWindow();
-                display.display(true); // partial update
 
-                display.powerOff();
-                lastDisplayTime = millis();
-                forceIgnoreMinTimeRefresh = false;
-            }
+            display.setFullWindow();
+            display.display(true); // partial update
+
+            display.powerOff();
 
             xSemaphoreGive(screenMutex);
         }
@@ -182,29 +178,35 @@ void VarioDisplay::bufferTask()
         if (!firstRun)
         {
             nbToggle = 0;
-            // toggle to next widget if necessary
-            for (uint8_t i = 0; i < _currentScreen->getNbWidgets(); i++)
+            // no more than once per second
+            if (forceIgnoreMinTimeRefresh || (millis() - lastDisplayTimeToggle > minTimeRefresh))
             {
-                if (_currentScreen->tabWidgets[i]->getIsActif())
+                // toggle to next widget if necessary
+                for (uint8_t i = 0; i < _currentScreen->getNbWidgets(); i++)
                 {
-                    uint8_t altWidgetIndex = _currentScreen->tabWidgets[i]->getAltWidgetIndex();
-                    if (altWidgetIndex != 99)
+                    if (_currentScreen->tabWidgets[i]->getIsActif())
                     {
-                        // Serial.println("Activation du widget " + String(altWidgetIndex) + " avec ancien wigdet =" + String(i));
-                        tabToggle[nbToggle][0] = i;
-                        tabToggle[nbToggle][1] = altWidgetIndex;
-                        nbToggle++;
+                        uint8_t altWidgetIndex = _currentScreen->tabWidgets[i]->getAltWidgetIndex();
+                        if (altWidgetIndex != 99)
+                        {
+                            // Serial.println("Activation du widget " + String(altWidgetIndex) + " avec ancien wigdet =" + String(i));
+                            tabToggle[nbToggle][0] = i;
+                            tabToggle[nbToggle][1] = altWidgetIndex;
+                            nbToggle++;
+                        }
                     }
                 }
-            }
-            for (uint8_t i = 0; i < nbToggle; i++)
-            {
-                _currentScreen->tabWidgets[tabToggle[i][0]]->setIsActif(false);
-                _currentScreen->tabWidgets[tabToggle[i][0]]->setForceRefresh();
+                for (uint8_t i = 0; i < nbToggle; i++)
+                {
+                    _currentScreen->tabWidgets[tabToggle[i][0]]->setIsActif(false);
+                    _currentScreen->tabWidgets[tabToggle[i][0]]->setForceRefresh();
 
-                _currentScreen->tabWidgets[tabToggle[i][1]]->setIsActif(true);
-                _currentScreen->tabWidgets[tabToggle[i][1]]->setForceRefresh();
-                _currentScreen->tabWidgets[tabToggle[i][1]]->setForceClearZone();
+                    _currentScreen->tabWidgets[tabToggle[i][1]]->setIsActif(true);
+                    _currentScreen->tabWidgets[tabToggle[i][1]]->setForceRefresh();
+                    _currentScreen->tabWidgets[tabToggle[i][1]]->setForceClearZone();
+                }
+                lastDisplayTimeToggle = millis();
+                forceIgnoreMinTimeRefresh = false;
             }
         }
         /* launch interrupt */
@@ -226,6 +228,7 @@ void VarioDisplay::bufferTask()
                 // Serial.println("needRefresh");
                 xSemaphoreGive(screenMutex);
                 updateScreen();
+                lastDisplayTime = millis();
                 notifyTask = false; // task will be notified at the end of the screen refresh
             }
         }
