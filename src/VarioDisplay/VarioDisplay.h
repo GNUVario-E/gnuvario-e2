@@ -20,6 +20,7 @@ private:
     static void screenTask(void *parameter);
     static void startTaskBuffer(void *);
     static uint32_t lastDisplayTime;
+    static uint32_t lastDisplayTimeToggle;
     static uint16_t minTimeRefresh ;
     void bufferTask();
     void buildScreens();
