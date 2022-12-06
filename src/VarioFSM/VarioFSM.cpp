@@ -273,7 +273,7 @@ void VarioFSM::onSignalReceived(uint8_t _val)
         VARIO_FSM_DEBUG_PRINTLN("FLIGHT_START_ASKED");
         _notifyObserver(FLIGHT_START_ASKED);
     }
-    else if (fsm.is_in_state(_state_sound_edit))
+    else if (_val != BTN_SHORT_B && fsm.is_in_state(_state_sound_edit))
     {
         // gestion de l'edition du son
         VARIO_FSM_DEBUG_PRINTLN("sound edit");
