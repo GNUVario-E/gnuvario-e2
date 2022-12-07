@@ -263,13 +263,19 @@ void VarioFSM::onSignalReceived(uint8_t _val)
     }
     else if (_val == BTN_LONG_A && (fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)))
     {
-        // toggle mute
+        // init AGL
         VARIO_FSM_DEBUG_PRINTLN("AGL_INIT_ASKED");
         _notifyObserver(AGL_INIT_ASKED);
     }
+    else if (_val == BTN_LONG_B && (fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)))
+    {
+        // request deep sleep
+        VARIO_FSM_DEBUG_PRINTLN("DEEP_SLEEP_ASKED");
+        _notifyObserver(DEEP_SLEEP_ASKED);
+    }
     else if (_val == BTN_LONG_C && (fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)))
     {
-        // toggle mute
+        // force flight start
         VARIO_FSM_DEBUG_PRINTLN("FLIGHT_START_ASKED");
         _notifyObserver(FLIGHT_START_ASKED);
     }

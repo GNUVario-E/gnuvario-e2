@@ -32,7 +32,7 @@ private:
     void timer10s();
     void setPowerDataToFC();
     void addLineToIgc();
-    void deepSleep(const char *msg);
+    void deepSleep(const char *txt1, const char *txt2);
 
 public:
     VarioManager();
