@@ -588,6 +588,36 @@ uint32_t FC::getGpsSatellitesTimestamp()
     return fcdata.gps.satellitesTimestamp;
 }
 
+void FC::setGpsSentence(const char *sentence, uint32_t gpsSentenceTimestamp)
+{
+    // which GPS sentences to store
+    //  $GPRMC
+    // $GNRMC
+    // $GPGGA
+    // $GNGGA
+    // Serial.println("Tentative ajout d'une phrase GPS");
+    // Serial.println(sentence);
+    if ((strncmp(sentence, "$GPGGA", 6) == 0) || (strncmp(sentence, "$GNGGA", 6) == 0) || (strncmp(sentence, "$GPRMC", 6) == 0) || (strncmp(sentence, "$GNRMC", 6) == 0))
+    {
+        // Serial.println("Ajout d'une phrase GPS");
+
+        strcpy(fcdata.gps.sentence, sentence);
+        fcdata.gps.sentenceTimestamp = gpsSentenceTimestamp;
+        // Serial.println(fcdata.gps.sentence);
+        // Serial.println(fcdata.gps.sentenceTimestamp);
+    }
+}
+
+char *FC::getGpsSentence()
+{
+    return fcdata.gps.sentence;
+}
+
+uint32_t FC::getGpsSentenceTimestamp()
+{
+    return fcdata.gps.sentenceTimestamp;
+}
+
 // AGL
 void FC::setAglAlt(int aglAlt, uint32_t aglTimestamp)
 {
