@@ -19,10 +19,10 @@ AsyncResponseStream *VarioWebHandler::handleListFlights(AsyncWebServerRequest *r
 {
     AsyncResponseStream *response = request->beginResponseStream("application/json");
 
-    String path = "/vols";
+    const char *path = "/vols";
 
     File dir;
-    dir = SD.open((char *)path.c_str(), FILE_READ);
+    dir = SD.open(path, FILE_READ);
 
     if (!dir.isDirectory())
     {
@@ -69,8 +69,8 @@ AsyncResponseStream *VarioWebHandler::handleListFlights(AsyncWebServerRequest *r
 
     response->print("]");
 
-    //correction bug chunk transfer webserver
-    // server.sendContent("");
+    // correction bug chunk transfer webserver
+    //  server.sendContent("");
     dir.close();
 
     return response;
@@ -113,7 +113,7 @@ AsyncResponseStream *VarioWebHandler::handlePrintDirectory(AsyncWebServerRequest
         VARIO_WIFI_DEBUG_PRINTLN("Not directory");
 
         dir.close();
-        //response->setCode(404);
+        // response->setCode(404);
         request->send(500, "text/plain", "NOT DIR");
 
         return response;
@@ -135,7 +135,7 @@ AsyncResponseStream *VarioWebHandler::handlePrintDirectory(AsyncWebServerRequest
     output += ",\"contents\" :[";
 
     response->print(output);
-    printDirectoryRecurse(response, path, isRecursive);
+    printDirectoryRecurse(response, (char *)path.c_str(), isRecursive);
     output = "]";
 
     output += "}";
@@ -144,9 +144,9 @@ AsyncResponseStream *VarioWebHandler::handlePrintDirectory(AsyncWebServerRequest
 
     response->print("]");
 
-    //correction bug chunk transfer webserver
-    // server.sendContent("");
-    // server.client().stop();
+    // correction bug chunk transfer webserver
+    //  server.sendContent("");
+    //  server.client().stop();
     VARIO_WIFI_DEBUG_PRINTLN("]");
 
     dir.close();
@@ -155,12 +155,12 @@ AsyncResponseStream *VarioWebHandler::handlePrintDirectory(AsyncWebServerRequest
 }
 
 /***********************************/
-void VarioWebHandler::printDirectoryRecurse(AsyncResponseStream *response, String path, boolean isRecursive)
+void VarioWebHandler::printDirectoryRecurse(AsyncResponseStream *response, const char *path, boolean isRecursive)
 /***********************************/
 {
 
     File dir;
-    dir = SD.open((char *)path.c_str(), FILE_READ);
+    dir = SD.open(path, FILE_READ);
     dir.rewindDirectory();
 
     int tmpcnt = 0;
@@ -172,9 +172,8 @@ void VarioWebHandler::printDirectoryRecurse(AsyncResponseStream *response, Strin
         {
             break;
         }
-        String tmpName = entry.name();
 
-        if (tmpName.equalsIgnoreCase("SYSTEM~1") || tmpName.startsWith(".")) //equalsIgnoreCase(".TRASH~1"))
+        if (strcasecmp(entry.name(), "SYSTEM~1") == 0 || strncasecmp(entry.name(), ".", 1) == 0) // equalsIgnoreCase(".TRASH~1"))
         {
             continue;
         }
@@ -282,7 +281,7 @@ void VarioWebHandler::handleOtaUpdate(AsyncWebServerRequest *request, String fil
     {
         Serial.printf("UploadStart: %s\n", filename.c_str());
         if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH))
-        { //start with max available size
+        { // start with max available size
             Update.printError(Serial);
             request->send(500, "text/plain", "UPDATE FAIL");
             return;
@@ -303,7 +302,7 @@ void VarioWebHandler::handleOtaUpdate(AsyncWebServerRequest *request, String fil
         Serial.printf("UploadEnd: %s, %u B\n", filename.c_str(), index + len);
 
         if (Update.end(true))
-        { //true to set the size to the current progress
+        { // true to set the size to the current progress
             Serial.printf("Update Success: %u\nRebooting...\n", index + len);
             request->send(200);
             Serial.println("RESTART ESP32");
@@ -324,7 +323,7 @@ void VarioWebHandler::handleOtaUpdate(AsyncWebServerRequest *request, String fil
     }
 }
 
-//telechargement d'un fichier dont le nom complet avec chemin se trouve en param
+// telechargement d'un fichier dont le nom complet avec chemin se trouve en param
 AsyncWebServerResponse *VarioWebHandler::handleFileDownload(AsyncWebServerRequest *request)
 {
     AsyncWebServerResponse *response;
@@ -350,7 +349,7 @@ AsyncWebServerResponse *VarioWebHandler::handleFileDownload(AsyncWebServerReques
     return response;
 }
 
-//suppression d'un fichier dont le nom complet avec chemin se trouve en param
+// suppression d'un fichier dont le nom complet avec chemin se trouve en param
 AsyncWebServerResponse *VarioWebHandler::handleFileDelete(AsyncWebServerRequest *request)
 {
     AsyncWebServerResponse *response;
@@ -393,7 +392,7 @@ void VarioWebHandler::handleFileUpload(AsyncWebServerRequest *request, String fi
         uploadFile = SD.open(filename, FILE_WRITE);
         if (!uploadFile)
         {
-            //return error
+            // return error
             request->send(500, "text/plain", "UPLOAD FAIL");
             return;
         }
@@ -403,7 +402,7 @@ void VarioWebHandler::handleFileUpload(AsyncWebServerRequest *request, String fi
     {
         if (uploadFile.write(data, len) != len)
         {
-            //return error
+            // return error
             Serial.printf("Upload fail");
             request->send(500, "text/plain", "UPLOAD FAIL");
             return;
@@ -457,7 +456,7 @@ void VarioWebHandler::handleFileCreate(AsyncWebServerRequest *request, uint8_t *
     return;
 }
 
-//récupération du contenu du fichier wifi
+// récupération du contenu du fichier wifi
 AsyncWebServerResponse *VarioWebHandler::handleWifi(AsyncWebServerRequest *request)
 {
     VARIO_WIFI_DEBUG_PRINTLN("handleParams - handle Wifi");
@@ -591,7 +590,7 @@ AsyncWebServerResponse *VarioWebHandler::handleParseIgc(AsyncWebServerRequest *r
     xTaskCreate(
         _doParseIgcAndInsert,   /* Task function. */
         "doParseIgcAndInsert",  /* String with name of task. */
-        18000,                  /* Stack size in bytes. */
+        9000,                   /* Stack size in bytes. */
         (void *)(path.c_str()), /* Parameter passed as input of the task */
         1,                      /* Priority of the task. */
         &taskParse);            /* Task handle. */
@@ -638,8 +637,7 @@ AsyncWebServerResponse *VarioWebHandler::handleParseIgc(AsyncWebServerRequest *r
                                                  {
                                                      // la queue contient l'element 1 qui signifie que le traitement est en cours
                                                      return snprintf((char *)buffer, maxLen, ".");
-                                                 }
-                                             });
+                                                 } });
 
     return response;
 }
@@ -695,8 +693,7 @@ AsyncWebServerResponse *VarioWebHandler::handleGetFlights(AsyncWebServerRequest 
                                                                          //index equals the amount of bytes that have been already sent
                                                                          //You will be asked for more data until 0 is returned
                                                                          //Keep in mind that you can not delay or yield waiting for more data!
-                                                                         return varioSqlFlightHelper.readData(buffer, maxLen);
-                                                                     });
+                                                                         return varioSqlFlightHelper.readData(buffer, maxLen); });
 
     return response;
 }
@@ -811,7 +808,7 @@ AsyncWebServerResponse *VarioWebHandler::handleDelFlight(AsyncWebServerRequest *
 
 AsyncWebServerResponse *VarioWebHandler::handleFirmwareVersion(AsyncWebServerRequest *request)
 {
-    //recuperation des versions de firmware
+    // recuperation des versions de firmware
     VARIO_WIFI_DEBUG_PRINTLN("handleFirmwareVersion");
 
     AsyncWebServerResponse *response = request->beginChunkedResponse("application/json", [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t
@@ -826,8 +823,7 @@ AsyncWebServerResponse *VarioWebHandler::handleFirmwareVersion(AsyncWebServerReq
                                                                              memcpy(buffer, (char *)output.c_str(), output.length());
                                                                              return output.length();
                                                                          }
-                                                                         return 0;
-                                                                     });
+                                                                         return 0; });
 
     return response;
 }
@@ -945,13 +941,13 @@ void VarioWebHandler::_doParseIgcAndInsert(void *parameter)
 
     String path = String((char *)parameter);
     File dataFile;
-    //test présence fichier
+    // test présence fichier
     if (dataFile = SD.open(path, FILE_READ))
     {
         String tmpFullName = dataFile.name();
         dataFile.close();
 
-        //parsage du fichier IGC
+        // parsage du fichier IGC
         VarioIgcParser varioIgcParser(path);
         varioIgcParser.parseFile();
 
@@ -1012,10 +1008,8 @@ igcdata VarioWebHandler::jsonToIgcdata(String data)
     DeserializationError err = deserializeJson(VarioTool::jsonDoc, data);
     if (err)
     {
-#ifdef SQL_DEBUG
-        Serial.print(F("deserializeJson() failed with code "));
-        Serial.println(err.c_str());
-#endif //SQL_DEBUG
+        VARIO_SQL_DEBUG_PRINT(F("deserializeJson() failed with code "));
+        VARIO_SQL_DEBUG_PRINTLN(err.c_str());
 
         return myIgcData;
     }

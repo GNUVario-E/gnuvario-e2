@@ -4,7 +4,7 @@
 #include "VarioData.h"
 #include "VarioTool/VarioTool.h"
 
-#define GPS_TASK_PRIORITY 9
+#define GPS_TASK_PRIORITY 8
 
 VarioGPS::VarioGPS()
 {
@@ -23,7 +23,8 @@ void VarioGPS::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskVarioGPS started");
-    xTaskCreate(this->startTaskImpl, "TaskVarioGPS", 4096, this, GPS_TASK_PRIORITY, &_taskVarioGPSHandle);
+    // xTaskCreate(this->startTaskImpl, "TaskVarioGPS", 4096, this, GPS_TASK_PRIORITY, &_taskVarioGPSHandle);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioGPS", 4096, this, GPS_TASK_PRIORITY, &_taskVarioGPSHandle, 1);
 }
 
 void VarioGPS::startTaskImpl(void *parm)
@@ -34,29 +35,56 @@ void VarioGPS::startTaskImpl(void *parm)
 
 void VarioGPS::task()
 {
-    startTaskTime = millis();
+    int c;
+    lastCharProcessedTime = millis();
     while (1)
     {
         // This sketch displays information every time a new sentence is correctly encoded.
         while (Serial2.available() > 0)
         {
-            if (gps.encode(Serial2.read()))
+            c = Serial2.read();
+            if (c == '$')
             {
+                Serial.println("\n");
+            }
+            Serial.write(c);
+
+            sentenceBuffer.push(c);
+            if (gps.encode(c))
+            {
+                // we've got a new valid sentence
+                // VARIO_GPS_DEBUG_PRINTLN("New valid sentence");
+                // VARIO_GPS_DEBUG_PRINTLN("---------------------------------------------");
+                // for (decltype(sentenceBuffer)::index_t i = 0; i < sentenceBuffer.size(); i++)
+                // {
+                //     VARIO_GPS_DEBUG_PRINT(sentenceBuffer[i]);
+                // }
+                // VARIO_GPS_DEBUG_PRINTLN("");
+                // VARIO_GPS_DEBUG_PRINTLN("---------------------------------------------");
+                // vTaskDelay(delayT10);
+                sendSentenceToFC();
+
+                // vidage du buffer
+                sentenceBuffer.clear();
+                vTaskDelay(delayT10);
                 displayInfo();
             }
+            // vTaskDelay(delayT1 * 2);
+            lastCharProcessedTime = millis();
         }
 
-        if ((millis() - startTaskTime) > 5000 && gps.charsProcessed() < 10)
+        if ((millis() - lastCharProcessedTime) > 5000 && gps.charsProcessed() < 10)
         {
-            VARIO_GPS_DEBUG_PRINTLN(F("No GPS detected: check wiring."));
+            VARIO_GPS_DEBUG_PRINTLN("No GPS detected: check wiring.");
             while (true)
             {
+
                 vTaskDelay(delayT500);
             }
         }
 
         // give time to other tasks
-        vTaskDelay(delayT100);
+        vTaskDelay(delayT10);
     }
 }
 
@@ -234,4 +262,40 @@ void VarioGPS::displayInfo()
     }
 
     VARIO_GPS_DEBUG_PRINTLN();
+}
+
+void VarioGPS::sendSentenceToFC()
+{
+    // char c;
+    // int j = 0;
+    // bool started = false;
+    // char sentence[BUFFER_SIZE];
+    // uint16_t bufferSize = sentenceBuffer.size();
+
+    // // clear sentence buffer
+    // sentence[0] = '\0';
+
+    // for (uint16_t i = 0; i < bufferSize; i++)
+    // {
+    //     // send sentence to FC
+    //     c = sentenceBuffer.shift();
+    //     if (c == '$')
+    //     {
+    //         started = true;
+    //     }
+
+    //     if (started)
+    //     {
+    //         // append c to sentence
+    //         sentence[j] = c;
+    //         j++;
+    //     }
+    // }
+
+    // if (started)
+    // {
+    //     sentence[j] = '\0';
+    // }
+
+    // fc.setGpsSentence(sentence, millis());
 }

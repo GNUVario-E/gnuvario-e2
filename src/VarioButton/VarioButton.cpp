@@ -2,7 +2,7 @@
 #include "Observer/Observer.h"
 
 #define DELAY_LONG 1500
-#define BUTTON_TASK_PRIORITY 10
+#define BUTTON_TASK_PRIORITY 9
 
 VarioButton::VarioButton()
 {
@@ -16,7 +16,8 @@ void VarioButton::startTask()
 {
 	// task creation
 	VARIO_PROG_DEBUG_PRINTLN("TaskVarioButton started");
-	xTaskCreate(this->startTaskImpl, "TaskVarioButton", 4096, this, BUTTON_TASK_PRIORITY, &_taskVarioButtonHandle);
+	// xTaskCreate(this->startTaskImpl, "TaskVarioButton", 4096, this, BUTTON_TASK_PRIORITY, &_taskVarioButtonHandle);
+	xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioButton", 4096, this, BUTTON_TASK_PRIORITY, &_taskVarioButtonHandle, 1);
 }
 
 void VarioButton::startTaskImpl(void *parm)

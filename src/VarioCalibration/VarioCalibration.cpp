@@ -270,10 +270,8 @@ void VarioCalibration::task()
 
 						VARIO_CAL_DEBUG_PRINTLN("WRITE DATA");
 
-						//	#ifdef MAKE_BEEP
 						VARIO_CAL_DEBUG_PRINTLN("BEEP");
 						varioBeeper->generateTone(BEEP_RECORD_FREQ, BEEP_DURATION, BEEP_VOLUME);
-						//	#endif //MAKE_BEEP
 					}
 				}
 

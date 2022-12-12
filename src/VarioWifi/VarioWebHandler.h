@@ -18,16 +18,16 @@ public:
     // Récupération de la liste des fichiers du répertoire vols au format json
     AsyncResponseStream *handleListFlights(AsyncWebServerRequest *request);
 
-    //récupération de la liste du contenu de la carte SD
+    // récupération de la liste du contenu de la carte SD
     AsyncResponseStream *handlePrintDirectory(AsyncWebServerRequest *request);
 
     // Récupération du contenu du fichier parameters.jso
     AsyncWebServerResponse *handleParams(AsyncWebServerRequest *request);
 
-    //telechargement d'un fichier dont le nom complet avec chemin se trouve en param
+    // telechargement d'un fichier dont le nom complet avec chemin se trouve en param
     AsyncWebServerResponse *handleFileDownload(AsyncWebServerRequest *request);
 
-    //suppression d'un fichier dont le nom complet avec chemin se trouve en param
+    // suppression d'un fichier dont le nom complet avec chemin se trouve en param
     AsyncWebServerResponse *handleFileDelete(AsyncWebServerRequest *request);
 
     // sauvegarde des parametres
@@ -39,16 +39,16 @@ public:
     // upload d'un fichier, le chemin de destination se trouve dans le nom du fichier posté
     static void handleFileUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final);
 
-    //creation d'un fichier ou d'un repertoire
+    // creation d'un fichier ou d'un repertoire
     static void handleFileCreate(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 
-    //récupération du contenu du fichier wifi
+    // récupération du contenu du fichier wifi
     AsyncWebServerResponse *handleWifi(AsyncWebServerRequest *request);
 
     // sauvegarde des parametres
     static void handleSaveWifi(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 
-    //récupération du contenu du fichier preference
+    // récupération du contenu du fichier preference
     AsyncWebServerResponse *handleWebConfig(AsyncWebServerRequest *request);
 
     // sauvegarde du contenu du fichier preference
@@ -66,10 +66,10 @@ public:
     // suppression d'un vol en BDD
     AsyncWebServerResponse *handleDelFlight(AsyncWebServerRequest *request);
 
-    //recuperation des versions de firmware
+    // recuperation des versions de firmware
     AsyncWebServerResponse *handleFirmwareVersion(AsyncWebServerRequest *request);
 
-    //Mise à jour via internet
+    // Mise à jour via internet
     AsyncWebServerResponse *handleUpgradeWeb(AsyncWebServerRequest *request);
 
     // récupération de la liste des sites
@@ -87,7 +87,7 @@ public:
 private:
     static void _doParseIgcAndInsert(void *parameter);
     String getFileSizeStringFromBytes(int bytes);
-    void printDirectoryRecurse(AsyncResponseStream *response, String path, boolean isRecursive);
+    void printDirectoryRecurse(AsyncResponseStream *response, const char *path, boolean isRecursive);
     static void backupFile(String pathOrig, String pathBack);
     int readFlightsData(uint8_t *buffer, size_t maxLength);
     static igcdata jsonToIgcdata(String data);
@@ -96,4 +96,4 @@ private:
 extern esp32FOTA2 esp32FOTA;
 extern QueueHandle_t xQueueParse;
 
-#endif //VARIO_WEBHANDLER_H
+#endif // VARIO_WEBHANDLER_H
