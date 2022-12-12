@@ -46,6 +46,7 @@ uint16_t VarioBeeper::getCycle(float_t climb)
     if (isZerotage(climb))
     {
         return _zerotageCycleLow - ((-_zerotageLow - climb) * (_zerotageCycleHigh - _zerotageCycleLow) / (_climbToneOnThreshold - _zerotageLow));
+        // 1000 - ((0.5 ) * (450 - 1000) / (0.3 + 0.5))
     }
 
     return getFromArray(climb, _cycle);
@@ -87,7 +88,8 @@ void VarioBeeper::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskVarioBeeper started");
-    xTaskCreate(this->startTaskImpl, "TaskVarioBeeper", 1000, this, BEEPER_TASK_PRIORITY, &_taskVarioBeeperHandle);
+    // xTaskCreate(this->startTaskImpl, "TaskVarioBeeper", 1000, this, BEEPER_TASK_PRIORITY, &_taskVarioBeeperHandle);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioBeeper", 4096, this, BEEPER_TASK_PRIORITY, &_taskVarioBeeperHandle, 1);
 }
 
 void VarioBeeper::startTaskImpl(void *parm)
@@ -100,7 +102,8 @@ void VarioBeeper::startTaskImpl(void *parm)
 
 void VarioBeeper::task()
 {
-    enableAmp();
+    VARIOCYCLE tCycle;
+    // enableAmp();
 
     while (1)
     {
@@ -134,23 +137,26 @@ void VarioBeeper::task()
 
         if (vario.isSilent || isMute())
         {
-            stopTone();
+            stopBip();
+
+            // stopTone();
         }
         else
         {
             if (_withZerotage && _isPreviousToneIsZerotage && !isZerotage(vario.msIs))
             {
                 // on sort de la zone de zerotage, ce doit etre immédiat
-                enableAmp();
+                // enableAmp();
                 vario.timeToneOn = 0;
             }
-            VARIOCYCLE tCycle = getToneFromMs(vario.msIs);
+            tCycle = getToneFromMs(vario.msIs);
+
             startTone(tCycle.freq, tCycle.cycle, tCycle.dutty);
             _isPreviousToneIsZerotage = isZerotage(vario.msIs);
         }
 
         // give time to other tasks
-        vTaskDelay(delayT10);
+        vTaskDelay(delayT10 * 2);
     }
 }
 
@@ -168,12 +174,16 @@ void VarioBeeper::startTone(float_t frequency, float_t cycle, float_t duty)
 
     if (vario.timeToneOn == 0 && vario.duty > 0)
     {
+
         // demarrage du cycle
         enableAmp();
         vario.cycleIsOn = true;
         vario.duttyIsOn = false;
         vario.timeToneOn = now; // date de demarrage du cycle
-        toneAC(vario.frequency, getVolume());
+
+        setFreq(vario.frequency);
+
+        // toneAC(vario.frequency, getVolume());
     }
     else if (vario.cycleIsOn)
     {
@@ -200,15 +210,17 @@ void VarioBeeper::startTone(float_t frequency, float_t cycle, float_t duty)
                 else
                 {
                     vario.duttyIsOn = true;
-                    toneAC(30000, getVolume());
-                    noToneAC();
-                    disableAmp();
+                    stopTone();
+                    // toneAC(30000, getVolume());
+                    // noToneAC();
+                    // disableAmp();
                 }
             }
             else
             {
                 // on est en cours de cycle, on change la frequence
-                toneAC(vario.frequency, getVolume());
+                setFreq(vario.frequency);
+                // toneAC(vario.frequency, getVolume());
             }
         }
     }
@@ -221,12 +233,13 @@ void VarioBeeper::startTone(float_t frequency, float_t cycle, float_t duty)
 void VarioBeeper::stopTone()
 {
     vario.frequency = 0;
-    vario.timeToneOn = 0;
-    // pour supprimer le "tac"
-    toneAC(30000, getVolume());
+    // vario.timeToneOn = 0;
+    stopBip();
+    // // pour supprimer le "tac"
+    // toneAC(30000, getVolume());
 
-    noToneAC();
-    disableAmp();
+    // noToneAC();
+    // disableAmp();
 }
 
 void VarioBeeper::setVelocity(float_t climb)
