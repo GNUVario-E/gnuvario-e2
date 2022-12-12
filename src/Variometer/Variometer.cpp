@@ -10,7 +10,8 @@ void Variometer::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("Task Vario started");
-    xTaskCreate(this->startTaskImpl, "TaskVario", 4096, this, VARIO_TASK_PRIORITY, &_taskVarioHandle);
+    // xTaskCreate(this->startTaskImpl, "TaskVario", 4096, this, VARIO_TASK_PRIORITY, &_taskVarioHandle);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVario", 4096, this, VARIO_TASK_PRIORITY, &_taskVarioHandle, 1);
 }
 
 void Variometer::startTaskImpl(void *parm)
@@ -91,6 +92,7 @@ Variometer::Variometer(VarioBeeper *_varioBeeper, VarioSD *_varioSD)
     kalmanvert = new Kalmanvert();
     varioImu = new VarioImu(kalmanvert);
     varioGPS = new VarioGPS();
+    varioBle = new VarioBle();
 }
 
 void Variometer::init()
@@ -99,6 +101,8 @@ void Variometer::init()
     varioBeeper->startTask();
     varioGPS->init();
     varioGPS->startTask();
+    varioBle->init();
+    varioBle->startTask();
 }
 
 void Variometer::preTaskInit()

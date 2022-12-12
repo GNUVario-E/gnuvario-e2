@@ -88,6 +88,9 @@ struct gps_data
 
     uint32_t satellitesCount;
     uint32_t satellitesTimestamp = 0;
+
+    char sentence[100];
+    uint32_t sentenceTimestamp = 0;
 };
 
 struct agl_data
@@ -104,8 +107,6 @@ struct flight_data
     uint32_t flightStartFistTimestamp;
     int8_t flightStartTime[3] = {0, 0, 0};
 };
-
-
 
 struct fcdata_t
 {
@@ -253,6 +254,10 @@ public:
     void setGpsSatellitesCountTimestamp(uint32_t satellitesTimestamp);
     uint32_t getGpsSatellitesCount();
     uint32_t getGpsSatellitesTimestamp();
+
+    void setGpsSentence(const char *sentence, uint32_t gpsSentenceTimestamp);
+    char *getGpsSentence();
+    uint32_t getGpsSentenceTimestamp();
 
     // AGL
     void setAglAlt(int aglAlt, uint32_t aglAltTimestamp);
