@@ -108,13 +108,12 @@ bool VarioSqlFlight::insertFlight(igcdata myIgcData)
     VARIO_MEMORY_DEBUG_PRINT("Free heap insertFlight fin opendb");
     VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
 
-    String sql;
+    const char *sql1 = "DELETE FROM flight WHERE filename = ? AND md5 = ?";
 
     if (myIgcData.filename != "" && myIgcData.md5 != "")
     {
-        sql = "DELETE FROM flight WHERE filename = ? AND md5 = ?";
 
-        rc = sqlite3_prepare_v2(myDb, (char *)sql.c_str(), sql.length(), &res, &tail);
+        rc = sqlite3_prepare_v2(myDb, sql1, strlen(sql1), &res, &tail);
         if (rc != SQLITE_OK)
         {
             VARIO_SQL_DEBUG_PRINT("ERROR preparing sql: ");
@@ -154,22 +153,21 @@ bool VarioSqlFlight::insertFlight(igcdata myIgcData)
 
     VARIO_MEMORY_DEBUG_PRINT("Free heap fin delete  insertFlight");
     VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
-
+    String sql;
     sql = "INSERT INTO flight (";
-    sql = sql + "pilot, wing, flight_date, start_flight_time, end_flight_time, start_height, end_height, min_height, max_height, start_lat, start_lon, end_lat, end_lon";
+    sql = sql + "";
 
     if (myIgcData.filename != "" && myIgcData.md5 != "")
     {
-        sql = sql + ", filename, md5";
+        const char *sql2 = "INSERT INTO flight (pilot, wing, flight_date, start_flight_time, end_flight_time, start_height, end_height, min_height, max_height, start_lat, start_lon, end_lat, end_lon, filename, md5) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        rc = sqlite3_prepare_v2(myDb, sql2, strlen(sql2), &res, &tail);
     }
     else
     {
-        sql = sql + ", site_id, comment";
+        const char *sql3 = "INSERT INTO flight (pilot, wing, flight_date, start_flight_time, end_flight_time, start_height, end_height, min_height, max_height, start_lat, start_lon, end_lat, end_lon, site_id, comment) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        rc = sqlite3_prepare_v2(myDb, sql3, strlen(sql3), &res, &tail);
     }
 
-    sql = sql + ") VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-    rc = sqlite3_prepare_v2(myDb, (char *)sql.c_str(), sql.length(), &res, &tail);
     if (rc != SQLITE_OK)
     {
         VARIO_SQL_DEBUG_PRINT("ERROR preparing sql: ");
@@ -255,9 +253,9 @@ bool VarioSqlFlight::delFlight(uint8_t id)
         }
     }
 
-    String sql = F("DELETE FROM flight WHERE id = ?");
+    const char *sql = "DELETE FROM flight WHERE id = ?";
 
-    rc = sqlite3_prepare_v2(myDb, (char *)sql.c_str(), sql.length(), &res, &tail);
+    rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &res, &tail);
     if (rc != SQLITE_OK)
     {
 
@@ -417,9 +415,9 @@ bool VarioSqlFlight::updateFlightMap(uint8_t id, String data)
         }
     }
 
-    String sql = F("UPDATE flight SET minimap = ? WHERE id = ?");
+    const char *sql = "UPDATE flight SET minimap = ? WHERE id = ?";
 
-    rc = sqlite3_prepare_v2(myDb, (char *)sql.c_str(), sql.length(), &res, &tail);
+    rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &res, &tail);
     if (rc != SQLITE_OK)
     {
 
@@ -484,9 +482,9 @@ String VarioSqlFlight::getSites()
         }
     }
 
-    String sql = F("SELECT id, lib, comment, lat, lon FROM site");
+    const char *sql = "SELECT id, lib, comment, lat, lon FROM site";
 
-    rc = sqlite3_prepare_v2(myDb, sql.c_str(), 1000, &res, &tail);
+    rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &res, &tail);
     if (rc != SQLITE_OK)
     {
         closeDb();
@@ -503,7 +501,7 @@ String VarioSqlFlight::getSites()
         //     sqlite3_finalize(res);
         //     return;
         // }
-        //doc.add(i);
+        // doc.add(i);
         JsonObject obj1 = VarioTool::jsonDoc.createNestedObject();
         obj1["id"] = sqlite3_column_int(res, 0);
         obj1["lib"] = String((char *)sqlite3_column_text(res, 1));
@@ -544,10 +542,9 @@ bool VarioSqlFlight::insertSite(String data)
             return false;
         }
     }
+    const char *sql = "INSERT INTO site (lib, comment, lat, lon) VALUES (?, ?, ? ,?)";
 
-    String sql = F("INSERT INTO site (lib, comment, lat, lon) VALUES (?, ?, ? ,?)");
-
-    rc = sqlite3_prepare_v2(myDb, (char *)sql.c_str(), sql.length(), &res, &tail);
+    rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &res, &tail);
     if (rc != SQLITE_OK)
     {
         VARIO_SQL_DEBUG_PRINT("ERROR preparing sql: ");
@@ -622,9 +619,9 @@ bool VarioSqlFlight::updateSite(uint8_t id, String data)
         }
     }
 
-    String sql = F("UPDATE site SET lib = ?, comment = ?, lat = ?, lon = ? WHERE id = ?");
+    const char *sql = "UPDATE site SET lib = ?, comment = ?, lat = ?, lon = ? WHERE id = ?";
 
-    rc = sqlite3_prepare_v2(myDb, (char *)sql.c_str(), sql.length(), &res, &tail);
+    rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &res, &tail);
     if (rc != SQLITE_OK)
     {
         VARIO_SQL_DEBUG_PRINT("ERROR preparing sql: ");
@@ -691,9 +688,9 @@ bool VarioSqlFlight::deleteSite(uint8_t id)
         }
     }
 
-    String sql = F("DELETE FROM site WHERE id = ?");
+    const char *sql = "DELETE FROM site WHERE id = ?";
 
-    rc = sqlite3_prepare_v2(myDb, (char *)sql.c_str(), sql.length(), &res, &tail);
+    rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &res, &tail);
     if (rc != SQLITE_OK)
     {
         VARIO_SQL_DEBUG_PRINT("ERROR preparing sql: ");
@@ -760,11 +757,11 @@ bool VarioSqlFlight::initGetFlightsQuery(uint16_t limit, uint16_t offset)
     VARIO_MEMORY_DEBUG_PRINTLN("Free heap initGetFlightsQuery after opendb");
     VARIO_MEMORY_DEBUG_PRINT(ESP.getFreeHeap());
 
-    //String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) ORDER BY f.flight_date DESC, f.start_flight_time ASC LIMIT ?  OFFSET ?");
-    //String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, 'toto' AS lib FROM flight f");
-    String sql = "SELECT f.id, f.site_id, f.filename, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) LIMIT ?  OFFSET ?";
+    // String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) ORDER BY f.flight_date DESC, f.start_flight_time ASC LIMIT ?  OFFSET ?");
+    // String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, 'toto' AS lib FROM flight f");
+    const char *sql = "SELECT f.id, f.site_id, f.filename, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) LIMIT ?  OFFSET ?";
 
-    rc = sqlite3_prepare_v2(myDb, sql.c_str(), sql.length(), &nextFlightRes, &tail);
+    rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &nextFlightRes, &tail);
 
     if (rc != SQLITE_OK)
     {
@@ -813,11 +810,11 @@ bool VarioSqlFlight::initGetFlightsQuery(String parcel)
     VARIO_SQL_DEBUG_PRINT("Parcel:");
     VARIO_SQL_DEBUG_PRINTLN(parcel);
 
-    //String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) ORDER BY f.flight_date DESC, f.start_flight_time ASC LIMIT ?  OFFSET ?");
-    //String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, 'toto' AS lib FROM flight f");
-    String sql = "SELECT f.id, f.site_id, f.filename, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) WHERE strftime('%Y%m', f.flight_date) = ?";
+    // String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) ORDER BY f.flight_date DESC, f.start_flight_time ASC LIMIT ?  OFFSET ?");
+    // String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, 'toto' AS lib FROM flight f");
+    const char *sql = "SELECT f.id, f.site_id, f.filename, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) WHERE strftime('%Y%m', f.flight_date) = ?";
 
-    rc = sqlite3_prepare_v2(myDb, sql.c_str(), sql.length(), &nextFlightRes, &tail);
+    rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &nextFlightRes, &tail);
 
     if (rc != SQLITE_OK)
     {
@@ -854,7 +851,7 @@ bool VarioSqlFlight::getNextFlight(bool &firstline, RingBuf<char, 1024> &buffer)
     VARIO_MEMORY_DEBUG_PRINT("Free heap getNextFlight");
     VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
 
-        int step_res;
+    int step_res;
 
     if (haveNextFlight)
     {
@@ -1018,9 +1015,9 @@ void VarioSqlFlight::executeMigration(String version, String sql)
         }
     }
 
-    String sqlSelect = "SELECT COUNT(version) AS NB FROM version WHERE version = ?";
+    const char *sqlSelect = "SELECT COUNT(version) AS NB FROM version WHERE version = ?";
 
-    rc = sqlite3_prepare_v2(myDb, sqlSelect.c_str(), 1000, &res, &tail);
+    rc = sqlite3_prepare_v2(myDb, sqlSelect, strlen(sqlSelect), &res, &tail);
     if (rc != SQLITE_OK)
     {
         closeDb();
@@ -1083,10 +1080,10 @@ void VarioSqlFlight::executeMigration(String version, String sql)
 
     sqlite3_finalize(res);
 
-    //insertion de l'enregistrement de version
-    String sql2 = "INSERT INTO version (version) VALUES (?)";
+    // insertion de l'enregistrement de version
+    const char *sql2 = "INSERT INTO version (version) VALUES (?)";
 
-    rc = sqlite3_prepare_v2(myDb, (char *)sql2.c_str(), sql2.length(), &res, &tail);
+    rc = sqlite3_prepare_v2(myDb, sql2, strlen(sql2), &res, &tail);
     if (rc != SQLITE_OK)
     {
         VARIO_SQL_DEBUG_PRINT("ERROR preparing sql: ");
@@ -1223,7 +1220,7 @@ String VarioSqlFlight::getFlightsShort(String mode, String parcel)
     }
     else if (mode == "M")
     {
-        //dans ce cas, "parcel" est une année
+        // dans ce cas, "parcel" est une année
         sql = sql + "strftime('%Y%m', flight_date) as 'gr' FROM flight WHERE strftime('%Y', flight_date) = ? GROUP BY strftime('%Y%m', flight_date)";
     }
 
@@ -1231,7 +1228,7 @@ String VarioSqlFlight::getFlightsShort(String mode, String parcel)
 
     if (mode == "Y")
     {
-        //rien
+        // rien
     }
     else if (mode == "M")
     {

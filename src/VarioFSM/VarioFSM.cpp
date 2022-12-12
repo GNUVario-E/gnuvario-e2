@@ -1,14 +1,15 @@
 #include "VarioFSM/VarioFSM.h"
 #include "VarioButton/VarioButton.h"
 
-#define FSM_TASK_PRIORITY 10
+#define FSM_TASK_PRIORITY 8
 
 void VarioFSM::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskFSM started");
 
-    xTaskCreate(this->startTaskImpl, "TaskFSM", 3000, this, FSM_TASK_PRIORITY, &_taskFSMHandle);
+    // xTaskCreate(this->startTaskImpl, "TaskFSM", 3000, this, FSM_TASK_PRIORITY, &_taskFSMHandle);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskFSM", 3000, this, FSM_TASK_PRIORITY, &_taskFSMHandle, 1);
     vTaskDelay(delayT50);
     xTaskNotify(VarioFSM::_taskFSMHandle, 0, eNoAction);
 }
