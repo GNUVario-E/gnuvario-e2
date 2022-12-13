@@ -13,23 +13,25 @@ class VarioBle
 private:
     static bool deviceConnected;
     static bool oldDeviceConnected;
-    const TickType_t delayT100 = pdMS_TO_TICKS(100);
+    const TickType_t delayT50 = pdMS_TO_TICKS(50);
     const TickType_t delayT2 = pdMS_TO_TICKS(2);
     TaskHandle_t _taskVarioGPSHandle = NULL;
     static void startTaskImpl(void *);
     void task();
     BLEServer *pServer = NULL;
     BLECharacteristic *pTxCharacteristic;
-    void sendTrameLXWP0();
     uint32_t lastTimestampGpsSentence = 0;
-    void sendTrames();
+    uint32_t lastTimestampLXWP0Sentence = 0;
+    void sendTramesGps();
+    void sendTrameLXWP0();
 
 public:
     VarioBle();
     void init();
     static void deviceConnect();
-    static void deviceDisConnect();
+    static void deviceDisconnect();
     void startTask();
+    void sendSentence(const char *sentence);
 };
 
 class MyServerCallbacks : public BLEServerCallbacks
@@ -41,7 +43,7 @@ class MyServerCallbacks : public BLEServerCallbacks
 
     void onDisconnect(BLEServer *pServer)
     {
-        VarioBle::deviceDisConnect();
+        VarioBle::deviceDisconnect();
     }
 };
 

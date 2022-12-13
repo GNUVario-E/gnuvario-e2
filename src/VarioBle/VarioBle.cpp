@@ -2,6 +2,7 @@
 #include "VarioDebug/VarioDebug.h"
 
 #define BLE_TASK_PRIORITY 8
+#define BT_PACKET_SIZE 20
 
 bool VarioBle::deviceConnected = false;
 bool VarioBle::oldDeviceConnected = false;
@@ -28,9 +29,32 @@ void VarioBle::task()
 {
     while (1)
     {
-        sendTrames();
-        // give time to other tasks
-        vTaskDelay(delayT100);
+        if (deviceConnected)
+        {
+            // trame LXWP0
+            sendTrameLXWP0();
+            // give time to other tasks
+            vTaskDelay(delayT50);
+
+            sendTramesGps();
+            // give time to other tasks
+            vTaskDelay(delayT50);
+        }
+
+        // disconnecting
+        if (!deviceConnected && oldDeviceConnected)
+        {
+            vTaskDelay(delayT50 * 5);    // give the bluetooth stack the chance to get things ready
+            pServer->startAdvertising(); // restart advertising
+            Serial.println("start advertising");
+            oldDeviceConnected = deviceConnected;
+        }
+        // connecting
+        if (deviceConnected && !oldDeviceConnected)
+        {
+            // do stuff here on connecting
+            oldDeviceConnected = deviceConnected;
+        }
     }
 }
 
@@ -74,49 +98,19 @@ void VarioBle::init()
     Serial.println("Waiting a client connection to notify...");
 }
 
-void VarioBle::sendTrames()
+void VarioBle::sendTramesGps()
 {
-    if (deviceConnected)
+    uint8_t buffer[BT_PACKET_SIZE];
+    uint8_t bufferPos = 0;
+    uint8_t i = 0;
+
+    // GPS sentences
+    if (fc.getGpsSentenceTimestamp() > lastTimestampGpsSentence)
     {
-
-        //     // trame LXWP0
-        // sendTrameLXWP0();
-        // delay(50);
-
-        // GPS sentences
-        if (fc.getGpsSentenceTimestamp() > lastTimestampGpsSentence)
-        {
-            lastTimestampGpsSentence = fc.getGpsSentenceTimestamp();
-            char sentence[100];
-            strcpy(sentence, fc.getGpsSentence());
-
-            uint8_t strSize = strlen(sentence);
-            for (int i = 0; i < strSize - 1; i++)
-            {
-                uint8_t c = sentence[i];
-                // Serial.write(c);
-                pTxCharacteristic->setValue(&c, 1);
-
-                pTxCharacteristic->notify();
-
-                vTaskDelay(delayT2); // bluetooth stack will go into congestion, if too many packets are sent
-            }
-        }
-    }
-
-    // disconnecting
-    if (!deviceConnected && oldDeviceConnected)
-    {
-        vTaskDelay(delayT100 * 5);   // give the bluetooth stack the chance to get things ready
-        pServer->startAdvertising(); // restart advertising
-        Serial.println("start advertising");
-        oldDeviceConnected = deviceConnected;
-    }
-    // connecting
-    if (deviceConnected && !oldDeviceConnected)
-    {
-        // do stuff here on connecting
-        oldDeviceConnected = deviceConnected;
+        lastTimestampGpsSentence = fc.getGpsSentenceTimestamp();
+        char sentence[100];
+        strcpy(sentence, fc.getGpsSentence());
+        sendSentence(sentence);
     }
 }
 
@@ -126,79 +120,29 @@ void VarioBle::sendTrameLXWP0()
     // $LXWP0,loger_stored (Y/N), IAS(kph), baroaltitude (m), vario (m/s),,,,,,heading of plane,windcourse (deg),windspeed(kph)*checksum\r\n
     // $LXWP0,Y,22.3,1665.5,1.71,1.71,1.71,1.71,1.71,1.71,239,174,10.1
 
-    float coeff = random(80, 100) / 100.0;
-
-    // generate a random number between 5 and 20.5
-    double speed = (rand() % 155 + 5) / 10.0;
-    // generate a random number between 1000 and 1300.5
-    double alti = (rand() % 305 + 1000) / 10.0;
-    // generate a random number between -2 and 3.6
-    double vario1 = (rand() % 56 - 20) / 10.0;
-    double vario2 = vario1 * coeff;
-    double vario3 = vario2 * coeff;
-    double vario4 = vario3 * coeff;
-    double vario5 = vario4 * coeff;
-    double vario6 = vario5 * coeff;
-    // generate a random number between 170 and 190
-    uint16_t heading = (rand() % 20 + 170);
-    double windspeed = 0;
-
     char line[100];
     uint8_t prefix = '*';
     uint8_t parity = 0;
 
-    sprintf_P(line, PSTR("$LXWP0,Y,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d,%d.%02d"),
-              (int)speed, abs((int)(speed * 100) % 100),
-              (int)alti, abs((int)(alti * 100) % 100),
-              (int)vario1, abs((int)(vario1 * 100) % 100),
-              (int)vario2, abs((int)(vario2 * 100) % 100),
-              (int)vario3, abs((int)(vario3 * 100) % 100),
-              (int)vario4, abs((int)(vario4 * 100) % 100),
-              (int)vario5, abs((int)(vario5 * 100) % 100),
-              (int)vario6, abs((int)(vario6 * 100) % 100),
-              heading,
-              (int)windspeed, (int)(windspeed * 100) % 100);
-
-    uint8_t strSize = strlen(line);
-    for (int i = 0; i < strSize - 1; i++)
+    if (fc.getVarioAltiTimestamp() > lastTimestampLXWP0Sentence)
     {
-        uint8_t c = line[i];
-        Serial.write(c);
-        pTxCharacteristic->setValue(&c, 1);
+        lastTimestampLXWP0Sentence = fc.getVarioAltiTimestamp();
+        sprintf_P(line, PSTR("$LXWP0,Y,,%d.%02d,%d.%02d,,,,,,,,,"),
+                  (int)fc.getVarioAlti(), (int)(fc.getVarioAlti() * 100) % 100,
+                  (int)fc.getVarioVelocity(), (int)(fc.getVarioVelocity() * 100) % 100);
 
-        pTxCharacteristic->notify();
-
-        if (i > 0)
+        uint8_t strSize = strlen(line);
+        for (uint8_t i = 1; i < strSize; i++)
         {
-            parity ^= c;
+            parity ^= line[i];
         }
+        char parityBuffer[3];
 
-        delay(2); // bluetooth stack will go into congestion, if too many packets are sent
+        sprintf(parityBuffer, "%02x", parity);
+        strcat(line, "*");
+        strcat(line, parityBuffer);
 
-        if (i == (strSize - 2))
-        {
-            Serial.write(prefix);
-            Serial.write(parity);
-            Serial.println();
-            pTxCharacteristic->setValue(&prefix, 1);
-            pTxCharacteristic->notify();
-            delay(5); // bluetooth stack will go into congestion, if too many packets are sent
-
-            char buffer[3];
-
-            sprintf(buffer, "%02x", parity);
-            c = buffer[0];
-            pTxCharacteristic->setValue(&c, 1);
-            pTxCharacteristic->notify();
-            delay(5); // bluetooth stack will go into congestion, if too many packets are sent
-            c = buffer[1];
-            pTxCharacteristic->setValue(&c, 1);
-            pTxCharacteristic->notify();
-            delay(5); // bluetooth stack will go into congestion, if too many packets are sent
-
-            pTxCharacteristic->setValue("\r\n");
-            pTxCharacteristic->notify();
-        }
+        sendSentence(line);
     }
 }
 
@@ -207,7 +151,37 @@ void VarioBle::deviceConnect()
     deviceConnected = true;
 }
 
-void VarioBle::deviceDisConnect()
+void VarioBle::deviceDisconnect()
 {
     deviceConnected = false;
+}
+
+void VarioBle::sendSentence(const char *sentence)
+{
+    uint8_t buffer[BT_PACKET_SIZE];
+    uint8_t bufferPos = 0;
+    uint8_t i = 0;
+
+    uint8_t strSize = strlen(sentence);
+    if (strSize > 0)
+    {
+        while (i < strSize - 1)
+        {
+            while (bufferPos < BT_PACKET_SIZE && i < (strSize - 1))
+            {
+                buffer[bufferPos] = sentence[i];
+                bufferPos++;
+                i++;
+            }
+            pTxCharacteristic->setValue(buffer, bufferPos);
+            pTxCharacteristic->notify();
+            bufferPos = 0;
+            buffer[bufferPos] = '\0';
+            vTaskDelay(delayT2); // bluetooth stack will go into congestion, if too many packets are sent
+        }
+        pTxCharacteristic->setValue("\r\n");
+        pTxCharacteristic->notify();
+
+        vTaskDelay(delayT2); // bluetooth stack will go into congestion, if too many packets are sent
+    }
 }
