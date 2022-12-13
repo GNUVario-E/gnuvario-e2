@@ -61,7 +61,7 @@ void VarioGPS::task()
                 // }
                 // VARIO_GPS_DEBUG_PRINTLN("");
                 // VARIO_GPS_DEBUG_PRINTLN("---------------------------------------------");
-                // vTaskDelay(delayT10);
+
                 sendSentenceToFC();
 
                 // vidage du buffer
@@ -69,7 +69,7 @@ void VarioGPS::task()
                 vTaskDelay(delayT10);
                 displayInfo();
             }
-            // vTaskDelay(delayT1 * 2);
+
             lastCharProcessedTime = millis();
         }
 
@@ -266,36 +266,44 @@ void VarioGPS::displayInfo()
 
 void VarioGPS::sendSentenceToFC()
 {
-    // char c;
-    // int j = 0;
-    // bool started = false;
-    // char sentence[BUFFER_SIZE];
-    // uint16_t bufferSize = sentenceBuffer.size();
+    char c;
+    int j = 0;
+    bool started = false;
+    char sentence[BUFFER_SIZE];
+    uint16_t bufferSize = sentenceBuffer.size();
 
-    // // clear sentence buffer
-    // sentence[0] = '\0';
+    // clear sentence buffer
+    sentence[0] = '\0';
 
-    // for (uint16_t i = 0; i < bufferSize; i++)
-    // {
-    //     // send sentence to FC
-    //     c = sentenceBuffer.shift();
-    //     if (c == '$')
-    //     {
-    //         started = true;
-    //     }
+    for (uint16_t i = 0; i < bufferSize; i++)
+    {
+        // send sentence to FC
+        c = sentenceBuffer.shift();
+        if (c == '$')
+        {
+            started = true;
+        }
 
-    //     if (started)
-    //     {
-    //         // append c to sentence
-    //         sentence[j] = c;
-    //         j++;
-    //     }
-    // }
+        if (started)
+        {
+            // append c to sentence
+            sentence[j] = c;
+            j++;
+        }
+    }
 
-    // if (started)
-    // {
-    //     sentence[j] = '\0';
-    // }
+    if (started)
+    {
+        sentence[j] = '\0';
 
-    // fc.setGpsSentence(sentence, millis());
+        // which GPS sentences to store
+        // $GPRMC
+        // $GNRMC
+        // $GPGGA
+        // $GNGGA
+        if ((strncmp(sentence, "$GPGGA", 6) == 0) || (strncmp(sentence, "$GNGGA", 6) == 0) || (strncmp(sentence, "$GPRMC", 6) == 0) || (strncmp(sentence, "$GNRMC", 6) == 0))
+        {
+            fc.setGpsSentence(sentence, millis());
+        }
+    }
 }

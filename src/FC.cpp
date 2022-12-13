@@ -590,11 +590,7 @@ uint32_t FC::getGpsSatellitesTimestamp()
 
 void FC::setGpsSentence(const char *sentence, uint32_t gpsSentenceTimestamp)
 {
-    // which GPS sentences to store
-    //  $GPRMC
-    // $GNRMC
-    // $GPGGA
-    // $GNGGA
+    
     // Serial.println("Tentative ajout d'une phrase GPS");
     // Serial.println(sentence);
     if ((strncmp(sentence, "$GPGGA", 6) == 0) || (strncmp(sentence, "$GNGGA", 6) == 0) || (strncmp(sentence, "$GPRMC", 6) == 0) || (strncmp(sentence, "$GNRMC", 6) == 0))
