@@ -1,10 +1,10 @@
 
 #include <Arduino.h>
-#include <VarioSettings.h>
-#include <HardwareConfig.h>
-#include "VarioData.h"
-#include "ParamsDefinition.h"
 #include <ArduinoJson.h>
+#include "VarioSettings/VarioSettings.h"
+#include "HardwareConfig/HardwareConfig.h"
+#include "VarioData/VarioData.h"
+#include "ParamsDefinition.h"
 #include "version.h"
 #include "VarioTool/VarioTool.h"
 #include "VarioDebug/VarioDebug.h"

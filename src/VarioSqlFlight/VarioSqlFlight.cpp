@@ -1,10 +1,9 @@
 #include <Arduino.h>
-
+#include <SD.h>
 #include <ArduinoJson.h>
 #include "VarioSqlFlight/VarioSqlFlight.h"
-#include "VarioSettings.h"
+#include "VarioSettings/VarioSettings.h"
 #include "VarioDebug/VarioDebug.h"
-#include <SD.h>
 #include "VarioTool/VarioTool.h"
 
 VarioSqlFlight::VarioSqlFlight()

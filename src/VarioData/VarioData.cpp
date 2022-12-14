@@ -1,6 +1,6 @@
 
 #include <Arduino.h>
-#include <VarioData.h>
+#include "VarioData/VarioData.h"
 #include "version.h"
 //#include "VarioTool/VarioTool.h"
 #include "VarioDebug/VarioDebug.h"

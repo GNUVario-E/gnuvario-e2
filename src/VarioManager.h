@@ -8,7 +8,7 @@
 #include "VarioBeeper/VarioBeeper.h"
 #include "VarioPower/VarioPower.h"
 #include "VarioSD/VarioSD.h"
-#include "VarioData.h"
+#include "VarioData/VarioData.h"
 #include "VarioDisplay/VarioDisplay.h"
 #include "VarioSettings/VarioSettings.h"
 #include "VarioWifi/VarioWifi.h"

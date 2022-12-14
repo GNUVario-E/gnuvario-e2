@@ -1,5 +1,5 @@
-#include <digit.h>
 #include <Arduino.h>
+#include "digit.h"
 
 #define PLUS_DISPLAY 0
 #define DISPLAY_PLUS 1

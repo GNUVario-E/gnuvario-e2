@@ -1,7 +1,7 @@
 #include "VarioGPS.h"
 #include "VarioDebug/VarioDebug.h"
 #include <esp32-hal-uart.h>
-#include "VarioData.h"
+#include "VarioData/VarioData.h"
 #include "VarioTool/VarioTool.h"
 
 #define GPS_TASK_PRIORITY 8
