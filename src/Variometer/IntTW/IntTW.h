@@ -23,14 +23,13 @@
 
 #include <Arduino.h>
 #include <esp32-hal-i2c.h>
-
-#include <HardwareConfig.h>
+#include "HardwareConfig/HardwareConfig.h"
 
 /*************************************/
 /* enable / disable functionnalities */
 /*************************************/
-//#define INTTW_LOAD_POINTER_FUNC
-//#define INTTW_CALLBACK_ON_ERROR_FUNC
+// #define INTTW_LOAD_POINTER_FUNC
+// #define INTTW_CALLBACK_ON_ERROR_FUNC
 
 /**************************************************************/
 /*                 IntTW library                              */

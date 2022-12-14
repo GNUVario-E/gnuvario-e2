@@ -29,7 +29,7 @@
  *********************************************************************************
  */
 
-#include "AglManager.h"
+#include "AglManager/src/AglManager.h"
 #include "HGTReader.h"
 #include "VarioDebug/VarioDebug.h"
 

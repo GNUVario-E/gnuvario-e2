@@ -30,7 +30,7 @@
 #include "vertaccel.h"
 
 #include <Arduino.h>
-#include "VarioData.h"
+#include "VarioData/VarioData.h"
 #include "Variometer/LightInvensense/LightInvensense.h"
 
 #ifdef VERTACCEL_ENABLE_EEPROM
