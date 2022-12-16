@@ -43,11 +43,11 @@ void VarioGPS::task()
         while (Serial2.available() > 0)
         {
             c = Serial2.read();
-            if (c == '$')
-            {
-                Serial.println("\n");
-            }
-            Serial.write(c);
+            // if (c == '$')
+            // {
+            //     Serial.println("\n");
+            // }
+            // Serial.write(c);
 
             sentenceBuffer.push(c);
             if (gps.encode(c))
