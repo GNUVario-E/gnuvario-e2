@@ -19,7 +19,7 @@
 #define DEFAULT_TITRE_LAT "Lat"
 #define DEFAULT_TITRE_LONG "Long"
 #define DEFAULT_TITRE_COMPAS "Boussole"
-#define DEFAULT_TITRE_STAT "Statistique"
+#define DEFAULT_TITRE_STAT "Stat."
 #define DEFAULT_TITRE_DATE "Date"
 #define DEFAULT_TITRE_HEURE "Heure"
 #define DEFAULT_TITRE_DUREE "Duree"
