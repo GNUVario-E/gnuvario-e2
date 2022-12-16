@@ -120,6 +120,7 @@ void VarioSettings::loadConfigurationVario(char *filename)
   if (error)
   {
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to read file, using default configuration");
+    VARIO_SDCARD_DEBUG_PRINTLN(error.c_str());
     file.close();
     return;
   }
@@ -248,6 +249,7 @@ void VarioSettings::loadScreenVario(char *filename)
   if (error)
   {
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to parse file");
+    VARIO_SDCARD_DEBUG_PRINTLN(error.c_str());
     file.close();
     return;
   }
