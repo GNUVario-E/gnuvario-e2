@@ -61,10 +61,13 @@ private:
     void sound_on();
     void sound_on_exit();
 
+    void statistic_init_on_enter();
+    void statistic_init_on();
+    void statistic_init_on_exit();
+
     void statistic_on_enter();
     void statistic_on();
     void statistic_on_exit();
-    void statistic_init_on_exit();
 
     void soundedit_on_enter();
     void soundedit_on();
@@ -86,9 +89,9 @@ public:
                       { boot_on_exit(); }),
 
           _state_statistic_init([this]()
-                                { statistic_on_enter(); },
+                                { statistic_init_on_enter(); },
                                 [this]()
-                                { statistic_on(); },
+                                { statistic_init_on(); },
                                 [this]()
                                 { statistic_init_on_exit(); }),
 

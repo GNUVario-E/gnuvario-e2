@@ -28,7 +28,7 @@ void VarioFSM::task()
         fsm.run_machine();
 
         // give time to other tasks
-        vTaskDelay(delayT50);
+        vTaskDelay(delayT50 * 2);
     }
 }
 
@@ -121,6 +121,25 @@ void VarioFSM::wifi_on_exit()
     VARIO_FSM_DEBUG_PRINTLN("wifi_on_exit");
 }
 
+void VarioFSM::statistic_init_on_enter()
+{
+    VARIO_FSM_DEBUG_PRINTLN("statistic_init_on_enter");
+    _notifyObserver(HISTO_START_ASKED);
+    _notifyObserver(HISTO_DISPLAY_ENTER);
+    varioDisplay->displayScreen(varioDisplay->statisticScreen);
+}
+
+void VarioFSM::statistic_init_on()
+{
+    VARIO_FSM_DEBUG_PRINTLN("statistic_init_on");
+}
+
+void VarioFSM::statistic_init_on_exit()
+{
+    VARIO_FSM_DEBUG_PRINTLN("statistic_init_on_exit");
+    _notifyObserver(VARIO_START_ASKED);
+}
+
 void VarioFSM::vario1_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("vario1_on_enter");
@@ -189,6 +208,7 @@ void VarioFSM::sound_on_exit()
 void VarioFSM::statistic_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("statistic_on_enter");
+    _notifyObserver(HISTO_DISPLAY_ENTER);
     varioDisplay->displayScreen(varioDisplay->statisticScreen);
 }
 
@@ -200,12 +220,6 @@ void VarioFSM::statistic_on()
 void VarioFSM::statistic_on_exit()
 {
     VARIO_FSM_DEBUG_PRINTLN("statistic_on_exit");
-}
-
-void VarioFSM::statistic_init_on_exit()
-{
-    VARIO_FSM_DEBUG_PRINTLN("statistic_init_on_exit");
-    _notifyObserver(VARIO_START_ASKED);
 }
 
 void VarioFSM::soundedit_on_enter()
