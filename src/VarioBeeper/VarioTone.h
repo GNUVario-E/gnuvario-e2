@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Arduino.h"
-#include "Audiosine.h"
+#include "AudioCos.h"
 #include "VarioDebug/VarioDebug.h"
 #include "FC.h"
 
-#define BEEP_DEFAULT_VOLUME 5
+#define BEEP_DEFAULT_VOLUME 3
 #define PIN_AUDIO_AMP_ENA 19
 
 class VarioTone
@@ -14,7 +14,7 @@ private:
     uint8_t _volume = BEEP_DEFAULT_VOLUME;
     bool _muted = false;
     bool _isAmpOn = false;
-    Audiosine *audiosine;
+    AudioCos *audiocos;
 
 protected:
     const TickType_t delayT10 = pdMS_TO_TICKS(10); //(1) / portTICK_PERIOD_MS;

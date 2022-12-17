@@ -179,6 +179,9 @@ void VarioManager::onSignalReceived(uint8_t _val)
         varioCalibration->begin(varioBeeper);
         varioCalibration->startTask();
         break;
+    case HISTO_START_ASKED:
+        varioHisto = new VarioHisto(varioLanguage->getText(TITRE_STAT));
+        break;
     case VARIO_START_ASKED:
         VARIO_CAL_DEBUG_PRINTLN("Démarrage du vario");
         varioDisplay->setMinTimeRefresh(1000);
@@ -234,6 +237,10 @@ void VarioManager::onSignalReceived(uint8_t _val)
         break;
     case DEEP_SLEEP_ASKED:
         deepSleep("Low battery");
+        break;
+    case HISTO_DISPLAY_ENTER:
+        // set text values for histo screen
+        varioHisto->setValuesToFc();
         break;
     default:
         break;

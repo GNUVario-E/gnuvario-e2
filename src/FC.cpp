@@ -134,6 +134,7 @@ void FC::setVarioVelocity(float velocity, uint32_t velocityTimestamp)
     fcdata.vario.velocity = velocity;
     fcdata.vario.velocityTimestamp = velocityTimestamp;
     checkFlightStart(false);
+    _notifyObserver(VARIO_NEW_VELOCITY);
 }
 
 float FC::getVarioVelocity()
@@ -436,10 +437,21 @@ uint32_t FC::getDateTimestamp()
 
 void FC::setGpsTimeUTC(uint8_t timeHour, uint8_t timeMinute, uint8_t timeSecond, uint32_t timeTimestamp)
 {
+    bool newTime = false;
+    if (timeHour != fcdata.gps.timeHour || timeMinute != fcdata.gps.timeMinute || timeSecond != fcdata.gps.timeSecond)
+    {
+        newTime = true;
+    }
+
     fcdata.gps.timeHour = timeHour;
     fcdata.gps.timeMinute = timeMinute;
     fcdata.gps.timeSecond = timeSecond;
     fcdata.gps.timeTimestamp = timeTimestamp;
+
+    if (newTime)
+    {
+        _notifyObserver(GPS_NEW_TIME);
+    }
 }
 
 void FC::setGpsTimeTimestamp(uint32_t timeTimestamp)
@@ -477,6 +489,7 @@ void FC::setGpsKmph(double kmph, uint32_t kmphTimestamp)
     fcdata.gps.kmph = kmph;
     fcdata.gps.kmphTimestamp = kmphTimestamp;
     checkFlightStart(false);
+    _notifyObserver(GPS_NEW_SPEED);
 }
 
 void FC::setGpsKmphTimestamp(uint32_t kmphTimestamp)
@@ -590,7 +603,7 @@ uint32_t FC::getGpsSatellitesTimestamp()
 
 void FC::setGpsSentence(const char *sentence, uint32_t gpsSentenceTimestamp)
 {
-    
+
     // Serial.println("Tentative ajout d'une phrase GPS");
     // Serial.println(sentence);
     if ((strncmp(sentence, "$GPGGA", 6) == 0) || (strncmp(sentence, "$GNGGA", 6) == 0) || (strncmp(sentence, "$GPRMC", 6) == 0) || (strncmp(sentence, "$GNRMC", 6) == 0))

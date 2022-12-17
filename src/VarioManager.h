@@ -17,6 +17,7 @@
 #include "VarioCalibration/VarioCalibration.h"
 #include "Variometer/Variometer.h"
 #include "AglManager/src/AglManager.h"
+#include "VarioHisto/VarioHisto.h"
 #include "VarioIgc/VarioIgc.h"
 class VarioManager : public Observer
 {
@@ -42,6 +43,7 @@ public:
     Variometer *variometer;
     AglManager *aglManager;
     VarioIgc *varioIgc;
+    VarioHisto *varioHisto;
     boolean init();
     void onSignalReceived(uint8_t _val);
 };

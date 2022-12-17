@@ -1,9 +1,9 @@
 
-#include "Audiosine.h"
+#include "AudioCos.h"
 
 #define PIN_AUDIO_AMP_ENA 19
 
-static const char *TAG = "audiosine";
+static const char *TAG = "AudioCos";
 
 static int clk_8m_div = 7;     // RTC 8M clock divider (division is by clk_8m_div+1, i.e. 0 means 8MHz frequency)
 static int frequency_step = 8; // Frequency step for CW generator
@@ -11,7 +11,7 @@ static int scale = 0;          // full scale
 static int offset;             // leave it default / 0 = no any offset
 static int invert = 2;         // invert MSB to get sine waveform
 
-void Audiosine::dac_cosine_enable(dac_channel_t channel)
+void AudioCos::dac_cosine_enable(dac_channel_t channel)
 {
     // Enable tone generator common to both channels
     SET_PERI_REG_MASK(SENS_SAR_DAC_CTRL1_REG, SENS_SW_TONE_EN);
@@ -37,7 +37,7 @@ void Audiosine::dac_cosine_enable(dac_channel_t channel)
 // clk_8m_div: 0b000 - 0b111
 // frequency_step: range 0x0001 - 0xFFFF
 
-void Audiosine::dac_frequency_set(int clk_8m_div, int frequency_step)
+void AudioCos::dac_frequency_set(int clk_8m_div, int frequency_step)
 {
     REG_SET_FIELD(RTC_CNTL_CLK_CONF_REG, RTC_CNTL_CK8M_DIV_SEL, clk_8m_div);
     SET_PERI_REG_BITS(SENS_SAR_DAC_CTRL1_REG, SENS_SW_FSTEP, frequency_step, SENS_SW_FSTEP_S);
@@ -49,7 +49,7 @@ void Audiosine::dac_frequency_set(int clk_8m_div, int frequency_step)
 // 10: scale to 1/4
 // 11: scale to 1/8
 
-void Audiosine::dac_scale_set(dac_channel_t channel, int scale)
+void AudioCos::dac_scale_set(dac_channel_t channel, int scale)
 {
     switch (channel)
     {
@@ -66,7 +66,7 @@ void Audiosine::dac_scale_set(dac_channel_t channel, int scale)
 
 // Offset output of a DAC channel
 // Range 0x00 - 0xFF
-void Audiosine::dac_offset_set(dac_channel_t channel, int offset)
+void AudioCos::dac_offset_set(dac_channel_t channel, int offset)
 {
     switch (channel)
     {
@@ -86,7 +86,7 @@ void Audiosine::dac_offset_set(dac_channel_t channel, int offset)
 // 01: inverts all bits,
 // 10: inverts MSB,
 // 11: inverts all bits except for MSB
-void Audiosine::dac_invert_set(dac_channel_t channel, int invert)
+void AudioCos::dac_invert_set(dac_channel_t channel, int invert)
 {
     switch (channel)
     {
@@ -101,20 +101,19 @@ void Audiosine::dac_invert_set(dac_channel_t channel, int invert)
     }
 }
 
-void Audiosine::audio_config(int pnDacChan)
+void AudioCos::audio_config(int pnDacChan, uint8_t _volume)
 {
-    int volume = 3;
     dac_cosine_enable(DAC_CHANNEL_1);
     dac_output_enable(DAC_CHANNEL_1);
-    scale = 3 - volume;
     offset = 0;
     invert = 2;
+    audio_set_volume(_volume);
     dac_scale_set(DAC_CHANNEL_1, scale);
     dac_offset_set(DAC_CHANNEL_1, offset);
     dac_invert_set(DAC_CHANNEL_1, invert);
 }
 
-void Audiosine::audio_set_frequency(int freqHz)
+void AudioCos::audio_set_frequency(int freqHz)
 {
     if (freqHz > 0)
     {
@@ -128,9 +127,16 @@ void Audiosine::audio_set_frequency(int freqHz)
     }
 }
 
-void Audiosine::audio_generate_tone(int freqHz, int milliseconds)
+void AudioCos::audio_generate_tone(int freqHz, int milliseconds)
 {
     audio_set_frequency(freqHz);
     delay(milliseconds);
     audio_set_frequency(0);
+}
+
+void AudioCos::audio_set_volume(uint8_t _volume)
+{
+    volume = _volume;
+    scale = 3 - volume;
+    dac_scale_set(DAC_CHANNEL_1, scale);
 }
