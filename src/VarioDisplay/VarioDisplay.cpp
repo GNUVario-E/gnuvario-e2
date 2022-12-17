@@ -8,6 +8,7 @@
 #include "VarioDebug/VarioDebug.h"
 
 SemaphoreHandle_t VarioDisplay::screenMutex;
+SemaphoreHandle_t VarioDisplay::displayMutex;
 TaskHandle_t VarioDisplay::screenTaskHandler;
 TaskHandle_t VarioDisplay::bufferTaskHandler;
 
@@ -35,6 +36,9 @@ void VarioDisplay::init(VarioLanguage *_varioLanguage)
     screenMutex = xSemaphoreCreateBinary();
     xSemaphoreGive(VarioDisplay::screenMutex);
 
+    displayMutex = xSemaphoreCreateBinary();
+    xSemaphoreGive(VarioDisplay::displayMutex);
+
     VARIO_PROG_DEBUG_PRINTLN("TaskDisplay started");
     xTaskCreatePinnedToCore(screenTask, "TaskDisplay", SCREEN_STACK_SIZE, NULL, SCREEN_PRIORITY, &screenTaskHandler, SCREEN_CORE);
 
@@ -56,7 +60,6 @@ void VarioDisplay::init(VarioLanguage *_varioLanguage)
 void VarioDisplay::buildScreens()
 {
     char sound[] = "SOUND ...";
-    char statistic[] = "STATISTIC ...";
 
     // construction de l'écran de démarrage
     char tmpbuffer[50];
@@ -110,7 +113,15 @@ void VarioDisplay::buildScreens()
     soundScreen->getTextWidget1()->setText(sound);
 
     statisticScreen = new VarioScreen(statisticScreenData, varioLanguage);
-    statisticScreen->getTextWidget1()->setText(statistic);
+    // statisticScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_STAT));
+    statisticScreen->getTextWidget1()->setIndexTxtFC(1);
+    statisticScreen->getTextWidget2()->setIndexTxtFC(2);
+    statisticScreen->getTextWidget3()->setIndexTxtFC(3);
+    statisticScreen->getTextWidget4()->setIndexTxtFC(4);
+    statisticScreen->getTextWidget5()->setIndexTxtFC(5);
+    statisticScreen->getTextWidget6()->setIndexTxtFC(6);
+    statisticScreen->getTextWidget7()->setIndexTxtFC(7);
+    statisticScreen->getTextWidget8()->setIndexTxtFC(8);
 
     // construction de l'écran de reboot
     rebootScreen = new VarioScreen(rebootScreenData, varioLanguage);
@@ -150,7 +161,11 @@ void VarioDisplay::screenTask(void *parameter)
         }
         if (VarioDisplay::bufferTaskHandler != NULL)
         {
-            xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
+            if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
+            {
+                xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
+                xSemaphoreGive(displayMutex);
+            }
         }
     }
 }
@@ -254,7 +269,11 @@ void VarioDisplay::bufferTask()
         {
             if (VarioDisplay::bufferTaskHandler != NULL)
             {
-                xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
+                if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
+                {
+                    xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
+                    xSemaphoreGive(displayMutex);
+                }
             }
         }
     }
@@ -292,17 +311,25 @@ void VarioDisplay::displayScreen(VarioScreen *screen)
         xSemaphoreGive(screenMutex);
 
         xTaskCreatePinnedToCore(this->startTaskBuffer, "TaskBuffer", SCREEN_STACK_SIZE, this, SCREEN_PRIORITY, &bufferTaskHandler, SCREEN_CORE);
-        xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
+        if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
+        {
+            xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
+            xSemaphoreGive(displayMutex);
+        }
     }
 }
 
 void VarioDisplay::stopDisplay()
 {
     // Serial.println("stopDisplay");
-    if (bufferTaskHandler != NULL)
+    if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
     {
-        vTaskDelete(bufferTaskHandler);
-        bufferTaskHandler = NULL;
+        if (bufferTaskHandler != NULL)
+        {
+            vTaskDelete(VarioDisplay::bufferTaskHandler);
+            VarioDisplay::bufferTaskHandler = NULL;
+        }
+        xSemaphoreGive(displayMutex);
     }
 }
 

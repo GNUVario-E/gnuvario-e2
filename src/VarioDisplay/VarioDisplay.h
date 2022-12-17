@@ -30,6 +30,7 @@ private:
 public:
     VarioDisplay();
     static SemaphoreHandle_t screenMutex;
+    static SemaphoreHandle_t displayMutex;
     void init(VarioLanguage *varioLanguage);
     void displayScreen(VarioScreen *screen);
     void stopDisplay();
