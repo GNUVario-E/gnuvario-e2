@@ -10,6 +10,7 @@
 #include "VarioDisplay/fonts/FreeSansBold8pt7b.h"
 #include "VarioDisplay/fonts/NotoSans6pt7b.h"
 #include "VarioDisplay/fonts/Gnuvarioe18pt7b.h"
+#include "VarioDisplay/fonts/gnuvarioe26pt7b.h"
 #include "FC.h"
 
 struct DisplayZone
