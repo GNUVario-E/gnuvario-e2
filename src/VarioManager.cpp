@@ -180,7 +180,7 @@ void VarioManager::onSignalReceived(uint8_t _val)
         varioCalibration->startTask();
         break;
     case HISTO_START_ASKED:
-        varioHisto = new VarioHisto(varioLanguage->getText(TITRE_STAT));
+        varioStat = new VarioStat(varioLanguage->getText(TITRE_STAT));
         break;
     case VARIO_START_ASKED:
         VARIO_CAL_DEBUG_PRINTLN("Démarrage du vario");
@@ -228,7 +228,7 @@ void VarioManager::onSignalReceived(uint8_t _val)
         varioIgc = new VarioIgc();
         if (varioIgc->createNewIgcFile(varioData.getParam(PARAM_PILOT_NAME)->getValueChar(), varioData.getParam(PARAM_GLIDER_NAME1)->getValueChar(), fc.getGpsDateDay(), fc.getGpsDateMonth(), fc.getGpsDateYear(), varioData.getParam(PARAM_TIME_ZONE)->getValueInt8()))
         {
-            varioIgc->startTask();
+            varioIgc->startTimer();
         }
 
         break;
@@ -240,7 +240,7 @@ void VarioManager::onSignalReceived(uint8_t _val)
         break;
     case HISTO_DISPLAY_ENTER:
         // set text values for histo screen
-        varioHisto->setValuesToFc();
+        varioStat->setValuesToFc();
         break;
     default:
         break;

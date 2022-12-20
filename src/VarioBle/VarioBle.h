@@ -13,9 +13,9 @@ class VarioBle
 private:
     static bool deviceConnected;
     static bool oldDeviceConnected;
-    const TickType_t delayT50 = pdMS_TO_TICKS(50);
+    const TickType_t delayT20 = pdMS_TO_TICKS(20);
     const TickType_t delayT2 = pdMS_TO_TICKS(2);
-    TaskHandle_t _taskVarioGPSHandle = NULL;
+
     static void startTaskImpl(void *);
     void task();
     BLEServer *pServer = NULL;
@@ -26,6 +26,7 @@ private:
     void sendTrameLXWP0();
 
 public:
+    static TaskHandle_t _taskVarioBleHandle;
     VarioBle();
     void init();
     static void deviceConnect();

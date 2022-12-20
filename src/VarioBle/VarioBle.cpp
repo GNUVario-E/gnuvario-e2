@@ -1,11 +1,13 @@
 #include "VarioBle.h"
 #include "VarioDebug/VarioDebug.h"
+#include "tasksBitsMask.h"
 
-#define BLE_TASK_PRIORITY 8
+#define BLE_TASK_PRIORITY 7
 #define BT_PACKET_SIZE 20
 
 bool VarioBle::deviceConnected = false;
 bool VarioBle::oldDeviceConnected = false;
+TaskHandle_t VarioBle::_taskVarioBleHandle = NULL;
 
 VarioBle::VarioBle()
 {
@@ -15,8 +17,7 @@ void VarioBle::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskVarioBle started");
-    // xTaskCreate(this->startTaskImpl, "TaskVarioBle", 5000, this, BLE_TASK_PRIORITY, &_taskVarioGPSHandle);
-    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioBle", 5000, this, BLE_TASK_PRIORITY, &_taskVarioGPSHandle, 1);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioBle", 5000, this, BLE_TASK_PRIORITY, &_taskVarioBleHandle, 1);
 }
 
 void VarioBle::startTaskImpl(void *parm)
@@ -27,33 +28,52 @@ void VarioBle::startTaskImpl(void *parm)
 
 void VarioBle::task()
 {
+    uint32_t ulNotifiedValue;
+
     while (1)
     {
-        if (deviceConnected)
+        if (xTaskNotifyWait(pdFALSE, ULONG_MAX, &ulNotifiedValue, portMAX_DELAY) == pdPASS)
         {
-            // trame LXWP0
-            sendTrameLXWP0();
-            // give time to other tasks
-            vTaskDelay(delayT50);
+            // Serial.println("BLE task notified");
+            // Serial.println(ulNotifiedValue, BIN);
+            // notify received
+            if (deviceConnected)
+            {
+                if ((ulNotifiedValue & BLE_LXWP0_SENTENCE_BIT) != 0)
+                {
+                    // Serial.println("send trame LXWP0");
+                    // trame LXWP0
+                    sendTrameLXWP0();
+                    // give time to other tasks
+                    vTaskDelay(delayT20);
+                }
+                else if ((ulNotifiedValue & BLE_GPS_SENTENCE_BIT) != 0)
+                {
+                    // Serial.println("send trame GPS");
+                    // trame GPS
+                    sendTramesGps();
+                    // give time to other tasks
+                    vTaskDelay(delayT20);
+                }
+            }
 
-            sendTramesGps();
-            // give time to other tasks
-            vTaskDelay(delayT50);
-        }
-
-        // disconnecting
-        if (!deviceConnected && oldDeviceConnected)
-        {
-            vTaskDelay(delayT50 * 5);    // give the bluetooth stack the chance to get things ready
-            pServer->startAdvertising(); // restart advertising
-            Serial.println("start advertising");
-            oldDeviceConnected = deviceConnected;
-        }
-        // connecting
-        if (deviceConnected && !oldDeviceConnected)
-        {
-            // do stuff here on connecting
-            oldDeviceConnected = deviceConnected;
+            if ((ulNotifiedValue & BLE_CON_DISCON_SENTENCE_BIT) != 0)
+            {
+                // disconnecting
+                if (!deviceConnected && oldDeviceConnected)
+                {
+                    vTaskDelay(delayT20 * 15);   // give the bluetooth stack the chance to get things ready
+                    pServer->startAdvertising(); // restart advertising
+                    Serial.println("start advertising");
+                    oldDeviceConnected = deviceConnected;
+                }
+                // connecting
+                if (deviceConnected && !oldDeviceConnected)
+                {
+                    // do stuff here on connecting
+                    oldDeviceConnected = deviceConnected;
+                }
+            }
         }
     }
 }
@@ -149,11 +169,13 @@ void VarioBle::sendTrameLXWP0()
 void VarioBle::deviceConnect()
 {
     deviceConnected = true;
+    xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_CON_DISCON_SENTENCE_BIT, eSetBits);
 }
 
 void VarioBle::deviceDisconnect()
 {
     deviceConnected = false;
+    xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_CON_DISCON_SENTENCE_BIT, eSetBits);
 }
 
 void VarioBle::sendSentence(const char *sentence)
