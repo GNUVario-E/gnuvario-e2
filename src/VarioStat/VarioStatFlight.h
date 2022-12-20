@@ -15,7 +15,7 @@
 #define VARIO_MAX_KEY "vMa"
 #define SPEED_MAX_KEY "sMa"
 
-class VarioHistoFlight
+class VarioStatFlight
 {
 private:
     Preferences *preferences;
@@ -37,7 +37,7 @@ private:
     int16_t speedMax = 0;
 
 public:
-    VarioHistoFlight(Preferences *_preferences, char *_currentNamespace);
+    VarioStatFlight(Preferences *_preferences, char *_currentNamespace);
     void beginHisto();
 
     void setStartDateAndTime();

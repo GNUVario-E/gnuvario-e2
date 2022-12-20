@@ -1,7 +1,7 @@
-#include "VarioHisto.h"
+#include "VarioStat.h"
 #include <Arduino.h>
 
-VarioHisto::VarioHisto(const char *_title)
+VarioStat::VarioStat(const char *_title)
 {
     title = (char *)malloc(strlen(_title) + 1);
     strcpy(title, _title);
@@ -10,7 +10,7 @@ VarioHisto::VarioHisto(const char *_title)
     loadLastHisto();
 }
 
-void VarioHisto::loadLastHisto()
+void VarioStat::loadLastHisto()
 {
     isFlightStarted = false;
     // get index of last recorded flight
@@ -21,10 +21,10 @@ void VarioHisto::loadLastHisto()
 
     strcpy(currentNamespace, getNamespaceIndexBased(currentHistoIndex));
 
-    varioHistoFlight = new VarioHistoFlight(preferences, currentNamespace);
+    varioStatFlight = new VarioStatFlight(preferences, currentNamespace);
 }
 
-void VarioHisto::newHisto()
+void VarioStat::newHisto()
 {
     isFlightStarted = true;
     // unless histo is empty, increment index
@@ -57,51 +57,51 @@ void VarioHisto::newHisto()
     // switch to new namespace
     strcpy(currentNamespace, getNamespaceIndexBased(currentHistoIndex));
 
-    delete varioHistoFlight;
-    varioHistoFlight = NULL;
-    varioHistoFlight = new VarioHistoFlight(preferences, currentNamespace);
+    delete varioStatFlight;
+    varioStatFlight = NULL;
+    varioStatFlight = new VarioStatFlight(preferences, currentNamespace);
     // clear old data from previous flight at current index
-    varioHistoFlight->beginHisto();
+    varioStatFlight->beginHisto();
 }
 
-char *VarioHisto::getFormatedStartDate()
+char *VarioStat::getFormatedStartDate()
 {
-    return varioHistoFlight->getFormatedStartDate();
+    return varioStatFlight->getFormatedStartDate();
 }
 
-char *VarioHisto::getFormatedStartTime()
+char *VarioStat::getFormatedStartTime()
 {
-    return varioHistoFlight->getFormatedStartTime();
+    return varioStatFlight->getFormatedStartTime();
 }
 
-char *VarioHisto::getFormatedFlightDuration()
+char *VarioStat::getFormatedFlightDuration()
 {
-    return varioHistoFlight->getFormatedFlightDuration();
+    return varioStatFlight->getFormatedFlightDuration();
 }
 
-int16_t VarioHisto::getAltiMax()
+int16_t VarioStat::getAltiMax()
 {
-    return varioHistoFlight->getAltiMax();
+    return varioStatFlight->getAltiMax();
 }
 
-float VarioHisto::getVarioMin()
+float VarioStat::getVarioMin()
 {
-    return varioHistoFlight->getVarioMin();
+    return varioStatFlight->getVarioMin();
 }
 
-float VarioHisto::getVarioMax()
+float VarioStat::getVarioMax()
 {
-    return varioHistoFlight->getVarioMax();
+    return varioStatFlight->getVarioMax();
 }
 
-int16_t VarioHisto::getSpeedMax()
+int16_t VarioStat::getSpeedMax()
 {
-    return varioHistoFlight->getSpeedMax();
+    return varioStatFlight->getSpeedMax();
 }
 
-void VarioHisto::onSignalReceived(uint8_t _val)
+void VarioStat::onSignalReceived(uint8_t _val)
 {
-    // Serial.println("VarioHisto::onSignalReceived");
+    // Serial.println("VarioStat::onSignalReceived");
     // Serial.println(_val);
     switch (_val)
     {
@@ -111,33 +111,33 @@ void VarioHisto::onSignalReceived(uint8_t _val)
     case GPS_NEW_TIME:
         if (isFlightStarted)
         {
-            varioHistoFlight->setFlightDuration();
+            varioStatFlight->setFlightDuration();
         }
         break;
     case VARIO_NEW_ALTI:
         if (isFlightStarted)
         {
-            varioHistoFlight->setAltiMax();
+            varioStatFlight->setAltiMax();
         }
         break;
     case VARIO_NEW_VELOCITY:
         if (isFlightStarted)
         {
-            varioHistoFlight->setVarioMax();
-            varioHistoFlight->setVarioMin();
+            varioStatFlight->setVarioMax();
+            varioStatFlight->setVarioMin();
         }
         break;
     case GPS_NEW_SPEED:
         if (isFlightStarted)
         {
-            varioHistoFlight->setSpeedMax();
+            varioStatFlight->setSpeedMax();
         }
         break;
     default:
         break;
     }
 }
-void VarioHisto::setValuesToFc()
+void VarioStat::setValuesToFc()
 {
     char buffer[50];
 
@@ -166,7 +166,7 @@ void VarioHisto::setValuesToFc()
     sprintf(buffer, "%s %d", "Vitesse max:", getSpeedMax());
     fc.setText8(true, buffer);
 }
-char *VarioHisto::getNamespaceIndexBased(uint8_t index)
+char *VarioStat::getNamespaceIndexBased(uint8_t index)
 {
     char *namespaceIndexBased = (char *)malloc(strlen(PREFERENCES_NAMESPACE_HISTO) + 2);
     char _indexStr[1];
