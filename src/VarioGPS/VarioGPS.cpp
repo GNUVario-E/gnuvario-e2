@@ -3,6 +3,8 @@
 #include <esp32-hal-uart.h>
 #include "VarioData/VarioData.h"
 #include "VarioTool/VarioTool.h"
+#include "VarioBle/VarioBle.h"
+#include "tasksBitsMask.h"
 
 #define GPS_TASK_PRIORITY 8
 
@@ -24,7 +26,7 @@ void VarioGPS::startTask()
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskVarioGPS started");
     // xTaskCreate(this->startTaskImpl, "TaskVarioGPS", 4096, this, GPS_TASK_PRIORITY, &_taskVarioGPSHandle);
-    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioGPS", 4096, this, GPS_TASK_PRIORITY, &_taskVarioGPSHandle, 1);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioGPS", 6000, this, GPS_TASK_PRIORITY, &_taskVarioGPSHandle, 1);
 }
 
 void VarioGPS::startTaskImpl(void *parm)
@@ -304,6 +306,13 @@ void VarioGPS::sendSentenceToFC()
         if ((strncmp(sentence, "$GPGGA", 6) == 0) || (strncmp(sentence, "$GNGGA", 6) == 0) || (strncmp(sentence, "$GPRMC", 6) == 0) || (strncmp(sentence, "$GNRMC", 6) == 0))
         {
             fc.setGpsSentence(sentence, millis());
+            // Serial.println(sentence);
+            if (VarioBle::_taskVarioBleHandle != NULL)
+            {
+                xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_GPS_SENTENCE_BIT, eSetBits);
+            }
         }
     }
 }
+
+extern TaskHandle_t _taskVarioBleHandle;

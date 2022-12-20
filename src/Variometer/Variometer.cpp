@@ -2,6 +2,8 @@
 
 #include "Variometer.h"
 #include "VarioTool/VarioTool.h"
+#include "VarioBle/VarioBle.h"
+#include "tasksBitsMask.h"
 
 #define COEF_ALTI_FILTERED 0.1
 #define VARIO_TASK_PRIORITY 11
@@ -64,6 +66,10 @@ void Variometer::task()
 
             fc.setVarioAlti(round(calibratedAlti), millis());
 
+            if (VarioBle::_taskVarioBleHandle != NULL)
+            {
+                xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_LXWP0_SENTENCE_BIT, eSetBits);
+            }
             // Serial.print("velocity:");
             // Serial.println(velocity);
         }
@@ -80,6 +86,7 @@ void Variometer::task()
             VARIO_DATA_DEBUG_PRINT("Bearingtxt :");
             VARIO_DATA_DEBUG_PRINTLN(bearingTxt);
         }
+
         // give time to other tasks
         vTaskDelay(delayT50);
     }
@@ -134,3 +141,5 @@ void Variometer::disableAcquisition()
 {
     varioImu->disableAcquisition();
 }
+
+extern TaskHandle_t _taskVarioBleHandle;

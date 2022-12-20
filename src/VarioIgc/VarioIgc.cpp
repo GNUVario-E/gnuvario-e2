@@ -4,43 +4,92 @@
 #include "VarioTool/VarioTool.h"
 
 #define IGC_TASK_PRIORITY 8
+#define NB_SEC_REC_IGC 1
 
 VarioIgc::VarioIgc()
 {
 }
-
-void VarioIgc::startTask()
+void VarioIgc::startTimer()
 {
-    // task creation
-    VARIO_IGC_DEBUG_PRINTLN("TaskVarioIgc started");
-    // xTaskCreate(this->startTaskImpl, "TaskVarioIgc", 3000, this, IGC_TASK_PRIORITY, &_taskVarioIgcHandle);
+    timerHndlIgc = xTimerCreate(
+        "timerIGC",                           /* name */
+        pdMS_TO_TICKS(NB_SEC_REC_IGC * 1000), /* period/time */
+        pdTRUE,                               /* auto reload */
+        (void *)this,                         /* timer ID */
+        startTimerIgcImpl);                   /* callback */
 
-    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioIgc", 3000, this, IGC_TASK_PRIORITY, &_taskVarioIgcHandle,1);
-}
-
-void VarioIgc::startTaskImpl(void *parm)
-{
-    // wrapper for task
-    static_cast<VarioIgc *>(parm)->task();
-}
-
-void VarioIgc::task()
-{
-    while (1)
+    if (xTimerStart(timerHndlIgc, 0) != pdPASS)
     {
-        if (lastTrameSecond != fc.getGpsTimeSecond())
-        {
-            uint32_t lTimeout = (millis() - 800);
-            if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > lTimeout && fc.getGpsTimeTimestamp() > lTimeout && fc.getGpsLocTimestamp() > lTimeout)
-            {
-                addBLine(fc.getGpsTimeHourUTC(), fc.getGpsTimeMinute(), fc.getGpsTimeSecond(), fc.getGpsLat(), fc.getGpsLon(), fc.getVarioAlti(), fc.getGpsAltiMeters());
-                lastTrameSecond = fc.getGpsTimeSecond();
-            }
-        }
-        // give time to other tasks
-        vTaskDelay(delayT200);
+        for (;;)
+            ; /* failure!?! */
     }
 }
+
+void VarioIgc::startTimerIgcImpl(TimerHandle_t timerHndlIgc)
+{
+    // wrapper for timer
+    VarioIgc *obj;
+    obj = (VarioIgc *)pvTimerGetTimerID(timerHndlIgc);
+    // pvTimerGetTimerID(timerHndl10Sec);
+    obj->timerIgc();
+}
+
+void VarioIgc::timerIgc()
+{
+    uint32_t now = millis();
+    if (now >= (lastIgcTrameTimestamp + NB_SEC_REC_IGC * 1000))
+    {
+        uint32_t lTimeout = (now - 800);
+        if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > lTimeout && fc.getGpsTimeTimestamp() > lTimeout && fc.getGpsLocTimestamp() > lTimeout)
+        {
+            // if no gps, no IGC sentence
+            addBLine(fc.getGpsTimeHourUTC(), fc.getGpsTimeMinute(), fc.getGpsTimeSecond(), fc.getGpsLat(), fc.getGpsLon(), fc.getVarioAlti(), fc.getGpsAltiMeters());
+            lastIgcTrameTimestamp = now;
+        }
+    }
+}
+
+// void VarioIgc::startTask()
+// {
+//     // task creation
+//     VARIO_IGC_DEBUG_PRINTLN("TaskVarioIgc started");
+//     // xTaskCreate(this->startTaskImpl, "TaskVarioIgc", 3000, this, IGC_TASK_PRIORITY, &_taskVarioIgcHandle);
+
+//     launchTimer();
+
+//     xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioIgc", 3000, this, IGC_TASK_PRIORITY, &_taskVarioIgcHandle, 1);
+// }
+
+// void VarioIgc::startTaskImpl(void *parm)
+// {
+//     // wrapper for task
+//     static_cast<VarioIgc *>(parm)->task();
+// }
+
+// void VarioIgc::task()
+// {
+//     uint32_t ulNotifiedValue;
+//     uint8_t second;
+//     uint8_t minute;
+
+//     fc.getGpsTimeTimestamp() while (1)
+//     {
+//         if (xTaskNotifyWait(pdFALSE, ULONG_MAX, &ulNotifiedValue, portMAX_DELAY) == pdPASS)
+//         {
+//             if (millis() >= (lastIgcTrameTimestamp + NB_SEC_REC_IGC * 1000))
+//             {
+//                 uint32_t lTimeout = (millis() - 800);
+//                 if (fc.getGpsIsFixed() && fc.getGpsIsFixedTimestamp() > lTimeout && fc.getGpsTimeTimestamp() > lTimeout && fc.getGpsLocTimestamp() > lTimeout)
+//                 {
+//                     addBLine(fc.getGpsTimeHourUTC(), fc.getGpsTimeMinute(), fc.getGpsTimeSecond(), fc.getGpsLat(), fc.getGpsLon(), fc.getVarioAlti(), fc.getGpsAltiMeters());
+//                     lastTrameSecond = fc.getGpsTimeSecond();
+//                 }
+//             }
+//             // give time to other tasks
+//             vTaskDelay(delayT200);
+//         }
+//     }
+// }
 
 bool VarioIgc::createNewIgcFile(const char *pilot, const char *glider, uint8_t day, uint8_t month, uint8_t year, int8_t timezone)
 {

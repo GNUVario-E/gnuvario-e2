@@ -1,0 +1,5 @@
+#pragma once
+
+#define BLE_GPS_SENTENCE_BIT 0x01
+#define BLE_LXWP0_SENTENCE_BIT 0x02
+#define BLE_CON_DISCON_SENTENCE_BIT 0x04
