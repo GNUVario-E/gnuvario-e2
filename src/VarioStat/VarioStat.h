@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Preferences.h>
-#include "VarioHistoFlight.h"
+#include "VarioStatFlight.h"
 #include "event.h"
 #include "Observer/Observer.h"
 
@@ -11,11 +11,11 @@
 #define PREFERENCES_STAT_NB_KEY "statNb"
 #define PREFERENCES_STAT_MAX_NB 10
 
-class VarioHisto : public Observer
+class VarioStat : public Observer
 {
 private:
     Preferences *preferences;
-    VarioHistoFlight *varioHistoFlight;
+    VarioStatFlight *varioStatFlight;
     void loadLastHisto();
 
     uint8_t currentHistoIndex = 0;
@@ -27,7 +27,7 @@ private:
     uint8_t nbRecordedFiles = 0;
 
 public:
-    VarioHisto(const char *_title);
+    VarioStat(const char *_title);
     uint8_t getNbHistos();
 
     void newHisto();

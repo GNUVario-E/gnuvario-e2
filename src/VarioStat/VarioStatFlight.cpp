@@ -1,14 +1,14 @@
-#include "VarioHistoFlight.h"
+#include "VarioStatFlight.h"
 #include <Arduino.h>
 
-VarioHistoFlight::VarioHistoFlight(Preferences *_preferences, char *_currentNamespace)
+VarioStatFlight::VarioStatFlight(Preferences *_preferences, char *_currentNamespace)
 {
     preferences = _preferences;
     currentNamespace = _currentNamespace;
     loadHisto();
 }
 
-void VarioHistoFlight::clear()
+void VarioStatFlight::clear()
 {
     preferences->begin(currentNamespace, false);
     preferences->clear();
@@ -26,13 +26,13 @@ void VarioHistoFlight::clear()
     speedMax = 0;
 }
 
-void VarioHistoFlight::beginHisto()
+void VarioStatFlight::beginHisto()
 {
     clear();
     setStartDateAndTime();
 }
 
-void VarioHistoFlight::loadHisto()
+void VarioStatFlight::loadHisto()
 {
 
     preferences->begin(currentNamespace, false);
@@ -50,7 +50,7 @@ void VarioHistoFlight::loadHisto()
     preferences->end();
 }
 
-void VarioHistoFlight::setStartDateAndTime()
+void VarioStatFlight::setStartDateAndTime()
 {
     year = fc.getGpsDateYear();
     month = fc.getGpsDateMonth();
@@ -69,7 +69,7 @@ void VarioHistoFlight::setStartDateAndTime()
     preferences->end();
 }
 
-char *VarioHistoFlight::getFormatedStartDate()
+char *VarioStatFlight::getFormatedStartDate()
 {
     const char *format = "%02d/%02d/%02d";
     char *buffer = (char *)malloc(11);
@@ -78,7 +78,7 @@ char *VarioHistoFlight::getFormatedStartDate()
     return buffer;
 }
 
-char *VarioHistoFlight::getFormatedStartTime()
+char *VarioStatFlight::getFormatedStartTime()
 {
     const char *format = "%02d:%02d";
     char *buffer = (char *)malloc(6);
@@ -87,7 +87,7 @@ char *VarioHistoFlight::getFormatedStartTime()
     return buffer;
 }
 
-void VarioHistoFlight::setFlightDuration()
+void VarioStatFlight::setFlightDuration()
 {
     uint8_t _durationHour = fc.getFlightTimeDurationHour();
     uint8_t _durationMinute = fc.getFlightTimeDurationMinute();
@@ -103,7 +103,7 @@ void VarioHistoFlight::setFlightDuration()
     }
 }
 
-char *VarioHistoFlight::getFormatedFlightDuration()
+char *VarioStatFlight::getFormatedFlightDuration()
 {
     const char *format = "%02d:%02d";
     char *buffer = (char *)malloc(6);
@@ -112,7 +112,7 @@ char *VarioHistoFlight::getFormatedFlightDuration()
     return buffer;
 }
 
-void VarioHistoFlight::setAltiMax()
+void VarioStatFlight::setAltiMax()
 {
     int16_t alti = (int16_t)(fc.getGpsAltiMeters() / 10) * 10;
     if (alti > altiMax)
@@ -124,12 +124,12 @@ void VarioHistoFlight::setAltiMax()
     }
 }
 
-int16_t VarioHistoFlight::getAltiMax()
+int16_t VarioStatFlight::getAltiMax()
 {
     return altiMax;
 }
 
-void VarioHistoFlight::setVarioMin()
+void VarioStatFlight::setVarioMin()
 {
     if (fc.getVarioVelocity() < varioMin)
     {
@@ -140,12 +140,12 @@ void VarioHistoFlight::setVarioMin()
     }
 }
 
-float VarioHistoFlight::getVarioMin()
+float VarioStatFlight::getVarioMin()
 {
     return varioMin;
 }
 
-void VarioHistoFlight::setVarioMax()
+void VarioStatFlight::setVarioMax()
 {
     if (fc.getVarioVelocity() > varioMax)
     {
@@ -156,12 +156,12 @@ void VarioHistoFlight::setVarioMax()
     }
 }
 
-float VarioHistoFlight::getVarioMax()
+float VarioStatFlight::getVarioMax()
 {
     return varioMax;
 }
 
-void VarioHistoFlight::setSpeedMax()
+void VarioStatFlight::setSpeedMax()
 {
     if (fc.getGpsKmph() > speedMax)
     {
@@ -172,7 +172,7 @@ void VarioHistoFlight::setSpeedMax()
     }
 }
 
-int16_t VarioHistoFlight::getSpeedMax()
+int16_t VarioStatFlight::getSpeedMax()
 {
     return speedMax;
 }
