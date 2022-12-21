@@ -27,7 +27,7 @@ bool VarioIgcFile::createNewIgcFile(uint8_t day, uint8_t month, uint8_t year)
 
     if ((currentFile = SD.open(tmpPath, FILE_WRITE)))
     {
-        currentFile.close();
+        // currentFile.close();
         isCreated = true;
         VARIO_IGC_DEBUG_PRINTLN("Open OK");
 
@@ -96,17 +96,19 @@ bool VarioIgcFile::writeline(char *line)
         strcat(fullFilename, "/");
         strcat(fullFilename, filename);
 
-        currentFile = SD.open(fullFilename, FILE_APPEND);
-        if (!currentFile)
-        {
-            return false;
-        }
+        // currentFile = SD.open(fullFilename, FILE_APPEND);
+        // if (!currentFile)
+        // {
+        //     return false;
+        // }
+
         if (!currentFile.print(lLine))
         {
+            isCreated = false;
             currentFile.close();
             return false;
         }
-        currentFile.close();
+        currentFile.flush();
 
         return true;
     }
