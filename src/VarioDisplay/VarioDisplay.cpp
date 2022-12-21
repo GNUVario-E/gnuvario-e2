@@ -159,13 +159,14 @@ void VarioDisplay::screenTask(void *parameter)
 
             xSemaphoreGive(screenMutex);
         }
-        if (VarioDisplay::bufferTaskHandler != NULL)
+
+        if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
         {
-            if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
+            if (VarioDisplay::bufferTaskHandler != NULL)
             {
                 xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
-                xSemaphoreGive(displayMutex);
             }
+            xSemaphoreGive(displayMutex);
         }
     }
 }
@@ -267,13 +268,13 @@ void VarioDisplay::bufferTask()
         vTaskDelay(pdMS_TO_TICKS(100));
         if (notifyTask)
         {
-            if (VarioDisplay::bufferTaskHandler != NULL)
+            if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
             {
-                if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
+                if (VarioDisplay::bufferTaskHandler != NULL)
                 {
                     xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
-                    xSemaphoreGive(displayMutex);
                 }
+                xSemaphoreGive(displayMutex);
             }
         }
     }
