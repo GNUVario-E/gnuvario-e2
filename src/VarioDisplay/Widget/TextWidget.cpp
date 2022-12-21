@@ -16,6 +16,7 @@ void TextWidget::addToBuffer(GxEPD2_GFX &_display)
         uint8_t fontSize9 = 9;
         uint8_t fontSize18 = 18;
         uint8_t fontSize26 = 26;
+        uint8_t fontSize32 = 32;
         uint8_t paddingTop = 0;
         clearLastDiplayZone(_display);
 
@@ -51,6 +52,10 @@ void TextWidget::addToBuffer(GxEPD2_GFX &_display)
         case 5:
             _display.setFont(&Gnuvarioe26pt7b);
             paddingTop += fontSize26;
+            break;
+        case 6:
+            _display.setFont(&FreeSansBold32pt7b);
+            paddingTop += fontSize32;
             break;
         default:
             break;

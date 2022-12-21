@@ -1,5 +1,8 @@
 #pragma once
 
+// font generator
+// https://rop.nl/truetype2gfx/
+
 #include <Arduino.h>
 #include "GxEPD2_GFX.h"
 #include <glcdfont.c>
@@ -11,6 +14,7 @@
 #include "VarioDisplay/fonts/NotoSans6pt7b.h"
 #include "VarioDisplay/fonts/Gnuvarioe18pt7b.h"
 #include "VarioDisplay/fonts/gnuvarioe26pt7b.h"
+#include "VarioDisplay/fonts/FreeSansBold32pt7b.h"
 #include "FC.h"
 
 struct DisplayZone
