@@ -19,6 +19,7 @@
 #include "AglManager/src/AglManager.h"
 #include "VarioStat/VarioStat.h"
 #include "VarioIgc/VarioIgc.h"
+
 class VarioManager : public Observer
 {
 private:

@@ -32,8 +32,11 @@ void Variometer::task()
     int16_t bearing;
     double calibratedAlti;
     bool lastSentence;
+    double firstAlti;
 
-    preTaskInit();
+    firstAlti = preTaskInitFirstAlti();
+    varioHisto->init(firstAlti, millis());
+    speedHisto->init(firstAlti, millis());
     // ici la loop du vario
     while (true)
     {
@@ -64,6 +67,21 @@ void Variometer::task()
             if (calibratedAlti < 0)
                 calibratedAlti = 0;
 
+            // varioHisto->setAlti(calibratedAlti, millis());
+            // // speedHisto->setAlti(calibratedAlti, millis());
+
+            // if (varioHisto->haveNewClimbRate())
+            // {
+            //     Serial.println("haveNewClimbRate");
+            //     Serial.println(varioHisto->getClimbRate(30));
+            // }
+
+            // if (speedHisto->haveNewClimbRate())
+            // {
+            //     Serial.println("haveNewClimbRate");
+            //     Serial.println(speedHisto->getGlideRatio(100));
+            // }
+
             fc.setVarioAlti(round(calibratedAlti), millis());
 
             if (VarioBle::_taskVarioBleHandle != NULL)
@@ -73,8 +91,8 @@ void Variometer::task()
             // Serial.print("velocity:");
             // Serial.println(velocity);
         }
-        // give time to other tasks
-        vTaskDelay(delayT50);
+        // // give time to other tasks
+        // vTaskDelay(delayT50);
 
         bearing = varioImu->getBearing();
         if (bearing != -1)
@@ -88,7 +106,7 @@ void Variometer::task()
         }
 
         // give time to other tasks
-        vTaskDelay(delayT50);
+        vTaskDelay(delayT10);
     }
 }
 
@@ -100,6 +118,8 @@ Variometer::Variometer(VarioBeeper *_varioBeeper, VarioSD *_varioSD)
     varioImu = new VarioImu(kalmanvert);
     varioGPS = new VarioGPS();
     varioBle = new VarioBle();
+    varioHisto = new VarioHisto<50, 40>();
+    speedHisto = new SpeedHisto<500, 120, 2>();
 }
 
 void Variometer::init()
@@ -112,9 +132,9 @@ void Variometer::init()
     varioBle->startTask();
 }
 
-void Variometer::preTaskInit()
+double Variometer::preTaskInitFirstAlti()
 {
-    varioImu->postInit();
+    return varioImu->postInitFirstAlti();
 }
 
 void Variometer::initFromAgl()
