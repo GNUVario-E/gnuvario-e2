@@ -17,7 +17,7 @@ void VarioBle::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskVarioBle started");
-    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioBle", 5000, this, BLE_TASK_PRIORITY, &_taskVarioBleHandle, 1);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioBle", 4000, this, BLE_TASK_PRIORITY, &_taskVarioBleHandle, 1);
 }
 
 void VarioBle::startTaskImpl(void *parm)
