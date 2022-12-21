@@ -304,19 +304,33 @@ void VarioDisplay::displayScreen(VarioScreen *screen)
     {
         _currentScreen->tabWidgets[i]->setForceRefresh();
     }
+
     if (xSemaphoreTake(screenMutex, portMAX_DELAY) == pdTRUE)
     {
         // Serial.println("mutex displayScreen");
         forceIgnoreMinTimeRefresh = true;
         display.fillScreen(GxEPD_WHITE);
         xSemaphoreGive(screenMutex);
+    }
 
-        xTaskCreatePinnedToCore(this->startTaskBuffer, "TaskBuffer", SCREEN_STACK_SIZE, this, SCREEN_PRIORITY, &bufferTaskHandler, SCREEN_CORE);
-        if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
+    if (xSemaphoreTake(displayMutex, portMAX_DELAY) == pdTRUE)
+    {
+        if (bufferTaskHandler == NULL)
+        {
+            if (xTaskCreatePinnedToCore(this->startTaskBuffer, "TaskBuffer", SCREEN_STACK_SIZE, this, SCREEN_PRIORITY, &bufferTaskHandler, SCREEN_CORE) == pdPASS)
+            {
+                VARIO_PROG_DEBUG_PRINTLN("TaskBuffer created");
+            }
+            else
+            {
+                VARIO_PROG_DEBUG_PRINTLN("TaskBuffer not created");
+            }
+        }
+        if (bufferTaskHandler != NULL)
         {
             xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
-            xSemaphoreGive(displayMutex);
         }
+        xSemaphoreGive(displayMutex);
     }
 }
 
