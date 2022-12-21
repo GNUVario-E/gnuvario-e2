@@ -18,7 +18,7 @@ private:
     static TaskHandle_t screenTaskHandler;
     static TaskHandle_t bufferTaskHandler;
     static void screenTask(void *parameter);
-    static void startTaskBuffer(void *);
+    static void startTaskBuffer(void *parameter);
     static uint32_t lastDisplayTime;
     static uint32_t lastDisplayTimeToggle;
     static uint16_t minTimeRefresh ;
