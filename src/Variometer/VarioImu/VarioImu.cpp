@@ -23,7 +23,7 @@ void VarioImu::init()
     twScheduler.init();
 }
 
-void VarioImu::postInit()
+double VarioImu::postInitFirstAlti()
 {
     while (!twScheduler.havePressure())
     {
@@ -52,6 +52,8 @@ void VarioImu::postInit()
                      POSITION_MEASURE_STANDARD_DEVIATION,
                      varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->getValueFloat(),
                      millis());
+
+    return firstAlti;
 }
 
 bool VarioImu::havePressure(void)

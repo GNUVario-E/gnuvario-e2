@@ -16,7 +16,7 @@ private:
 public:
     VarioImu(Kalmanvert *kalmanvert);
     void init();
-    void postInit();
+    double postInitFirstAlti();
     void initKalman(double firstAlti);
     bool havePressure(void);
     bool updateData();
