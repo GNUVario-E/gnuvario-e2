@@ -20,7 +20,7 @@ bool VarioWidget::isRefreshNeeded(uint32_t lastDisplayTime)
             sign[0] = '-';
         }
 
-        sprintf(localText, "%s %d.%d", sign, (int)(positiveVelocity), (int)((positiveVelocity - (int)(positiveVelocity)) * 10));
+        sprintf(localText, "%s%d.%d", sign, (int)(positiveVelocity), (int)((positiveVelocity - (int)(positiveVelocity)) * 10));
         setText(localText);
         oldVario = fc.getVarioVelocity();
 

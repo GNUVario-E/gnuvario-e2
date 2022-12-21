@@ -8,10 +8,7 @@ void VarioFSM::startTask()
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskFSM started");
 
-    // xTaskCreate(this->startTaskImpl, "TaskFSM", 3000, this, FSM_TASK_PRIORITY, &_taskFSMHandle);
     xTaskCreatePinnedToCore(this->startTaskImpl, "TaskFSM", 3000, this, FSM_TASK_PRIORITY, &_taskFSMHandle, 1);
-    vTaskDelay(delayT50);
-    xTaskNotify(VarioFSM::_taskFSMHandle, 0, eNoAction);
 }
 
 void VarioFSM::startTaskImpl(void *parm)
@@ -22,7 +19,6 @@ void VarioFSM::startTaskImpl(void *parm)
 
 void VarioFSM::task()
 {
-
     while (1)
     {
         fsm.run_machine();
