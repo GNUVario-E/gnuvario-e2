@@ -89,7 +89,7 @@ void VarioBeeper::startTask()
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskVarioBeeper started");
     // xTaskCreate(this->startTaskImpl, "TaskVarioBeeper", 1000, this, BEEPER_TASK_PRIORITY, &_taskVarioBeeperHandle);
-    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioBeeper", 4096, this, BEEPER_TASK_PRIORITY, &_taskVarioBeeperHandle, 1);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioBeeper", 3000, this, BEEPER_TASK_PRIORITY, &_taskVarioBeeperHandle, 1);
 }
 
 void VarioBeeper::startTaskImpl(void *parm)
