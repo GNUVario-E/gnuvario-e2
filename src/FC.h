@@ -108,6 +108,14 @@ struct flight_data
     int8_t flightStartTime[3] = {0, 0, 0};
 };
 
+struct wind_data
+{
+    int8_t speed = 0;
+    uint16_t heading = 0;
+    int8_t meanSpeed = 0;
+    uint32_t windTimestamp = 0;
+};
+
 struct fcdata_t
 {
     vario_data vario;
@@ -118,6 +126,7 @@ struct fcdata_t
     gps_data gps;
     agl_data agl;
     flight_data flight;
+    wind_data wind;
 };
 
 class FC : public Subject
@@ -272,4 +281,10 @@ public:
     uint8_t getFlightTimeDurationHour();
     uint8_t getFlightTimeDurationMinute();
     uint8_t getFlightTimeDurationSecond();
+
+    void setWind(int8_t _speed, uint16_t heading, int8_t _meanSpeed, uint32_t timestamp);
+    int8_t getWindSpeed();
+    uint16_t getWindHeading();
+    int8_t getWindMeanSpeed();
+    uint32_t getWindTimestamp();
 };

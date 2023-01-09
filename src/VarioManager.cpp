@@ -189,6 +189,8 @@ void VarioManager::onSignalReceived(uint8_t _val)
         fc.registerObserver(this);
         variometer->init();
         variometer->startTask();
+        varioWind = new VarioWind();
+        varioWind->init();
 
         aglManager = new AglManager();
         aglManager->init();
@@ -199,8 +201,18 @@ void VarioManager::onSignalReceived(uint8_t _val)
         variometer->initFromAgl();
         break;
     case GPS_NEW_POSITION:
+        // Serial.println("GPS_NEW_POSITION");
+        // Serial.print("lat : ");
+        // Serial.print(fc.getGpsLat(), 10);
+        // Serial.print(" ,lon : ");
+        // Serial.print(fc.getGpsLon(), 10);
+        // Serial.print(" ,timestamp : ");
+        // Serial.println(fc.getGpsLocTimestamp());
+
         aglManager->setLatitude(fc.getGpsLat());
         aglManager->setLongitude(fc.getGpsLon());
+
+        varioWind->addPoint(fc.getGpsLat(), fc.getGpsLon(), fc.getGpsLocTimestamp());
         fc.setAglAlt(aglManager->getAgl(), millis());
         break;
     case GPS_NO_POSITION:

@@ -15,4 +15,7 @@ public:
     static StaticJsonDocument<JSON_SIZE> jsonDoc;
     static void bearingToOrdinal2c(char *bearingTxt, float bearing);
     static String getDeviceID();
+    static double convertIGCDDMMmmmToDecimal(int32_t valeur);
+    static double convertGPSnmeaToDecimalDegrees(double nmea);
+    static double calculateDistance(double lat1Rad, double lon1Rad, double lat2Rad, double lon2Rad);
 };

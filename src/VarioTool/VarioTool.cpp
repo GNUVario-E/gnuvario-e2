@@ -3,6 +3,8 @@
 #include "VarioDebug/VarioDebug.h"
 #include <SD.h>
 
+#define R_M 6378137 // distance moyenne de la Terre à l'équateur en m
+
 StaticJsonDocument<JSON_SIZE> VarioTool::jsonDoc;
 
 void VarioTool::appendChar(char *s, char c)
@@ -130,4 +132,42 @@ String VarioTool::getDeviceID()
     sprintf(deviceid, "%" PRIu64, chipid);
     String thisID(deviceid);
     return thisID;
+}
+
+double VarioTool::convertIGCDDMMmmmToDecimal(int32_t valeur)
+{
+    double decimal = 0.0;
+    int32_t deg = valeur / 100000;
+    int32_t min = valeur % 100000;
+    decimal = deg + (double)min / 60000.0;
+
+    return decimal;
+}
+
+double  VarioTool::convertGPSnmeaToDecimalDegrees(double nmea) {
+  int degrees = nmea / 100;
+  double minutes = nmea - (degrees * 100);
+  return degrees + minutes / 60;
+}
+
+/**
+ * @brief Calculate the distance between two GPS points
+ *
+ * @param lat1Rad en radians
+ * @param lon1Rad  en radians
+ * @param lat2Rad  en radians
+ * @param lon2Rad  en radians
+ * @return double
+ */
+double VarioTool::calculateDistance(double lat1Rad, double lon1Rad, double lat2Rad, double lon2Rad)
+{
+    // Appliquer la formule Haversine
+    double dlon = lon2Rad - lon1Rad;
+    double dlat = lat2Rad - lat1Rad;
+    double a = sin(dlat / 2) * sin(dlat / 2) + cos(lat1Rad) * cos(lat2Rad) * sin(dlon / 2) * sin(dlon / 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    double distance = R_M * c;
+
+    return distance;
 }

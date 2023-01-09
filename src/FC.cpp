@@ -684,3 +684,31 @@ uint8_t FC::getFlightTimeDurationSecond()
 {
     return getFlightDurationSecond() - getFlightTimeDurationMinute() * 60 - getFlightTimeDurationHour() * 60 * 60;
 }
+
+void FC::setWind(int8_t _speed, uint16_t heading, int8_t _meanSpeed, uint32_t timestamp)
+{
+    fcdata.wind.speed = _speed;
+    fcdata.wind.heading = heading;
+    fcdata.wind.meanSpeed = _meanSpeed;
+    fcdata.wind.windTimestamp = timestamp;
+}
+
+int8_t FC::getWindSpeed()
+{
+    return fcdata.wind.speed;
+}
+
+uint16_t FC::getWindHeading()
+{
+    return fcdata.wind.heading;
+}
+
+int8_t FC::getWindMeanSpeed()
+{
+    return fcdata.wind.meanSpeed;
+}
+
+uint32_t FC::getWindTimestamp()
+{
+    return fcdata.wind.windTimestamp;
+}
