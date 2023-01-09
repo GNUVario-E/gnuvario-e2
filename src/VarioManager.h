@@ -19,6 +19,7 @@
 #include "AglManager/src/AglManager.h"
 #include "VarioStat/VarioStat.h"
 #include "VarioIgc/VarioIgc.h"
+#include "VarioWind/VarioWind.h"
 
 class VarioManager : public Observer
 {
@@ -45,6 +46,7 @@ public:
     AglManager *aglManager;
     VarioIgc *varioIgc;
     VarioStat *varioStat;
+    VarioWind *varioWind;
     boolean init();
     void onSignalReceived(uint8_t _val);
 };
