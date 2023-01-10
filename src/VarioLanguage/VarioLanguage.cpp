@@ -37,6 +37,7 @@
 #define DEFAULT_TITRE_STAT_DUREE "Duree"
 #define DEFAULT_TITRE_STAT_SPEED "Vitesse"
 #define DEFAULT_TITRE_UPDATEWWW "www update"
+#define DEFAULT_TITRE_WIND "Vent"
 
 void VarioLanguage::init(uint8_t language)
 {
@@ -127,6 +128,7 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "LAT", TITRE_LAT, MAX_CAR_TITRE_LAT);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "LONG", TITRE_LONG, MAX_CAR_TITRE_LONG);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "COMPAS", TITRE_COMPAS, MAX_CAR_TITRE_COMPAS);
+	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "WIND", TITRE_WIND, MAX_CAR_TITRE_WIND);
 
 	//*****    MESSAGE *****
 
@@ -213,6 +215,7 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 	Titre["LAT"] = TITRE_TAB[TITRE_LAT];
 	Titre["LONG"] = TITRE_TAB[TITRE_LONG];
 	Titre["COMPAS"] = TITRE_TAB[TITRE_COMPAS];
+	Titre["WIND"] = TITRE_TAB[TITRE_WIND];
 
 	//*****    Message *****
 
@@ -295,6 +298,7 @@ void VarioLanguage::setDefaultValue()
 	strcpy(TITRE_TAB[TITRE_STAT_DUREE], DEFAULT_TITRE_STAT_DUREE);
 	strcpy(TITRE_TAB[TITRE_STAT_SPEED], DEFAULT_TITRE_STAT_SPEED);
 	strcpy(TITRE_TAB[TITRE_UPDATEWWW], DEFAULT_TITRE_UPDATEWWW);
+	strcpy(TITRE_TAB[TITRE_WIND], DEFAULT_TITRE_WIND);
 }
 
 bool VarioLanguage::setParameterFromJsonObject(JsonObject *section, const char *key, uint8_t index, uint8_t maxSize)

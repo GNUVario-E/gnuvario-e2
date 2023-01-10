@@ -98,6 +98,10 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     aglWidget->setIsActif(data.agl.isactif);
     aglWidget->setIsBorder(data.agl.isborder);
 
+    windWidget = new WindWidget(_varioLanguage, data.wind.altWidgetIndex, data.wind.x, data.wind.y, data.wind.w, data.wind.h);
+    windWidget->setIsActif(data.wind.isactif);
+    windWidget->setIsBorder(data.wind.isborder);
+
     tabWidgets[nb_widgets++] = logoWidget;
     tabWidgets[nb_widgets++] = textWidget1;
     tabWidgets[nb_widgets++] = textWidget2;
@@ -118,6 +122,7 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     tabWidgets[nb_widgets++] = lonWidget;
     tabWidgets[nb_widgets++] = altiGpsWidget;
     tabWidgets[nb_widgets++] = aglWidget;
+    tabWidgets[nb_widgets++] = windWidget;
 }
 
 uint8_t VarioScreen::getNbWidgets()
@@ -237,4 +242,9 @@ AltiGpsWidget *VarioScreen::getAltiGpsWidget()
 AglWidget *VarioScreen::getAglWidget()
 {
     return aglWidget;
+}
+
+WindWidget *VarioScreen::getWindWidget()
+{
+    return windWidget;
 }

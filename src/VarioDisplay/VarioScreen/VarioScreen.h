@@ -19,6 +19,7 @@
 #include "VarioDisplay/Widget/LonWidget.h"
 #include "VarioDisplay/Widget/AltiGpsWidget.h"
 #include "VarioDisplay/Widget/AglWidget.h"
+#include "VarioDisplay/Widget/WindWidget.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include <VarioDisplay/VarioScreen/ScreenData.h>
 
@@ -48,6 +49,7 @@ private:
     LonWidget *lonWidget;
     AltiGpsWidget *altiGpsWidget;
     AglWidget *aglWidget;
+    WindWidget *windWidget;
     // SoundeditWidget *soundEditWidget;
 
 protected:
@@ -78,4 +80,5 @@ public:
     LonWidget *getLonWidget();
     AltiGpsWidget *getAltiGpsWidget();
     AglWidget *getAglWidget();
+    WindWidget *getWindWidget();
 };
