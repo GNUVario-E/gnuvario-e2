@@ -37,6 +37,7 @@
 #define TITRE_STAT_SPEED 28
 #define TITRE_UPDATEWWW 29
 #define TITRE_ALTIGPS 30
+#define TITRE_WIND 31
 
 #define MAX_CAR_TITRE_TIME 15
 #define MAX_CAR_TITRE_TDV 15
@@ -69,6 +70,8 @@
 #define MAX_CAR_TITRE_STAT_DUREE 10
 #define MAX_CAR_TITRE_STAT_SPEED 10
 #define MAX_CAR_TITRE_UPDATEWWW 12
+#define MAX_CAR_TITRE_WIND 10
+
 
 class VarioLanguage
 {
@@ -79,7 +82,7 @@ public:
 
 private:
 	uint8_t langue = 0;
-	char TITRE_TAB[30][30];
+	char TITRE_TAB[35][30];
 	void setDefaultValue();
 	boolean setParameterFromJsonObject(JsonObject *section, const char *key, uint8_t index, uint8_t maxSize);
 	void saveConfigurationVario(const char *version, const char *filename);

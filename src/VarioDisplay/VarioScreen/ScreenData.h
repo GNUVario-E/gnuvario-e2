@@ -36,4 +36,5 @@ struct ScreenData
     S_WIDGET_DATA lon;
     S_WIDGET_DATA altigps;
     S_WIDGET_DATA agl;
+    S_WIDGET_DATA wind;
 };

@@ -22,7 +22,8 @@ ScreenData bootScreenData = {
     lat : {false, true, 0, 210, 128, 51, 99},
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
-    agl : {false, true, 0, 210, 128, 51, 99}
+    agl : {false, true, 0, 210, 128, 51, 99},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
 
 ScreenData wifiScreenData = {
@@ -45,7 +46,8 @@ ScreenData wifiScreenData = {
     lat : {false, true, 0, 210, 128, 51, 99},
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
-    agl : {false, true, 0, 210, 128, 51, 99}
+    agl : {false, true, 0, 210, 128, 51, 99},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
 
 ScreenData calibrationScreenData = {
@@ -68,7 +70,8 @@ ScreenData calibrationScreenData = {
     lat : {false, true, 0, 210, 128, 51, 99},
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
-    agl : {false, true, 0, 210, 128, 51, 99}
+    agl : {false, true, 0, 210, 128, 51, 99},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
 
 ScreenData vario1ScreenData = {
@@ -91,7 +94,8 @@ ScreenData vario1ScreenData = {
     lat : {false, true, 0, 210, 128, 51, 99},
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 46, 128, 51, 19},
-    agl : {false, true, 0, 46, 128, 51, 9}
+    agl : {false, true, 0, 46, 128, 51, 9},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
 
 ScreenData vario2ScreenData = {
@@ -114,7 +118,8 @@ ScreenData vario2ScreenData = {
     lat : {true, true, 0, 46, 128, 51, 99},
     lon : {true, true, 0, 96, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
-    agl : {false, true, 0, 210, 128, 51, 99}
+    agl : {false, true, 0, 210, 128, 51, 99},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
 
 ScreenData vario3ScreenData = {
@@ -137,7 +142,8 @@ ScreenData vario3ScreenData = {
     lat : {false, true, 0, 210, 128, 51, 99},
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
-    agl : {false, true, 0, 210, 128, 51, 99}
+    agl : {false, true, 0, 210, 128, 51, 99},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
 
 ScreenData soundScreenData = {
@@ -160,7 +166,8 @@ ScreenData soundScreenData = {
     lat : {false, true, 0, 210, 128, 51, 99},
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
-    agl : {false, true, 0, 210, 128, 51, 99}
+    agl : {false, true, 0, 210, 128, 51, 99},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
 
 ScreenData statisticScreenData = {
@@ -183,7 +190,8 @@ ScreenData statisticScreenData = {
     lat : {false, true, 0, 210, 128, 51, 99},
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
-    agl : {false, true, 0, 210, 128, 51, 99}
+    agl : {false, true, 0, 210, 128, 51, 99},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
 
 ScreenData rebootScreenData = {
@@ -206,7 +214,8 @@ ScreenData rebootScreenData = {
     lat : {false, true, 0, 210, 128, 51, 99},
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
-    agl : {false, true, 0, 210, 128, 51, 99}
+    agl : {false, true, 0, 210, 128, 51, 99},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
 
 ScreenData messageScreenData = {
@@ -229,5 +238,6 @@ ScreenData messageScreenData = {
     lat : {false, true, 0, 210, 128, 51, 99},
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
-    agl : {false, true, 0, 210, 128, 51, 99}
+    agl : {false, true, 0, 210, 128, 51, 99},
+    wind : {false, false, 0, 210, 128, 51, 99}
 };
