@@ -5,6 +5,7 @@
 #include <TinyGPS++.h>
 #include <CircularBuffer.h>
 #include "FC.h"
+#include "VarioParameter/Parameters.h"
 
 #define GPS_BAUD 9600
 #define BUFFER_SIZE 100
@@ -12,6 +13,8 @@
 class VarioGPS
 {
 private:
+    Parameters *params = Parameters::getInstance();
+    
     TinyGPSPlus gps;
     const TickType_t delayT500 = pdMS_TO_TICKS(500);
     const TickType_t delayT100 = pdMS_TO_TICKS(100);

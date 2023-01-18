@@ -3,11 +3,14 @@
 
 #include "VarioIgcParser/igcdata.h"
 #include "VarioSettings/VarioSettings.h"
+#include "VarioParameter/Parameters.h"
 
 class VarioIgcParser
 {
 
 private:
+    Parameters *params = Parameters::getInstance();
+
     boolean isParsed = false;
     String filePath;
     struct igcdata myIgcData;

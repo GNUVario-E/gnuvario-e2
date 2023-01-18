@@ -32,6 +32,7 @@
 
 #include <Arduino.h>
 #include "HardwareConfig/HardwareConfig.h"
+#include "VarioParameter/Parameters.h"
 
 // to know about the magnetometer
 #include "Variometer/LightInvensense/LightInvensense.h"
@@ -187,6 +188,8 @@ public:
 #endif // VERTACCEL_ENABLE_EEPROM
 
 private:
+  Parameters *params = Parameters::getInstance();
+
 #ifdef VERTACCEL_STATIC_CALIBRATION
   static constexpr VertaccelSettings settings = vertaccelSettings;
   static constexpr uint8_t gyroCalArray[12] = VERTACCEL_GYRO_CAL_BIAS; // need to be passed as pointer

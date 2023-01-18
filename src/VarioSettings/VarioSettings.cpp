@@ -3,19 +3,14 @@
 #include <ArduinoJson.h>
 #include "VarioSettings/VarioSettings.h"
 #include "HardwareConfig/HardwareConfig.h"
-#include "VarioData/VarioData.h"
-#include "ParamsDefinition.h"
+#include "VarioParameter/ParamDefiniton.h"
 #include "version.h"
 #include "VarioTool/VarioTool.h"
 #include "VarioDebug/VarioDebug.h"
+#include "VarioParameter/ParamDefiniton.h"
 
 VarioSettings::VarioSettings()
 {
-}
-
-boolean VarioSettings::init()
-{
-  return true;
 }
 
 boolean VarioSettings::readSDSettings(char *fileName)
@@ -34,6 +29,8 @@ boolean VarioSettings::readSDSettings(char *fileName)
     {
       if (VarioTool::readLines(&fileToRead, line))
       {
+        // settingName[0] = '\0';
+        // settingValue[0] = '\0';
         strcpy(settingName, "");
         strcpy(settingValue, "");
 
@@ -65,20 +62,12 @@ boolean VarioSettings::readSDSettings(char *fileName)
             VarioTool::appendChar(settingValue, line[i]);
           }
         }
-        if (settingName[0] != 0)
+        if (strlen(settingName) > 0)
         {
-          // rustine pour le fichier de calibration
-          if (strncmp(settingName, "VERTACCEL_GYRO_CAL_BIAS", strlen("VERTACCEL_GYRO_CAL_BIAS")) == 0)
-          {
-            if (settingValue[0] == '0' && settingValue[1] == 'x')
-            {
-              sprintf(settingValue, "%d", (int)strtol(settingValue, NULL, 16));
-            }
-          }
-          varioData.applySettingParam(settingName, settingValue);
 
           VARIO_SDCARD_DEBUG_DUMP(settingName);
           VARIO_SDCARD_DEBUG_DUMP(settingValue);
+          applySetting(settingName, settingValue);
         }
       }
     }
@@ -101,16 +90,24 @@ boolean VarioSettings::readSDSettingsSound(char *fileName)
   return tmpValue;
 }
 
-void VarioSettings::loadConfigurationVario(char *filename)
+bool VarioSettings::loadConfigurationVario(char *filename)
 {
   // Open file for reading
   boolean isFileParamsOK = true;
+
+  // Check if file exists
+  if (!SD.exists(filename))
+  {
+    VARIO_SDCARD_DEBUG_PRINTLN("File not found");
+    saveConfigurationVario(filename);
+    return false;
+  }
 
   File file = SD.open(filename, FILE_READ);
   if (!file)
   {
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to read file");
-    return;
+    return false;
   }
   // Clearing Buffer
   VarioTool::jsonDoc.clear();
@@ -122,7 +119,7 @@ void VarioSettings::loadConfigurationVario(char *filename)
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to read file, using default configuration");
     VARIO_SDCARD_DEBUG_PRINTLN(error.c_str());
     file.close();
-    return;
+    return false;
   }
 
   VARIO_SDCARD_DEBUG_PRINTLN("Paramètres : ");
@@ -146,19 +143,18 @@ void VarioSettings::loadConfigurationVario(char *filename)
 
   JsonObject Systeme = VarioTool::jsonDoc["systeme"];
 
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_BT_ENABLE)->setParameterFromJsonObject(&Systeme, "BT_ENABLE");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_NO_RECORD)->setParameterFromJsonObject(&Systeme, "NO_RECORD");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_ALARM_SDCARD)->setParameterFromJsonObject(&Systeme, "ALARM_SDCARD");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_BEEP_GPSFIX)->setParameterFromJsonObject(&Systeme, "BEEP_GPSFIX");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_BEEP_FLYBEGIN)->setParameterFromJsonObject(&Systeme, "BEEP_FLYBEGIN");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_BEEP_VARIOBEGIN)->setParameterFromJsonObject(&Systeme, "BEEP_VARIOBEGIN");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_MUTE_VARIOBEGIN)->setParameterFromJsonObject(&Systeme, "MUTE_VARIOBEGIN");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SLEEP_TIMEOUT_MINUTES)->setParameterFromJsonObject(&Systeme, "SLEEP_TIMEOUT_MINUTES");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SLEEP_THRESHOLD_CPS)->setParameterFromJsonObject(&Systeme, "SLEEP_THRESHOLD_CPS");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_MULTIDISPLAY_DURATION)->setParameterFromJsonObject(&Systeme, "MULTIDISPLAY_DURATION");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_DISPLAY_STAT_DURATION)->setParameterFromJsonObject(&Systeme, "DISPLAY_STAT_DURATION");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_URL_UPDATE)->setParameterFromJsonObject(&Systeme, "URL_UPDATE");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_LANGUAGE)->setParameterFromJsonObject(&Systeme, "LANGUAGE");
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_BT_ENABLE);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_NO_RECORD);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_BEEP_GPSFIX);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_BEEP_FLYBEGIN);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_BEEP_VARIOBEGIN);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_MUTE_VARIOBEGIN);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_SLEEP_TIMEOUT_MINUTES);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_SLEEP_THRESHOLD_CPS);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_MULTIDISPLAY_DURATION);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_DISPLAY_STAT_DURATION);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_URL_UPDATE);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_LANGUAGE);
 
   //*****    GENERAL *****
 
@@ -167,13 +163,13 @@ void VarioSettings::loadConfigurationVario(char *filename)
   JsonObject General = VarioTool::jsonDoc["general"];
   JsonObject General_GLIDER = General["GLIDER"];
 
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_PILOT_NAME)->setParameterFromJsonObject(&General, "PILOT_NAME");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_GLIDER_SELECT)->setParameterFromJsonObject(&General_GLIDER, "GLIDER_SELECT");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_GLIDER_NAME1)->setParameterFromJsonObject(&General_GLIDER, "GLIDER_NAME1");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_GLIDER_NAME2)->setParameterFromJsonObject(&General_GLIDER, "GLIDER_NAME2");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_GLIDER_NAME3)->setParameterFromJsonObject(&General_GLIDER, "GLIDER_NAME3");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_GLIDER_NAME4)->setParameterFromJsonObject(&General_GLIDER, "GLIDER_NAME4");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_TIME_ZONE)->setParameterFromJsonObject(&General, "TIME_ZONE");
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General, params->P_PILOT_NAME);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General_GLIDER, params->P_GLIDER_SELECT);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General_GLIDER, params->P_GLIDER_NAME1);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General_GLIDER, params->P_GLIDER_NAME2);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General_GLIDER, params->P_GLIDER_NAME3);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General_GLIDER, params->P_GLIDER_NAME4);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General, params->P_TIME_ZONE);
 
   //*****  VARIO *****
 
@@ -181,23 +177,25 @@ void VarioSettings::loadConfigurationVario(char *filename)
 
   JsonObject Vario = VarioTool::jsonDoc["vario"];
 
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SINKING_THRESHOLD)->setParameterFromJsonObject(&Vario, "SINKING_THRESHOLD");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_CLIMBING_THRESHOLD)->setParameterFromJsonObject(&Vario, "CLIMBING_THRESHOLD");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_NEAR_CLIMBING_SENSITIVITY)->setParameterFromJsonObject(&Vario, "NEAR_CLIMBING_SENSITIVITY");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_ENABLE_NEAR_CLIMBING_ALARM)->setParameterFromJsonObject(&Vario, "ENABLE_NEAR_CLIMBING_ALARM");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_ENABLE_NEAR_CLIMBING_BEEP)->setParameterFromJsonObject(&Vario, "ENABLE_NEAR_CLIMBING_BEEP");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_DISPLAY_INTEGRATED_CLIMB_RATE)->setParameterFromJsonObject(&Vario, "DISPLAY_INTEGRATED_CLIMB_RATE");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_RATIO_CLIMB_RATE)->setParameterFromJsonObject(&Vario, "RATIO_CLIMB_RATE");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_CLIMB_PERIOD_COUNT)->setParameterFromJsonObject(&Vario, "CLIMB_PERIOD_COUNT");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SETTINGS_GLIDE_RATIO_PERIOD_COUNT)->setParameterFromJsonObject(&Vario, "SETTINGS_GLIDE_RATIO_PERIOD_COUNT");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_RATIO_MAX_VALUE)->setParameterFromJsonObject(&Vario, "RATIO_MAX_VALUE");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_RATIO_MIN_SPEED)->setParameterFromJsonObject(&Vario, "RATIO_MIN_SPEED");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_VARIOMETER_ENABLE_AGL)->setParameterFromJsonObject(&Vario, "VARIOMETER_ENABLE_AGL");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SENT_LXNAV_SENTENCE)->setParameterFromJsonObject(&Vario, "SENT_LXNAV_SENTENCE");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->setParameterFromJsonObject(&Vario, "ACCELERATION_MEASURE_STANDARD_DEVIATION");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_VARIOMETER_INTEGRATED_CLIMB_RATE)->setParameterFromJsonObject(&Vario, "VARIOMETER_INTEGRATED_CLIMB_RATE");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SETTINGS_VARIO_PERIOD_COUNT)->setParameterFromJsonObject(&Vario, "SETTINGS_VARIO_PERIOD_COUNT");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_BLUETOOTH_SEND_CALIBRATED_ALTITUDE)->setParameterFromJsonObject(&Vario, "BLUETOOTH_SEND_CALIBRATED_ALTITUDE");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SINKING_THRESHOLD)->setParameterFromJsonObject(&Vario, "SINKING_THRESHOLD");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_CLIMBING_THRESHOLD)->setParameterFromJsonObject(&Vario, "CLIMBING_THRESHOLD");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_NEAR_CLIMBING_SENSITIVITY)->setParameterFromJsonObject(&Vario, "NEAR_CLIMBING_SENSITIVITY");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_ENABLE_NEAR_CLIMBING_ALARM)->setParameterFromJsonObject(&Vario, "ENABLE_NEAR_CLIMBING_ALARM");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_ENABLE_NEAR_CLIMBING_BEEP)->setParameterFromJsonObject(&Vario, "ENABLE_NEAR_CLIMBING_BEEP");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_DISPLAY_INTEGRATED_CLIMB_RATE)->setParameterFromJsonObject(&Vario, "DISPLAY_INTEGRATED_CLIMB_RATE");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_RATIO_CLIMB_RATE)->setParameterFromJsonObject(&Vario, "RATIO_CLIMB_RATE");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_CLIMB_PERIOD_COUNT)->setParameterFromJsonObject(&Vario, "CLIMB_PERIOD_COUNT");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SETTINGS_GLIDE_RATIO_PERIOD_COUNT)->setParameterFromJsonObject(&Vario, "SETTINGS_GLIDE_RATIO_PERIOD_COUNT");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_RATIO_MAX_VALUE)->setParameterFromJsonObject(&Vario, "RATIO_MAX_VALUE");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_RATIO_MIN_SPEED)->setParameterFromJsonObject(&Vario, "RATIO_MIN_SPEED");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_VARIOMETER_ENABLE_AGL)->setParameterFromJsonObject(&Vario, "VARIOMETER_ENABLE_AGL");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SENT_LXNAV_SENTENCE)->setParameterFromJsonObject(&Vario, "SENT_LXNAV_SENTENCE");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->setParameterFromJsonObject(&Vario, "ACCELERATION_MEASURE_STANDARD_DEVIATION");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_VARIOMETER_INTEGRATED_CLIMB_RATE)->setParameterFromJsonObject(&Vario, "VARIOMETER_INTEGRATED_CLIMB_RATE");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SETTINGS_VARIO_PERIOD_COUNT)->setParameterFromJsonObject(&Vario, "SETTINGS_VARIO_PERIOD_COUNT");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_BLUETOOTH_SEND_CALIBRATED_ALTITUDE)->setParameterFromJsonObject(&Vario, "BLUETOOTH_SEND_CALIBRATED_ALTITUDE");
+
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General, params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION);
 
   //*****  FLIGHT START *****
 
@@ -205,11 +203,11 @@ void VarioSettings::loadConfigurationVario(char *filename)
 
   JsonObject FlightStart = VarioTool::jsonDoc["flightstart"];
 
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_MIN_TIMESTAMP)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_MIN_TIMESTAMP");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_VARIO_LOW_THRESHOLD)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_VARIO_LOW_THRESHOLD");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_VARIO_HIGH_THRESHOLD)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_VARIO_HIGH_THRESHOLD");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_MIN_SPEED)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_MIN_SPEED");
-  isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_RECORD_WHEN_FLIGHT_START)->setParameterFromJsonObject(&FlightStart, "RECORD_WHEN_FLIGHT_START");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_MIN_TIMESTAMP)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_MIN_TIMESTAMP");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_VARIO_LOW_THRESHOLD)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_VARIO_LOW_THRESHOLD");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_VARIO_HIGH_THRESHOLD)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_VARIO_HIGH_THRESHOLD");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_MIN_SPEED)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_MIN_SPEED");
+  // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_RECORD_WHEN_FLIGHT_START)->setParameterFromJsonObject(&FlightStart, "RECORD_WHEN_FLIGHT_START");
 
   // Close the file (Curiously, File's destructor doesn't close the file)
   file.close();
@@ -230,6 +228,8 @@ void VarioSettings::loadConfigurationVario(char *filename)
   {
     saveConfigurationVario(filename);
   }
+
+  return true;
 }
 
 void VarioSettings::loadScreenVario(char *filename)
@@ -254,7 +254,7 @@ void VarioSettings::loadScreenVario(char *filename)
     return;
   }
 
-  char section[][30] = {
+  char section[][15] = {
       "boot",
       "wifi",
       "calibration",
@@ -426,22 +426,20 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   JsonObject Systeme = VarioTool::jsonDoc.createNestedObject("systeme");
 
-  Systeme["BT_ENABLE"] = varioData.getParam(PARAM_BT_ENABLE)->getValueBool() ? 1 : 0;
-  Systeme["NO_RECORD"] = varioData.getParam(PARAM_NO_RECORD)->getValueBool() ? 1 : 0;
-  Systeme["ALARM_SDCARD"] = varioData.getParam(PARAM_ALARM_SDCARD)->getValueBool() ? 1 : 0;
-  Systeme["BEEP_GPSFIX"] = varioData.getParam(PARAM_BEEP_GPSFIX)->getValueBool() ? 1 : 0;
-  Systeme["BEEP_FLYBEGIN"] = varioData.getParam(PARAM_BEEP_FLYBEGIN)->getValueBool() ? 1 : 0;
-  Systeme["BEEP_VARIOBEGIN"] = varioData.getParam(PARAM_BEEP_VARIOBEGIN)->getValueBool() ? 1 : 0;
-  Systeme["MUTE_VARIOBEGIN"] = varioData.getParam(PARAM_MUTE_VARIOBEGIN)->getValueBool() ? 1 : 0;
-  // Systeme["COMPENSATION_TEMP"] = COMPENSATION_TEMP;
-  // Systeme["COMPENSATION_GPSALTI"] = COMPENSATION_GPSALTI;
-  Systeme["SLEEP_TIMEOUT_MINUTES"] = varioData.getParam(PARAM_SLEEP_TIMEOUT_MINUTES)->getValueUInt8();
-  Systeme["SLEEP_THRESHOLD_CPS"] = varioData.getParam(PARAM_SLEEP_THRESHOLD_CPS)->getValueFloat();
-  Systeme["MULTIDISPLAY_DURATION"] = varioData.getParam(PARAM_MULTIDISPLAY_DURATION)->getValueInt16();
+  Systeme["BT_ENABLE"] = params->P_BT_ENABLE->getValue() ? 1 : 0;
+  Systeme["NO_RECORD"] = params->P_NO_RECORD->getValue() ? 1 : 0;
+  Systeme["BEEP_GPSFIX"] = params->P_BEEP_GPSFIX->getValue() ? 1 : 0;
+  Systeme["BEEP_FLYBEGIN"] = params->P_BEEP_FLYBEGIN->getValue() ? 1 : 0;
+  Systeme["BEEP_VARIOBEGIN"] = params->P_BEEP_VARIOBEGIN->getValue() ? 1 : 0;
+  Systeme["MUTE_VARIOBEGIN"] = params->P_MUTE_VARIOBEGIN->getValue() ? 1 : 0;
 
-  Systeme["DISPLAY_STAT_DURATION"] = varioData.getParam(PARAM_DISPLAY_STAT_DURATION)->getValueUInt8();
-  Systeme["URL_UPDATE"] = varioData.getParam(PARAM_URL_UPDATE)->getValueChar();
-  Systeme["LANGUAGE"] = varioData.getParam(PARAM_LANGUAGE)->getValueChar();
+  Systeme["SLEEP_TIMEOUT_MINUTES"] = params->P_SLEEP_TIMEOUT_MINUTES->getValue();
+  Systeme["SLEEP_THRESHOLD_CPS"] = params->P_SLEEP_THRESHOLD_CPS->getValue();
+  Systeme["MULTIDISPLAY_DURATION"] = params->P_MULTIDISPLAY_DURATION->getValue();
+
+  Systeme["DISPLAY_STAT_DURATION"] = params->P_DISPLAY_STAT_DURATION->getValue();
+  Systeme["URL_UPDATE"] = params->P_URL_UPDATE->getValue();
+  Systeme["LANGUAGE"] = params->P_LANGUAGE->getValue();
 
   //*****    GENERAL *****
 
@@ -449,16 +447,16 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   JsonObject General = VarioTool::jsonDoc.createNestedObject("general");
 
-  General["PILOT_NAME"] = varioData.getParam(PARAM_PILOT_NAME)->getValueChar();
+  General["PILOT_NAME"] = params->P_PILOT_NAME->getValue();
 
   JsonObject General_GLIDER = General.createNestedObject("GLIDER");
-  General_GLIDER["GLIDER_SELECT"] = varioData.getParam(PARAM_GLIDER_SELECT)->getValueUInt8();
-  General_GLIDER["GLIDER_NAME1"] = varioData.getParam(PARAM_GLIDER_NAME1)->getValueChar();
-  General_GLIDER["GLIDER_NAME2"] = varioData.getParam(PARAM_GLIDER_NAME2)->getValueChar();
-  General_GLIDER["GLIDER_NAME3"] = varioData.getParam(PARAM_GLIDER_NAME3)->getValueChar();
-  General_GLIDER["GLIDER_NAME4"] = varioData.getParam(PARAM_GLIDER_NAME4)->getValueChar();
 
-  General["TIME_ZONE"] = varioData.getParam(PARAM_TIME_ZONE)->getValueInt8();
+  General_GLIDER["GLIDER_SELECT"] = params->P_GLIDER_SELECT->getValue();
+  General_GLIDER["GLIDER_NAME1"] = params->P_GLIDER_NAME1->getValue();
+  General_GLIDER["GLIDER_NAME2"] = params->P_GLIDER_NAME2->getValue();
+  General_GLIDER["GLIDER_NAME3"] = params->P_GLIDER_NAME3->getValue();
+
+  General["TIME_ZONE"] = params->P_TIME_ZONE->getValue();
 
   //*****    VARIO *****
 
@@ -466,23 +464,25 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   JsonObject Vario = VarioTool::jsonDoc.createNestedObject("vario");
 
-  Vario["SINKING_THRESHOLD"] = varioData.getParam(PARAM_SINKING_THRESHOLD)->getValueFloat();
-  Vario["CLIMBING_THRESHOLD"] = varioData.getParam(PARAM_CLIMBING_THRESHOLD)->getValueFloat();
-  Vario["NEAR_CLIMBING_SENSITIVITY"] = varioData.getParam(PARAM_NEAR_CLIMBING_SENSITIVITY)->getValueFloat();
-  Vario["ENABLE_NEAR_CLIMBING_ALARM"] = varioData.getParam(PARAM_ENABLE_NEAR_CLIMBING_ALARM)->getValueBool() ? 1 : 0;
-  Vario["ENABLE_NEAR_CLIMBING_BEEP"] = varioData.getParam(PARAM_ENABLE_NEAR_CLIMBING_BEEP)->getValueBool() ? 1 : 0;
-  Vario["DISPLAY_INTEGRATED_CLIMB_RATE"] = varioData.getParam(PARAM_DISPLAY_INTEGRATED_CLIMB_RATE)->getValueBool() ? 1 : 0;
-  Vario["RATIO_CLIMB_RATE"] = varioData.getParam(PARAM_RATIO_CLIMB_RATE)->getValueUInt8();
-  Vario["CLIMB_PERIOD_COUNT"] = varioData.getParam(PARAM_CLIMB_PERIOD_COUNT)->getValueInt8();
-  Vario["SETTINGS_GLIDE_RATIO_PERIOD_COUNT"] = varioData.getParam(PARAM_SETTINGS_GLIDE_RATIO_PERIOD_COUNT)->getValueInt8();
-  Vario["RATIO_MAX_VALUE"] = varioData.getParam(PARAM_RATIO_MAX_VALUE)->getValueFloat();
-  Vario["RATIO_MIN_SPEED"] = varioData.getParam(PARAM_RATIO_MIN_SPEED)->getValueFloat();
-  Vario["VARIOMETER_ENABLE_AGL"] = varioData.getParam(PARAM_VARIOMETER_ENABLE_AGL)->getValueBool() ? 1 : 0;
-  Vario["SENT_LXNAV_SENTENCE"] = varioData.getParam(PARAM_SENT_LXNAV_SENTENCE)->getValueBool() ? 1 : 0;
-  Vario["ACCELERATION_MEASURE_STANDARD_DEVIATION"] = varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->getValueFloat();
-  Vario["VARIOMETER_INTEGRATED_CLIMB_RATE"] = varioData.getParam(PARAM_VARIOMETER_INTEGRATED_CLIMB_RATE)->getValueBool() ? 1 : 0;
-  Vario["SETTINGS_VARIO_PERIOD_COUNT"] = varioData.getParam(PARAM_SETTINGS_VARIO_PERIOD_COUNT)->getValueUInt8();
-  Vario["BLUETOOTH_SEND_CALIBRATED_ALTITUDE"] = varioData.getParam(PARAM_BLUETOOTH_SEND_CALIBRATED_ALTITUDE)->getValueBool() ? 1 : 0;
+  // Vario["SINKING_THRESHOLD"] = varioData.getParam(PARAM_SINKING_THRESHOLD)->getValueFloat();
+  // Vario["CLIMBING_THRESHOLD"] = varioData.getParam(PARAM_CLIMBING_THRESHOLD)->getValueFloat();
+  // Vario["NEAR_CLIMBING_SENSITIVITY"] = varioData.getParam(PARAM_NEAR_CLIMBING_SENSITIVITY)->getValueFloat();
+  // Vario["ENABLE_NEAR_CLIMBING_ALARM"] = varioData.getParam(PARAM_ENABLE_NEAR_CLIMBING_ALARM)->getValueBool() ? 1 : 0;
+  // Vario["ENABLE_NEAR_CLIMBING_BEEP"] = varioData.getParam(PARAM_ENABLE_NEAR_CLIMBING_BEEP)->getValueBool() ? 1 : 0;
+  // Vario["DISPLAY_INTEGRATED_CLIMB_RATE"] = varioData.getParam(PARAM_DISPLAY_INTEGRATED_CLIMB_RATE)->getValueBool() ? 1 : 0;
+  // Vario["RATIO_CLIMB_RATE"] = varioData.getParam(PARAM_RATIO_CLIMB_RATE)->getValueUInt8();
+  // Vario["CLIMB_PERIOD_COUNT"] = varioData.getParam(PARAM_CLIMB_PERIOD_COUNT)->getValueInt8();
+  // Vario["SETTINGS_GLIDE_RATIO_PERIOD_COUNT"] = varioData.getParam(PARAM_SETTINGS_GLIDE_RATIO_PERIOD_COUNT)->getValueInt8();
+  // Vario["RATIO_MAX_VALUE"] = varioData.getParam(PARAM_RATIO_MAX_VALUE)->getValueFloat();
+  // Vario["RATIO_MIN_SPEED"] = varioData.getParam(PARAM_RATIO_MIN_SPEED)->getValueFloat();
+  // Vario["VARIOMETER_ENABLE_AGL"] = varioData.getParam(PARAM_VARIOMETER_ENABLE_AGL)->getValueBool() ? 1 : 0;
+  // Vario["SENT_LXNAV_SENTENCE"] = varioData.getParam(PARAM_SENT_LXNAV_SENTENCE)->getValueBool() ? 1 : 0;
+  // Vario["ACCELERATION_MEASURE_STANDARD_DEVIATION"] = varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->getValueFloat();
+  // Vario["VARIOMETER_INTEGRATED_CLIMB_RATE"] = varioData.getParam(PARAM_VARIOMETER_INTEGRATED_CLIMB_RATE)->getValueBool() ? 1 : 0;
+  // Vario["SETTINGS_VARIO_PERIOD_COUNT"] = varioData.getParam(PARAM_SETTINGS_VARIO_PERIOD_COUNT)->getValueUInt8();
+  // Vario["BLUETOOTH_SEND_CALIBRATED_ALTITUDE"] = varioData.getParam(PARAM_BLUETOOTH_SEND_CALIBRATED_ALTITUDE)->getValueBool() ? 1 : 0;
+
+  Vario["ACCELERATION_MEASURE_STANDARD_DEVIATION"] = params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION->getValue();
 
   //*****    Flight_Start *****
 
@@ -490,11 +490,11 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   JsonObject FlightStart = VarioTool::jsonDoc.createNestedObject("flightstart");
 
-  FlightStart["FLIGHT_START_MIN_TIMESTAMP"] = varioData.getParam(PARAM_FLIGHT_START_MIN_TIMESTAMP)->getValueUInt16();
-  FlightStart["FLIGHT_START_VARIO_LOW_THRESHOLD"] = varioData.getParam(PARAM_FLIGHT_START_VARIO_LOW_THRESHOLD)->getValueFloat();
-  FlightStart["FLIGHT_START_VARIO_HIGH_THRESHOLD"] = varioData.getParam(PARAM_FLIGHT_START_VARIO_HIGH_THRESHOLD)->getValueFloat();
-  FlightStart["FLIGHT_START_MIN_SPEED"] = varioData.getParam(PARAM_FLIGHT_START_MIN_SPEED)->getValueFloat();
-  FlightStart["RECORD_WHEN_FLIGHT_START"] = varioData.getParam(PARAM_RECORD_WHEN_FLIGHT_START)->getValueBool() ? 1 : 0;
+  // FlightStart["FLIGHT_START_MIN_TIMESTAMP"] = varioData.getParam(PARAM_FLIGHT_START_MIN_TIMESTAMP)->getValueUInt16();
+  // FlightStart["FLIGHT_START_VARIO_LOW_THRESHOLD"] = varioData.getParam(PARAM_FLIGHT_START_VARIO_LOW_THRESHOLD)->getValueFloat();
+  // FlightStart["FLIGHT_START_VARIO_HIGH_THRESHOLD"] = varioData.getParam(PARAM_FLIGHT_START_VARIO_HIGH_THRESHOLD)->getValueFloat();
+  // FlightStart["FLIGHT_START_MIN_SPEED"] = varioData.getParam(PARAM_FLIGHT_START_MIN_SPEED)->getValueFloat();
+  // FlightStart["RECORD_WHEN_FLIGHT_START"] = varioData.getParam(PARAM_RECORD_WHEN_FLIGHT_START)->getValueBool() ? 1 : 0;
 
   // Serialize JSON to file
   if (serializeJson(VarioTool::jsonDoc, file) == 0)
@@ -510,6 +510,294 @@ void VarioSettings::saveConfigurationVario(char *filename)
 #ifdef SDCARD_DEBUG
   Serial.printf_P(PSTR("free heap memory: %d\n"), ESP.getFreeHeap());
 #endif
+}
+
+void VarioSettings::applySetting(const char *settingName, const char *settingValue)
+{
+  if (strcmp(settingName, PARAM_SSID_1) == 0)
+  {
+    params->P_SSID_1->setValue(settingValue);
+  }
+  else if (strcmp(settingName, PARAM_PASSWORD_1) == 0)
+  {
+    params->P_PASSWORD_1->setValue(settingValue);
+  }
+  else if (strcmp(settingName, PARAM_SSID_2) == 0)
+  {
+    params->P_SSID_2->setValue(settingValue);
+  }
+  else if (strcmp(settingName, PARAM_PASSWORD_2) == 0)
+  {
+    params->P_PASSWORD_2->setValue(settingValue);
+  }
+  else if (strcmp(settingName, PARAM_SSID_3) == 0)
+  {
+    params->P_SSID_3->setValue(settingValue);
+  }
+  else if (strcmp(settingName, PARAM_PASSWORD_3) == 0)
+  {
+    params->P_PASSWORD_3->setValue(settingValue);
+  }
+  else if (strcmp(settingName, PARAM_SSID_4) == 0)
+  {
+    params->P_SSID_4->setValue(settingValue);
+  }
+  else if (strcmp(settingName, PARAM_PASSWORD_4) == 0)
+  {
+    params->P_PASSWORD_4->setValue(settingValue);
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_00) == 0)
+  {
+    // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_00->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_01) == 0)
+  {
+    // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_01->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_02) == 0)
+  { // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_02->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_03) == 0)
+  {
+    // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_03->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_04) == 0)
+  { // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_04->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_05) == 0)
+  { // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_05->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_06) == 0)
+  { // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_06->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_07) == 0)
+  { // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_07->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_08) == 0)
+  { // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_08->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_09) == 0)
+  { // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_09->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_10) == 0)
+  { // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_10->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_GYRO_CAL_BIAS_11) == 0)
+  { // rustine pour le fichier de calibration
+    params->P_VERTACCEL_GYRO_CAL_BIAS_11->setValue(correctParseVertAccelBias(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_ACCEL_CAL_BIAS_00) == 0)
+  {
+    params->P_VERTACCEL_ACCEL_CAL_BIAS_00->setValue(atoi(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_ACCEL_CAL_BIAS_01) == 0)
+  {
+    params->P_VERTACCEL_ACCEL_CAL_BIAS_01->setValue(atoi(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_ACCEL_CAL_BIAS_02) == 0)
+  {
+    params->P_VERTACCEL_ACCEL_CAL_BIAS_02->setValue(atoi(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_ACCEL_CAL_SCALE) == 0)
+  {
+    params->P_VERTACCEL_ACCEL_CAL_SCALE->setValue(atoi(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_MAG_CAL_BIAS_00) == 0)
+  {
+    params->P_VERTACCEL_MAG_CAL_BIAS_00->setValue(atoi(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_MAG_CAL_BIAS_01) == 0)
+  {
+    params->P_VERTACCEL_MAG_CAL_BIAS_01->setValue(atoi(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_MAG_CAL_BIAS_02) == 0)
+  {
+    params->P_VERTACCEL_MAG_CAL_BIAS_02->setValue(atoi(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE) == 0)
+  {
+    params->P_VERTACCEL_MAG_CAL_PROJ_SCALE->setValue(atoi(settingValue));
+  }
+  else if (strcmp(settingName, PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER) == 0)
+  {
+    params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->setValue(atoi(settingValue));
+  }
+}
+
+uint8_t VarioSettings::correctParseVertAccelBias(const char *settingValue)
+{
+  // rustine pour le fichier de calibration
+
+  char *end_ptr;
+  if (settingValue[0] == '0' && settingValue[1] == 'x')
+  {
+    return (uint8_t)strtol(settingValue, &end_ptr, 16);
+  }
+  return 0;
+}
+
+bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<bool> *param)
+{
+  bool isFromJson = false;
+  const char *tVal;
+  const char *key = param->getKey();
+  if (section->containsKey(key))
+  {
+    param->setValue(section->getMember(key).as<bool>());
+    isFromJson = true;
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
+  }
+  else
+  {
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : not found");
+  }
+
+  return isFromJson;
+}
+
+bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<float> *param)
+{
+  bool isFromJson = false;
+  const char *tVal;
+  const char *key = param->getKey();
+  if (section->containsKey(key))
+  {
+    param->setValue(section->getMember(key).as<float>());
+    isFromJson = true;
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
+  }
+  else
+  {
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : not found");
+  }
+
+  return isFromJson;
+}
+
+bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<int8_t> *param)
+{
+  bool isFromJson = false;
+  const char *tVal;
+  const char *key = param->getKey();
+  if (section->containsKey(key))
+  {
+    param->setValue(section->getMember(key).as<int8_t>());
+    isFromJson = true;
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
+  }
+  else
+  {
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : not found");
+  }
+
+  return isFromJson;
+}
+
+bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<uint8_t> *param)
+{
+  bool isFromJson = false;
+  const char *tVal;
+  const char *key = param->getKey();
+  if (section->containsKey(key))
+  {
+    param->setValue(section->getMember(key).as<uint8_t>());
+    isFromJson = true;
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
+  }
+  else
+  {
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : not found");
+  }
+
+  return isFromJson;
+}
+
+bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<int16_t> *param)
+{
+  bool isFromJson = false;
+  const char *tVal;
+  const char *key = param->getKey();
+  if (section->containsKey(key))
+  {
+    param->setValue(section->getMember(key).as<int16_t>());
+    isFromJson = true;
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
+  }
+  else
+  {
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : not found");
+  }
+
+  return isFromJson;
+}
+
+bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<uint16_t> *param)
+{
+  bool isFromJson = false;
+  const char *tVal;
+  const char *key = param->getKey();
+  if (section->containsKey(key))
+  {
+    param->setValue(section->getMember(key).as<uint16_t>());
+    isFromJson = true;
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
+  }
+  else
+  {
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : not found");
+  }
+
+  return isFromJson;
+}
+
+bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<const char *> *param)
+{
+  bool isFromJson = false;
+  const char *tVal;
+  const char *key = param->getKey();
+  if (section->containsKey(key))
+  {
+    param->setValue(section->getMember(key).as<const char *>());
+    isFromJson = true;
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
+  }
+  else
+  {
+    VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : not found");
+  }
+
+  return isFromJson;
+}
+
+const char *VarioSettings::trimSpace(char *str)
+{
+  char *end;
+  /* skip leading whitespace */
+  while (isspace(*str))
+  {
+    str = str + 1;
+  }
+  /* remove trailing whitespace */
+  end = str + strlen(str) - 1;
+  while (end > str && isspace(*end))
+  {
+    end = end - 1;
+  }
+  /* write null character */
+  *(end + 1) = '\0';
+
+  return end;
 }
 
 VarioSettings varioSettings;

@@ -84,9 +84,12 @@ void Variometer::task()
 
             fc.setVarioAlti(round(calibratedAlti), millis());
 
-            if (VarioBle::_taskVarioBleHandle != NULL)
+            if (params->P_BT_ENABLE->getValue())
             {
-                xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_LXWP0_SENTENCE_BIT, eSetBits);
+                if (VarioBle::_taskVarioBleHandle != NULL)
+                {
+                    xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_LXWP0_SENTENCE_BIT, eSetBits);
+                }
             }
             // Serial.print("velocity:");
             // Serial.println(velocity);
@@ -117,7 +120,10 @@ Variometer::Variometer(VarioBeeper *_varioBeeper, VarioSD *_varioSD)
     kalmanvert = new Kalmanvert();
     varioImu = new VarioImu(kalmanvert);
     varioGPS = new VarioGPS();
-    varioBle = new VarioBle();
+    if (params->P_BT_ENABLE->getValue())
+    {
+        varioBle = new VarioBle();
+    }
     varioHisto = new VarioHisto<50, 40>();
     speedHisto = new SpeedHisto<500, 120, 2>();
 }
@@ -128,8 +134,15 @@ void Variometer::init()
     varioBeeper->startTask();
     varioGPS->init();
     varioGPS->startTask();
-    varioBle->init();
-    varioBle->startTask();
+    if (params->P_BT_ENABLE->getValue())
+    {
+        varioBle->init();
+        varioBle->startTask();
+    }
+    if (params->P_MUTE_VARIOBEGIN->getValue())
+    {
+        varioBeeper->mute();
+    }
 }
 
 double Variometer::preTaskInitFirstAlti()

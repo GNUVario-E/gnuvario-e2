@@ -8,6 +8,8 @@
 // global screen data objects
 #include "DisplayData.h"
 
+#include "VarioParameter/Parameters.h"
+
 #ifdef CLEAR_NVS
 #include <nvs_flash.h>
 #endif
@@ -18,6 +20,8 @@ FC fc;
 
 VarioManager vm;
 VarioFSM fsm;
+
+Parameters *params = Parameters::getInstance();
 
 #ifdef CLEAR_NVS
 void clearNVS()
@@ -38,6 +42,9 @@ void setup()
   return;
 #endif
 
+  // initialisation des valeurs par defaut des parametres
+  params->initDefault();
+
   // initialisation
   if (!vm.init())
   {
@@ -47,8 +54,6 @@ void setup()
     }
   }
 }
-
-
 
 void loop()
 {

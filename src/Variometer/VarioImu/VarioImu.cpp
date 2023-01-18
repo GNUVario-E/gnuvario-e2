@@ -9,6 +9,8 @@
 #include "VarioManager.h"
 
 #define R2D 57.2958
+#define POSITION_MEASURE_STANDARD_DEVIATION 0.1
+
 
 // Ms5611 TWScheduler::ms5611;
 // Vertaccel TWScheduler::vertaccel;
@@ -45,12 +47,12 @@ double VarioImu::postInitFirstAlti()
     VARIO_IMU_DEBUG_PRINTLN(firstAlti);
 
     VARIO_IMU_DEBUG_PRINT("PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION: ");
-    VARIO_IMU_DEBUG_PRINTLN(varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->getValueFloat());
+    VARIO_IMU_DEBUG_PRINTLN(params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION->getValue());
 
     kalmanvert->init(firstAlti,
                      0.0,
                      POSITION_MEASURE_STANDARD_DEVIATION,
-                     varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->getValueFloat(),
+                     params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION->getValue(),
                      millis());
 
     return firstAlti;
@@ -121,7 +123,7 @@ void VarioImu::initKalman(double firstAlti)
     kalmanvert->init(firstAlti,
                      0.0,
                      POSITION_MEASURE_STANDARD_DEVIATION,
-                     varioData.getParam(PARAM_ACCELERATION_MEASURE_STANDARD_DEVIATION)->getValueFloat(),
+                     params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION->getValue(),
                      millis());
 
     VARIO_DATA_DEBUG_PRINTLN("kalman init");

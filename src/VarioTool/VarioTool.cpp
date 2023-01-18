@@ -16,22 +16,17 @@ void VarioTool::appendChar(char *s, char c)
 
 boolean VarioTool::readLines(File *file, char *line)
 {
-    char c = file->read();
-    uint8_t cIndex = 0;
-    while (c != '\n' && cIndex < RL_MAX_CHARS)
-    {
-        line[cIndex] = c;
-        line[cIndex + 1] = '\0';
-        cIndex++;
-        if (!file->available())
-            break;
-        c = file->read();
-    }
+    int bytesRead = file->readBytesUntil('\n', line, RL_MAX_CHARS);
+    line[bytesRead] = '\0';
 
-    if (cIndex > 0)
+    if (bytesRead > 0)
+    {
         return true;
+    }
     else
+    {
         return false;
+    }
 }
 
 void VarioTool::deleteRecursive(const char *path)
@@ -144,10 +139,11 @@ double VarioTool::convertIGCDDMMmmmToDecimal(int32_t valeur)
     return decimal;
 }
 
-double  VarioTool::convertGPSnmeaToDecimalDegrees(double nmea) {
-  int degrees = nmea / 100;
-  double minutes = nmea - (degrees * 100);
-  return degrees + minutes / 60;
+double VarioTool::convertGPSnmeaToDecimalDegrees(double nmea)
+{
+    int degrees = nmea / 100;
+    double minutes = nmea - (degrees * 100);
+    return degrees + minutes / 60;
 }
 
 /**

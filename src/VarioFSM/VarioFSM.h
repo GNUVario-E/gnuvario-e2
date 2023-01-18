@@ -6,11 +6,14 @@
 #include "Observer/Observer.h"
 #include "Observer/Subject.h"
 #include "event.h"
+#include "VarioParameter/Parameters.h"
 
 // template <typename Self, typename Finished>
 class VarioFSM : public Observer, public Subject
 {
 private:
+    Parameters *params = Parameters::getInstance();
+
     const TickType_t delayT50 = pdMS_TO_TICKS(50);
     TaskHandle_t _taskFSMHandle = NULL;
     static void startTaskImpl(void *);

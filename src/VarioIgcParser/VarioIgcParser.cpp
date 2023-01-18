@@ -3,27 +3,22 @@
 #include <MD5Builder.h>
 #include <ArduinoJson.h>
 #include <SD.h>
-#include "VarioData/VarioData.h"
+#include "VarioDebug/VarioDebug.h"
 
 QueueHandle_t xQueueParse;
 
 VarioIgcParser::VarioIgcParser(String path)
 {
-#ifdef MEMORY_DEBUG
-    Serial.println("Free heap VarioIgcParser constructor");
-    Serial.println(ESP.getFreeHeap());
-#endif //MEMORY_DEBUG
+    VARIO_MEMORY_DEBUG_PRINTLN("Free heap VarioIgcParser constructor");
+    VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
 
     filePath = path;
 }
 
 VarioIgcParser::~VarioIgcParser()
 {
-    
-#ifdef MEMORY_DEBUG
-    Serial.println("Free heap VarioIgcParser destructor");
-    Serial.println(ESP.getFreeHeap());
-#endif //MEMORY_DEBUG
+    VARIO_MEMORY_DEBUG_PRINTLN("Free heap VarioIgcParser destructor");
+    VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
 }
 
 boolean VarioIgcParser::parseFile()
@@ -66,33 +61,30 @@ boolean VarioIgcParser::parseFile()
 
         xQueueSend(xQueueParse, &dataToSend, 0);
         // vTaskDelay(delay);
-#ifdef WIFI_DEBUG
-        SerialPort.print(".");
-#endif //WIFI_DEBUG
+        VARIO_WIFI_DEBUG_PRINT(".");
     }
 
     md5b.calculate();
     myIgcData.md5 = md5b.toString();
-#ifdef WIFI_DEBUG
-    SerialPort.println(myIgcData.md5);
-#endif //WIFI_DEBUG
 
-    //on ferme pour libérer la mémoire
+    VARIO_WIFI_DEBUG_PRINTLN("md5 : " + myIgcData.md5);
+
+    // on ferme pour libérer la mémoire
     dataFile.close();
     if (!(dataFile = SD.open((char *)filePath.c_str(), FILE_READ)))
     {
         return false;
     }
 
-    //retour au debut du fichier
+    // retour au debut du fichier
     dataFile.seek(0);
 
     while (dataFile.available())
     {
         xQueueSend(xQueueParse, &dataToSend, 0);
-#ifdef WIFI_DEBUG
-        SerialPort.print("-");
-#endif //WIFI_DEBUG
+
+        VARIO_WIFI_DEBUG_PRINT("-");
+
         tmpBufferPos = 0;
         while (dataFile.available() && dataFile.peek() != '\n' && tmpBufferPos < 99) // note how this also prevents the buffer from overflowing (49 max to leave space for '\0'!)
         {
@@ -101,67 +93,61 @@ boolean VarioIgcParser::parseFile()
         }
         if (tmpBufferPos > 0)
         {
-            //on lit aussi le \n qui traine
+            // on lit aussi le \n qui traine
             dataFile.read();
 
             tmpBuffer[tmpBufferPos] = '\0';
             buffer = String(tmpBuffer);
             buffer.trim();
-#ifdef WIFI_DEBUG
-            SerialPort.print(".");
-            // SerialPort.print(" buffer : ");
-            // SerialPort.println(buffer);
-#endif //WIFI_DEBUG
+
+            VARIO_WIFI_DEBUG_PRINT(".");
+
             if (buffer.startsWith(IGCHeaderDATENEW))
             {
                 // date de la trace
                 myIgcData.flightDate = buffer.substring(10);
                 myIgcData.flightDate.trim();
-                //inversion pour format americain
+                // inversion pour format americain
                 myIgcData.flightDate = "20" + myIgcData.flightDate.substring(4, 6) + "-" + myIgcData.flightDate.substring(2, 4) + "-" + myIgcData.flightDate.substring(0, 2);
-#ifdef WIFI_DEBUG
-                SerialPort.print("flightDate : ");
-                SerialPort.println(myIgcData.flightDate);
-#endif //WIFI_DEBUG
+
+                VARIO_WIFI_DEBUG_PRINT("flightDate : ");
+                VARIO_WIFI_DEBUG_PRINTLN(myIgcData.flightDate);
             }
             else if (buffer.startsWith(IGCHeaderDATE))
             {
                 // date de la trace
                 myIgcData.flightDate = buffer.substring(5);
                 myIgcData.flightDate.trim();
-                //inversion pour format americain
+                // inversion pour format americain
                 myIgcData.flightDate = "20" + myIgcData.flightDate.substring(4, 6) + "-" + myIgcData.flightDate.substring(2, 4) + "-" + myIgcData.flightDate.substring(0, 2);
-#ifdef WIFI_DEBUG
-                SerialPort.print("flightDate : ");
-                SerialPort.println(myIgcData.flightDate);
-#endif //WIFI_DEBUG
+
+                VARIO_WIFI_DEBUG_PRINT("flightDate : ");
+                VARIO_WIFI_DEBUG_PRINTLN(myIgcData.flightDate);
             }
             else if (buffer.startsWith(IGCHeaderPILOT))
             {
-                //nom du pilote
+                // nom du pilote
                 myIgcData.pilot = buffer.substring(19);
                 myIgcData.pilot.trim();
-#ifdef WIFI_DEBUG
-                SerialPort.print("pilot : ");
-                SerialPort.println(myIgcData.pilot);
-#endif //WIFI_DEBUG
+
+                VARIO_WIFI_DEBUG_PRINT("pilot : ");
+                VARIO_WIFI_DEBUG_PRINTLN(myIgcData.pilot);
             }
             else if (buffer.startsWith(IGCHeaderGLIDER))
             {
-                //nom de la voile
+                // nom de la voile
                 myIgcData.wing = buffer.substring(16);
                 myIgcData.wing.trim();
-#ifdef WIFI_DEBUG
-                SerialPort.print("wing : ");
-                SerialPort.println(myIgcData.wing);
-#endif //WIFI_DEBUG
+
+                VARIO_WIFI_DEBUG_PRINT("wing : ");
+                VARIO_WIFI_DEBUG_PRINTLN(myIgcData.wing);
             }
             else if (buffer.startsWith("B"))
             {
-                //trame trace
-                // B1243314503488N00351234EA0088400927
-                // B 12 43 31 4503488N 00351234E A 00884 00927
-                //lat lon DDMMmmmN  DDDMMmmmE
+                // trame trace
+                //  B1243314503488N00351234EA0088400927
+                //  B 12 43 31 4503488N 00351234E A 00884 00927
+                // lat lon DDMMmmmN  DDDMMmmmE
                 String hms = buffer.substring(1, 7);
                 hms = hms.substring(0, 2) + ":" + hms.substring(2, 4) + ":" + hms.substring(4, 6);
                 int16_t nPos = buffer.indexOf("N");
@@ -209,20 +195,18 @@ boolean VarioIgcParser::parseFile()
 
     dataFile.close();
 
-#ifdef WIFI_DEBUG
-    SerialPort.print("startFlightTime : ");
-    SerialPort.println(myIgcData.startFlightTime);
-    SerialPort.print("endFlightTime : ");
-    SerialPort.println(myIgcData.endFlightTime);
-    SerialPort.print("startHeight : ");
-    SerialPort.println(myIgcData.startHeight);
-    SerialPort.print("minHeight : ");
-    SerialPort.println(myIgcData.minHeight);
-    SerialPort.print("maxHeight : ");
-    SerialPort.println(myIgcData.maxHeight);
-    SerialPort.print("endHeight : ");
-    SerialPort.println(myIgcData.endHeight);
-#endif //WIFI_DEBUG
+    VARIO_WIFI_DEBUG_PRINT("startFlightTime : ");
+    VARIO_WIFI_DEBUG_PRINTLN(myIgcData.startFlightTime);
+    VARIO_WIFI_DEBUG_PRINT("endFlightTime : ");
+    VARIO_WIFI_DEBUG_PRINTLN(myIgcData.endFlightTime);
+    VARIO_WIFI_DEBUG_PRINT("startHeight : ");
+    VARIO_WIFI_DEBUG_PRINTLN(myIgcData.startHeight);
+    VARIO_WIFI_DEBUG_PRINT("minHeight : ");
+    VARIO_WIFI_DEBUG_PRINTLN(myIgcData.minHeight);
+    VARIO_WIFI_DEBUG_PRINT("maxHeight : ");
+    VARIO_WIFI_DEBUG_PRINTLN(myIgcData.maxHeight);
+    VARIO_WIFI_DEBUG_PRINT("endHeight : ");
+    VARIO_WIFI_DEBUG_PRINTLN(myIgcData.endHeight);
 
     isParsed = true;
 
@@ -236,10 +220,10 @@ igcdata VarioIgcParser::getIgcdata()
 
 void VarioIgcParser::correctTimeZone(String &hms)
 {
-    //hms = "18:57:12"
+    // hms = "18:57:12"
 
     int8_t hour = atoi((char *)hms.substring(0, 2).c_str());
-    hour += varioData.getParam(PARAM_TIME_ZONE)->getValueInt8();
+    hour += params->P_TIME_ZONE->getValue();
     if (hour < 0)
     {
         hour += 24;

@@ -3,9 +3,13 @@
 class Kalmanvert;
 
 #include "FC.h"
+#include "VarioParameter/Parameters.h"
+
 class VarioImu
 {
 private:
+    Parameters *params = Parameters::getInstance();
+
     Kalmanvert *kalmanvert;
     double alti;
     double temp;

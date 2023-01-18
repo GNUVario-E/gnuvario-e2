@@ -5,20 +5,34 @@
 #include <ArduinoJson.h>
 #include <SD.h>
 #include "VarioDisplay/VarioScreen/ScreenData.h"
+#include "VarioParameter/Parameters.h"
+#include "VarioParameter/ConfigParameter.h"
 
 class VarioSettings
 {
 private:
+  Parameters *params = Parameters::getInstance();
+
   File myFile;
   S_WIDGET_DATA getScreenDataInsideValues(JsonObject *objInside);
   void setScreenDataValues(JsonObject *obj, ScreenData *screenData);
+  void applySetting(const char *settingName, const char *settingValue);
+  uint8_t correctParseVertAccelBias(const char *settingValue);
+  const char *trimSpace(char *str);
+  
+  bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<bool> *param);
+  bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<float> *param);
+  bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<int8_t> *param);
+  bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<uint8_t> *param);
+  bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<int16_t> *param);
+  bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<uint16_t> *param);
+  bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<const char *> *param);
 
 public:
   VarioSettings();
-  boolean init();
 
   boolean readSDSettings(char *fileName);
-  void loadConfigurationVario(char *filename);
+  bool loadConfigurationVario(char *filename);
   void loadScreenVario(char *filename);
   void saveConfigurationVario(char *filename);
   boolean readSDSettingsSound(char *FileName);

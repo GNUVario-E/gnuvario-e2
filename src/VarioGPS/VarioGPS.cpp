@@ -1,7 +1,6 @@
 #include "VarioGPS.h"
 #include "VarioDebug/VarioDebug.h"
 #include <esp32-hal-uart.h>
-#include "VarioData/VarioData.h"
 #include "VarioTool/VarioTool.h"
 #include "VarioBle/VarioBle.h"
 #include "tasksBitsMask.h"
@@ -10,7 +9,7 @@
 
 VarioGPS::VarioGPS()
 {
-    fc.setTzn(varioData.getParam(PARAM_TIME_ZONE)->getValueInt8());
+    fc.setTzn(params->P_TIME_ZONE->getValue());
 }
 
 void VarioGPS::init()
@@ -307,9 +306,13 @@ void VarioGPS::sendSentenceToFC()
         {
             fc.setGpsSentence(sentence, millis());
             // Serial.println(sentence);
-            if (VarioBle::_taskVarioBleHandle != NULL)
+            if (params->P_BT_ENABLE)
             {
-                xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_GPS_SENTENCE_BIT, eSetBits);
+                if (VarioBle::_taskVarioBleHandle != NULL)
+                {
+
+                    xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_GPS_SENTENCE_BIT, eSetBits);
+                }
             }
         }
     }
