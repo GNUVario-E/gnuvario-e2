@@ -8,7 +8,6 @@
 #include "VarioBeeper/VarioBeeper.h"
 #include "VarioPower/VarioPower.h"
 #include "VarioSD/VarioSD.h"
-#include "VarioData/VarioData.h"
 #include "VarioDisplay/VarioDisplay.h"
 #include "VarioSettings/VarioSettings.h"
 #include "VarioWifi/VarioWifi.h"
@@ -20,10 +19,13 @@
 #include "VarioStat/VarioStat.h"
 #include "VarioIgc/VarioIgc.h"
 #include "VarioWind/VarioWind.h"
+#include "VarioParameter/Parameters.h"
 
 class VarioManager : public Observer
 {
 private:
+    Parameters *params = Parameters::getInstance();
+
     const TickType_t delayT100 = pdMS_TO_TICKS(100);
     void launchTimers();
     static void startTimers10sImpl(void *);

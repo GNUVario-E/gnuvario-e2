@@ -30,7 +30,6 @@
 #include "vertaccel.h"
 
 #include <Arduino.h>
-#include "VarioData/VarioData.h"
 #include "Variometer/LightInvensense/LightInvensense.h"
 
 #ifdef VERTACCEL_ENABLE_EEPROM
@@ -156,27 +155,42 @@ void Vertaccel::init(void)
   fastMPUInit(false);
 
 #ifndef VERTACCEL_STATIC_CALIBRATION
-  uint8_t gyroCalArray[12] = {varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_00)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_01)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_02)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_03)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_04)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_05)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_06)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_07)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_08)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_09)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_10)->getValueUInt8() * 0,
-                              varioData.getParam(PARAM_VERTACCEL_GYRO_CAL_BIAS_11)->getValueUInt8() * 0};
+
+  // FORCE to zero because it does not work
+  /* @TODO ask someone */
+  // uint8_t gyroCalArray[12] = {params->P_VERTACCEL_GYRO_CAL_BIAS_00->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_01->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_02->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_03->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_04->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_05->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_06->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_07->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_08->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_09->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_10->getValue(),
+  //                             params->P_VERTACCEL_GYRO_CAL_BIAS_11->getValue()};
+  uint8_t gyroCalArray[12] = {0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0};
 #endif
   /* set gyro calibration in the DMP */
   fastMPUSetGyroBias(gyroCalArray);
 
 #ifndef VERTACCEL_STATIC_CALIBRATION
   /* set accel calibration in the DMP */
-  int32_t accelBias[3] = {varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_00)->getValueInt16() << (15 - varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16()),
-                          varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_01)->getValueInt16() << (15 - varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16()),
-                          varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_02)->getValueInt16() << (15 - varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16())};
+  int32_t accelBias[3] = {params->P_VERTACCEL_ACCEL_CAL_BIAS_00->getValue() << (15 - params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->getValue()),
+                          params->P_VERTACCEL_ACCEL_CAL_BIAS_01->getValue() << (15 - params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->getValue()),
+                          params->P_VERTACCEL_ACCEL_CAL_BIAS_02->getValue() << (15 - params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->getValue())};
 
   fastMPUSetAccelBiasQ15(accelBias);
 #else
@@ -203,20 +217,21 @@ void Vertaccel::compute(int16_t *imuAccel, int32_t *imuQuat, double *vertVector,
   double quat[4];
 
 #ifndef VERTACCEL_STATIC_CALIBRATION
-  int64_t calibratedAccel = (int64_t)imuAccel[0] << varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16();
-  calibratedAccel -= (int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_00)->getValueInt16();
-  calibratedAccel *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
-  accel[0] = ((double)calibratedAccel) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_ACCEL_SCALE_SHIFT)));
 
-  calibratedAccel = (int64_t)imuAccel[1] << varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16();
-  calibratedAccel -= (int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_01)->getValueInt16();
-  calibratedAccel *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
-  accel[1] = ((double)calibratedAccel) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_ACCEL_SCALE_SHIFT)));
+  int64_t calibratedAccel = (int64_t)imuAccel[0] << params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->getValue();
+  calibratedAccel -= (int64_t)params->P_VERTACCEL_ACCEL_CAL_BIAS_00->getValue();
+  calibratedAccel *= ((int64_t)params->P_VERTACCEL_ACCEL_CAL_SCALE->getValue() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  accel[0] = ((double)calibratedAccel) / ((double)((int64_t)1 << (params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->getValue() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_ACCEL_SCALE_SHIFT)));
 
-  calibratedAccel = (int64_t)imuAccel[2] << varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16();
-  calibratedAccel -= (int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_02)->getValueInt16();
-  calibratedAccel *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
-  accel[2] = ((double)calibratedAccel) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_ACCEL_SCALE_SHIFT)));
+  calibratedAccel = (int64_t)imuAccel[1] << params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->getValue();
+  calibratedAccel -= (int64_t)params->P_VERTACCEL_ACCEL_CAL_BIAS_01->getValue();
+  calibratedAccel *= ((int64_t)params->P_VERTACCEL_ACCEL_CAL_SCALE->getValue() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  accel[1] = ((double)calibratedAccel) / ((double)((int64_t)1 << (params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->getValue() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_ACCEL_SCALE_SHIFT)));
+
+  calibratedAccel = (int64_t)imuAccel[2] << params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->getValue();
+  calibratedAccel -= (int64_t)params->P_VERTACCEL_ACCEL_CAL_BIAS_02->getValue();
+  calibratedAccel *= ((int64_t)params->P_VERTACCEL_ACCEL_CAL_SCALE->getValue() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  accel[2] = ((double)calibratedAccel) / ((double)((int64_t)1 << (params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->getValue() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_ACCEL_SCALE_SHIFT)));
 
   // Serial.print("imuAccel0:");
   // Serial.println(imuAccel[0]);
@@ -280,20 +295,21 @@ void Vertaccel::computeNorthVector(double *vertVector, int16_t *mag, double *nor
 
 #ifndef VERTACCEL_STATIC_CALIBRATION
   int64_t calibratedMag;
-  calibratedMag = ((int64_t)mag[0]) << varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16();
-  calibratedMag -= (int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_00)->getValueInt16();
-  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
-  n[0] = ((double)calibratedMag) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
 
-  calibratedMag = ((int64_t)mag[1]) << varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16();
-  calibratedMag -= (int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_01)->getValueInt16();
-  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
-  n[1] = ((double)calibratedMag) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
+  calibratedMag = ((int64_t)mag[0]) << params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue();
+  calibratedMag -= (int64_t)params->P_VERTACCEL_MAG_CAL_BIAS_00->getValue();
+  calibratedMag *= ((int64_t)params->P_VERTACCEL_MAG_CAL_PROJ_SCALE->getValue() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  n[0] = ((double)calibratedMag) / ((double)((int64_t)1 << (params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
 
-  calibratedMag = ((int64_t)mag[2]) << varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16();
-  calibratedMag -= (int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_02)->getValueInt16();
-  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
-  n[2] = ((double)calibratedMag) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
+  calibratedMag = ((int64_t)mag[1]) << params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue();
+  calibratedMag -= (int64_t)params->P_VERTACCEL_MAG_CAL_BIAS_01->getValue();
+  calibratedMag *= ((int64_t)params->P_VERTACCEL_MAG_CAL_PROJ_SCALE->getValue() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  n[1] = ((double)calibratedMag) / ((double)((int64_t)1 << (params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
+
+  calibratedMag = ((int64_t)mag[2]) << params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue();
+  calibratedMag -= (int64_t)params->P_VERTACCEL_MAG_CAL_BIAS_02->getValue();
+  calibratedMag *= ((int64_t)params->P_VERTACCEL_MAG_CAL_PROJ_SCALE->getValue() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  n[2] = ((double)calibratedMag) / ((double)((int64_t)1 << (params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
 
 #else
   /* inline for optimization */
@@ -331,20 +347,21 @@ void Vertaccel::computeNorthVector2(double *vertVector, double *gyroVector, int1
 
 #ifndef VERTACCEL_STATIC_CALIBRATION
   int64_t calibratedMag;
-  calibratedMag = ((int64_t)mag[0]) << varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16();
-  calibratedMag -= (int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_00)->getValueInt16();
-  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
-  n[0] = ((double)calibratedMag) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
 
-  calibratedMag = ((int64_t)mag[1]) << varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16();
-  calibratedMag -= (int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_01)->getValueInt16();
-  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
-  n[1] = ((double)calibratedMag) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
+  calibratedMag = ((int64_t)mag[0]) << params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue();
+  calibratedMag -= (int64_t)params->P_VERTACCEL_MAG_CAL_BIAS_00->getValue();
+  calibratedMag *= ((int64_t)params->P_VERTACCEL_MAG_CAL_PROJ_SCALE->getValue() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  n[0] = ((double)calibratedMag) / ((double)((int64_t)1 << (params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
 
-  calibratedMag = ((int64_t)mag[2]) << varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16();
-  calibratedMag -= (int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_02)->getValueInt16();
-  calibratedMag *= ((int64_t)varioData.getParam(PARAM_VERTACCEL_MAG_CAL_PROJ_SCALE)->getValueInt16() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
-  n[2] = ((double)calibratedMag) / ((double)((int64_t)1 << (varioData.getParam(PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER)->getValueUInt16() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
+  calibratedMag = ((int64_t)mag[1]) << params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue();
+  calibratedMag -= (int64_t)params->P_VERTACCEL_MAG_CAL_BIAS_01->getValue();
+  calibratedMag *= ((int64_t)params->P_VERTACCEL_MAG_CAL_PROJ_SCALE->getValue() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  n[1] = ((double)calibratedMag) / ((double)((int64_t)1 << (params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
+
+  calibratedMag = ((int64_t)mag[2]) << params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue();
+  calibratedMag -= (int64_t)params->P_VERTACCEL_MAG_CAL_BIAS_02->getValue();
+  calibratedMag *= ((int64_t)params->P_VERTACCEL_MAG_CAL_PROJ_SCALE->getValue() + ((int64_t)1 << VERTACCEL_CAL_SCALE_MULTIPLIER));
+  n[2] = ((double)calibratedMag) / ((double)((int64_t)1 << (params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->getValue() + VERTACCEL_CAL_SCALE_MULTIPLIER + LIGHT_INVENSENSE_MAG_PROJ_SCALE_SHIFT)));
 
 #else
   /* inline for optimization */

@@ -8,10 +8,12 @@
 #include "VarioSD/VarioSD.h"
 #include "VarioBle/VarioBle.h"
 #include "VarioHisto/VarioHisto.h"
+#include "VarioParameter/Parameters.h"
 
 class Variometer
 {
 private:
+    Parameters *params = Parameters::getInstance();
     const TickType_t delayT50 = pdMS_TO_TICKS(50);
     const TickType_t delayT10 = pdMS_TO_TICKS(10);
     TaskHandle_t _taskVarioHandle = NULL;

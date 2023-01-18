@@ -5,11 +5,7 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include "VarioDebug/VarioDebug.h"
-
-#include "VarioData/VarioData.h"
-
 #include "VarioManager.h"
-//#include "VarioSettings/VarioSettings.h"
 
 #define SERVER_NAME "GNUVARIO-E"
 
@@ -72,7 +68,7 @@ bool VarioWifi::begin()
 
     checkDbVersion();
 
-    esp32FOTA.checkURL = varioData.getParam(PARAM_URL_UPDATE)->getValueChar(); //"http://gnuvario-e.yj.fr/update/firmware.json";
+    esp32FOTA.checkURL = params->P_URL_UPDATE->getValue(); //"http://gnuvario-e.yj.fr/update/firmware.json";
 
     VARIO_MEMORY_DEBUG_PRINTLN("Free heap startWebServer");
     VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
@@ -93,14 +89,14 @@ bool VarioWifi::connectToWifi()
     const char *password_3;
     const char *password_4;
 
-    ssid_1 = varioData.getParam(PARAM_SSID_1)->getValueChar();
-    ssid_2 = varioData.getParam(PARAM_SSID_2)->getValueChar();
-    ssid_3 = varioData.getParam(PARAM_SSID_3)->getValueChar();
-    ssid_4 = varioData.getParam(PARAM_SSID_4)->getValueChar();
-    password_1 = varioData.getParam(PARAM_PASSWORD_1)->getValueChar();
-    password_2 = varioData.getParam(PARAM_PASSWORD_2)->getValueChar();
-    password_3 = varioData.getParam(PARAM_PASSWORD_3)->getValueChar();
-    password_4 = varioData.getParam(PARAM_PASSWORD_4)->getValueChar();
+    ssid_1 = params->P_SSID_1->getValue();
+    ssid_2 = params->P_SSID_2->getValue();
+    ssid_3 = params->P_SSID_3->getValue();
+    ssid_4 = params->P_SSID_4->getValue();
+    password_1 = params->P_PASSWORD_1->getValue();
+    password_2 = params->P_PASSWORD_2->getValue();
+    password_3 = params->P_PASSWORD_3->getValue();
+    password_4 = params->P_PASSWORD_4->getValue();
 
     VARIO_WIFI_DEBUG_PRINT("ssid_1 : ");
     VARIO_WIFI_DEBUG_PRINTLN(ssid_1);

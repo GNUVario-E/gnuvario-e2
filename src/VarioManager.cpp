@@ -22,7 +22,11 @@ boolean VarioManager::init()
     VARIO_PROG_DEBUG_TRACE();
 
     varioBeeper->init(5);
-    varioBeeper->generateToneSuccess();
+
+    if (params->P_BEEP_VARIOBEGIN->getValue())
+    {
+        varioBeeper->generateToneSuccess();
+    }
 
     // init mesure tension
     varioPower->init();
@@ -43,21 +47,11 @@ boolean VarioManager::init()
         varioBeeper->generateToneSuccess();
     }
 
-    // varioSD->test();
-
-    if (!varioSettings.init())
-    {
-        // Cannot read settings
-        varioBeeper->generateToneFailure();
-        esp_deep_sleep_start();
-
-        return false;
-    }
 
     // Affiche parametre
-    VARIO_PROG_DEBUG_DUMP(varioData.getParam(PARAM_PILOT_NAME)->getValueChar());
+    VARIO_PROG_DEBUG_DUMP(params->P_PILOT_NAME->getValue(););
 
-    varioLanguage->init(varioData.getParam(PARAM_LANGUAGE)->getValueUInt8());
+    varioLanguage->init(params->P_LANGUAGE->getValue());
 
     // initialisation des paramètres de manière global
     // lecture des fichiers correspondant
@@ -65,7 +59,14 @@ boolean VarioManager::init()
     char fileWifi[] = "/wifi.cfg";
     char fileCalib[] = "/variocal.cfg";
     char fileScreen[] = "/screen.json";
-    varioSettings.loadConfigurationVario(fileParams);
+    if (!varioSettings.loadConfigurationVario(fileParams))
+    {
+        // Cannot read settings
+        varioBeeper->generateToneFailure();
+        esp_deep_sleep_start();
+
+        return false;
+    }
     varioSettings.readSDSettings(fileWifi);
     varioSettings.readSDSettings(fileCalib);
     varioSettings.loadScreenVario(fileScreen);
@@ -228,19 +229,36 @@ void VarioManager::onSignalReceived(uint8_t _val)
     case VARIO_NEW_ALTI:
         break;
     case GPS_FIXED:
-        varioBeeper->generateToneSuccess();
+        if (params->P_BEEP_GPSFIX->getValue())
+        {
+            varioBeeper->generateToneSuccess();
+        }
         break;
     case GPS_LOST_FIXED:
-        varioBeeper->generateToneSoftFailure();
+        if (params->P_BEEP_GPSFIX->getValue())
+        {
+            varioBeeper->generateToneSoftFailure();
+        }
         break;
     case FLIGHT_START:
-        varioBeeper->generateToneSuccess();
-        varioBeeper->generateToneSuccess();
-        // start IGC recording
-        varioIgc = new VarioIgc();
-        if (varioIgc->createNewIgcFile(varioData.getParam(PARAM_PILOT_NAME)->getValueChar(), varioData.getParam(PARAM_GLIDER_NAME1)->getValueChar(), fc.getGpsDateDay(), fc.getGpsDateMonth(), fc.getGpsDateYear(), varioData.getParam(PARAM_TIME_ZONE)->getValueInt8()))
+        if (params->P_BEEP_FLYBEGIN->getValue())
         {
-            varioIgc->startTimer();
+            varioBeeper->generateToneSuccess();
+            varioBeeper->generateToneSuccess();
+        }
+        if (params->P_MUTE_VARIOBEGIN->getValue())
+        {
+            varioBeeper->unMute();
+        }
+        if (!params->P_NO_RECORD->getValue())
+        {
+            // start IGC recording
+            varioIgc = new VarioIgc();
+
+            if (varioIgc->createNewIgcFile(params->P_PILOT_NAME->getValue(), params->P_GLIDER_NAME1->getValue(), fc.getGpsDateDay(), fc.getGpsDateMonth(), fc.getGpsDateYear(), params->P_TIME_ZONE->getValue()))
+            {
+                varioIgc->startTimer();
+            }
         }
 
         break;
