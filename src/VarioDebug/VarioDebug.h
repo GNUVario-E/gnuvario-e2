@@ -6,35 +6,36 @@
 
 //              DEBUGING MODE
 // #define PROG_DEBUG // debug principal program
-//#define BTN_DEBUG  //Boutons
-//#define HARDWARE_DEBUG
+// #define BTN_DEBUG  //Boutons
+// #define HARDWARE_DEBUG
 // #define IMU_DEBUG // debug IMU
 // #define CAL_DEBUG
-//#define I2CDEV_SERIAL_DEBUG   //debug I2Cdev
-//#define DEBUG_SERIAL_NMEA_1
-//#define SCREEN_DEBUG
-//#define SCREEN_DEBUG2
+// #define I2CDEV_SERIAL_DEBUG   //debug I2Cdev
+// #define DEBUG_SERIAL_NMEA_1
+// #define SCREEN_DEBUG
+// #define SCREEN_DEBUG2
 // #define GPS_DEBUG
-//#define BUTTON_DEBUG
-//#define TONEDAC_DEBUG
-//#define MS5611_DEBUG
-//#define KALMAN_DEBUG
-//#define ACCEL_DEBUG
-//#define EEPROM_DEBUG
-//#define NMEAPARSER_DEBUG
+// #define BUTTON_DEBUG
+// #define TONEDAC_DEBUG
+// #define MS5611_DEBUG
+// #define KALMAN_DEBUG
+// #define ACCEL_DEBUG
+// #define EEPROM_DEBUG
+// #define NMEAPARSER_DEBUG
 // #define SDCARD_DEBUG
 // #define IGC_DEBUG
 // #define DATA_DEBUG
-//#define BT_DEBUG
+// #define BT_DEBUG
 // #define WIFI_DEBUG
-//#define SOUND_DEBUG
+// #define SOUND_DEBUG
 // #define AGL_DEBUG
-//#define SQL_DEBUG
-//#define BEARING_DEBUG
-//#define TWOWIRESCH_DEBUG
-//#define POWER_DEBUG
-//#define MEMORY_DEBUG
+// #define SQL_DEBUG
+// #define BEARING_DEBUG
+// #define TWOWIRESCH_DEBUG
+// #define POWER_DEBUG
+// #define MEMORY_DEBUG
 // #define FSM_DEBUG
+// #define PARAM_DEBUG
 
 #if !defined(VARIO_DEBUG) || !defined(PROG_DEBUG)
 #define VARIO_PROG_DEBUG_PRINTLN(x)
@@ -194,6 +195,16 @@
 #define VARIO_IGC_DEBUG_DUMP(x)
 #define VARIO_IGC_DEBUG_DUMP2(x, y)
 #define VARIO_IGC_DEBUG_TRACE()
+#endif
+
+#if !defined(VARIO_DEBUG) || !defined(PARAM_DEBUG)
+#define VARIO_PARAM_DEBUG_PRINTLN(x)
+#define VARIO_PARAM_DEBUG_PRINTLN2(x, y)
+#define VARIO_PARAM_DEBUG_PRINT(x)
+#define VARIO_PARAM_DEBUG_PRINT2(x, y)
+#define VARIO_PARAM_DEBUG_DUMP(x)
+#define VARIO_PARAM_DEBUG_DUMP2(x, y)
+#define VARIO_PARAM_DEBUG_TRACE()
 #endif
 /*************************************************/
 
@@ -355,4 +366,14 @@
 #define VARIO_IGC_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_IGC_DEBUG_DUMP2(x, y) DUMP2(x, y)
 #define VARIO_IGC_DEBUG_TRACE() TRACE()
+#endif
+
+#if defined(VARIO_DEBUG) && defined(PARAM_DEBUG)
+#define VARIO_PARAM_DEBUG_PRINTLN(x) Serial.println(x);
+#define VARIO_PARAM_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
+#define VARIO_PARAM_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_PARAM_DEBUG_PRINT2(x, y) Serial.print(x, y)
+#define VARIO_PARAM_DEBUG_DUMP(x) DUMP(x)
+#define VARIO_PARAM_DEBUG_DUMP2(x, y) DUMP2(x, y)
+#define VARIO_PARAM_DEBUG_TRACE() TRACE()
 #endif
