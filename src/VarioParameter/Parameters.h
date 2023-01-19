@@ -39,6 +39,12 @@ public:
     /* Vario */
     ConfigParameter<float> *P_ACCELERATION_MEASURE_STANDARD_DEVIATION;
 
+    /* Flight start */
+    ConfigParameter<float> *P_FLIGHT_START_VARIO_LOW_THRESHOLD;
+    ConfigParameter<float> *P_FLIGHT_START_VARIO_HIGH_THRESHOLD;
+    ConfigParameter<float> *P_FLIGHT_START_MIN_SPEED;
+    ConfigParameter<bool> *P_RECORD_WHEN_FLIGHT_START;
+
     /* wifi */
     ConfigParameter<const char *> *P_SSID_1;
     ConfigParameter<const char *> *P_PASSWORD_1;

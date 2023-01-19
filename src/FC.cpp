@@ -2,9 +2,7 @@
 #include "event.h"
 
 #define TIMEOUT_DATA 1200
-#define MIN_SPEED_TAKEOFF 5.0
-#define MIN_VARIO_TAKEOFF 0.5
-#define MIN_DURATION_TAKEOFF 2000
+#define MIN_DURATION_TAKEOFF 2000 // time during parameters conditions must be true to start flight
 
 void FC::setTzn(int8_t _tzn)
 {
@@ -23,7 +21,7 @@ void FC::checkFlightStart(bool forceManualStart)
             {
                 doStart = true;
             }
-            else if (fcdata.gps.kmph >= MIN_SPEED_TAKEOFF && abs(fcdata.vario.velocity) >= MIN_VARIO_TAKEOFF)
+            else if (fcdata.gps.kmph >= params->P_FLIGHT_START_MIN_SPEED->getValue() && ((fcdata.vario.velocity >= params->P_FLIGHT_START_VARIO_HIGH_THRESHOLD->getValue()) || (fcdata.vario.velocity <= params->P_FLIGHT_START_VARIO_LOW_THRESHOLD->getValue())))
             {
                 if (fcdata.flight.flightStartFistTimestamp == (uint32_t)ULONG_MAX)
                 {

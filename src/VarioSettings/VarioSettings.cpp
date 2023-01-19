@@ -678,7 +678,6 @@ bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParame
   const char *key = param->getKey();
   if (section->containsKey(key))
   {
-    Serial.println("Json Recup - " + String(key) + " : " + String(section->getMember(key).as<float>()));
     param->setValue(section->getMember(key).as<float>());
     isFromJson = true;
     VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
