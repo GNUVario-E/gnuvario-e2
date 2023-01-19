@@ -178,6 +178,7 @@ Circle SimpleCircleFit::computeFromVectors()
     }
     if (nbVectors < 1)
     {
+        result.s = 99.0;
         return result;
     }
 

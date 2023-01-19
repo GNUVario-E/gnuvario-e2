@@ -50,6 +50,11 @@ void VarioWind::timerWind()
     meanSpeed = (float)circle.r * 3.6;
     // // heading = (int)(270 - degrees(atan2(sin(-circle.a) * cos(0), cos(circle.b) * sin(0) - sin(circle.b) * cos(0) * cos(-circle.a))) + 360) % 360;
 
+    if (circle.s == 99.0)
+    {
+        // no data
+        return;
+    }
     fc.setWind(windSpeed, heading, meanSpeed, millis());
 
     Serial.print("windSpeed:");
@@ -107,4 +112,3 @@ void VarioWind::calculateWind(IGCPoint *points, int numPoints, float &windSpeed,
     // meanSpeed = (float)circle.r * 3.6;
     // // heading = (int)(270 - degrees(atan2(sin(-circle.a) * cos(0), cos(circle.b) * sin(0) - sin(circle.b) * cos(0) * cos(-circle.a))) + 360) % 360;
 }
-
