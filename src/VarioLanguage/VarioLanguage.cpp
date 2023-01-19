@@ -242,7 +242,6 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 	//*****    Stat *****
 
 	VARIO_SDCARD_DEBUG_PRINTLN("****** Stat *******");
-	Serial.println("****** Stat *******");
 
 	JsonObject State = VarioTool::jsonDoc.createNestedObject("stat");
 	State["DUREE"] = TITRE_TAB[TITRE_DUREE];

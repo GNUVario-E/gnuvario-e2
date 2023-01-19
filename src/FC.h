@@ -2,6 +2,8 @@
 
 #include <Arduino.h>
 #include "Observer/Subject.h"
+#include "VarioParameter/Parameters.h"
+
 struct power_data
 {
     int capacite = 0;
@@ -132,6 +134,8 @@ struct fcdata_t
 class FC : public Subject
 {
 private:
+    Parameters *params = Parameters::getInstance();
+
     fcdata_t fcdata;
     int8_t tzn;
 
