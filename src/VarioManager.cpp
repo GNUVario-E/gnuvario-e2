@@ -47,7 +47,6 @@ boolean VarioManager::init()
         varioBeeper->generateToneSuccess();
     }
 
-
     // Affiche parametre
     VARIO_PROG_DEBUG_DUMP(params->P_PILOT_NAME->getValue(););
 
@@ -191,7 +190,6 @@ void VarioManager::onSignalReceived(uint8_t _val)
         variometer->init();
         variometer->startTask();
         varioWind = new VarioWind();
-        varioWind->init();
 
         aglManager = new AglManager();
         aglManager->init();
@@ -260,6 +258,7 @@ void VarioManager::onSignalReceived(uint8_t _val)
                 varioIgc->startTimer();
             }
         }
+        varioWind->init();
 
         break;
     case FLIGHT_START_ASKED:
