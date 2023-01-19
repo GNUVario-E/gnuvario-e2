@@ -15,7 +15,7 @@ bool WindWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 
             return true;
         }
-        }
+    }
     else
     {
         if (strcmp(empty, getText()) != 0)
@@ -26,4 +26,10 @@ bool WindWidget::isRefreshNeeded(uint32_t lastDisplayTime)
     }
 
     return TextWidget::isRefreshNeeded(lastDisplayTime);
+}
+
+/* timeout of 15s because timer that calulate wind run every 10s */
+uint32_t WindWidget::getTimeout()
+{
+    return millis() - 15000;
 }

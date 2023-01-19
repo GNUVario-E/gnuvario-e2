@@ -17,8 +17,8 @@ public:
     {
         TITLE_NAME_INDEX = TITRE_WIND;
         initAutoTitleFromIndex();
-        setTextSize(4);
+        setTextSize(1);
     }
-
     bool isRefreshNeeded(uint32_t lastDisplayTime);
+    uint32_t getTimeout();
 };
