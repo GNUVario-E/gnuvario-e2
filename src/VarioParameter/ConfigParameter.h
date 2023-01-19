@@ -14,14 +14,13 @@ template <typename T>
 class ConfigParameter
 {
 public:
-    ConfigParameter(const char *key, T defaultValue) : key(key), defaultValue(defaultValue) {}
+    ConfigParameter(const char *key, T defaultValue) : key(key), value(defaultValue) {}
     void setValue(T _value);
     T getValue();
     const char *getKey() { return key; }
 
 private:
     const char *key;
-    T defaultValue;
     T value;
 };
 

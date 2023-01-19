@@ -195,7 +195,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
   // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SETTINGS_VARIO_PERIOD_COUNT)->setParameterFromJsonObject(&Vario, "SETTINGS_VARIO_PERIOD_COUNT");
   // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_BLUETOOTH_SEND_CALIBRATED_ALTITUDE)->setParameterFromJsonObject(&Vario, "BLUETOOTH_SEND_CALIBRATED_ALTITUDE");
 
-  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General, params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Vario, params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION);
 
   //*****  FLIGHT START *****
 
@@ -395,7 +395,10 @@ void VarioSettings::saveConfigurationVario(char *filename)
 {
 
   // Delete existing file, otherwise the configuration is appended to the file
-  SD.remove(filename);
+  if (SD.exists(filename))
+  {
+    SD.remove(filename);
+  }
 
   // Open file for writing
   File file = SD.open(filename, FILE_WRITE);
@@ -455,6 +458,7 @@ void VarioSettings::saveConfigurationVario(char *filename)
   General_GLIDER["GLIDER_NAME1"] = params->P_GLIDER_NAME1->getValue();
   General_GLIDER["GLIDER_NAME2"] = params->P_GLIDER_NAME2->getValue();
   General_GLIDER["GLIDER_NAME3"] = params->P_GLIDER_NAME3->getValue();
+  General_GLIDER["GLIDER_NAME4"] = params->P_GLIDER_NAME4->getValue();
 
   General["TIME_ZONE"] = params->P_TIME_ZONE->getValue();
 
@@ -482,7 +486,8 @@ void VarioSettings::saveConfigurationVario(char *filename)
   // Vario["SETTINGS_VARIO_PERIOD_COUNT"] = varioData.getParam(PARAM_SETTINGS_VARIO_PERIOD_COUNT)->getValueUInt8();
   // Vario["BLUETOOTH_SEND_CALIBRATED_ALTITUDE"] = varioData.getParam(PARAM_BLUETOOTH_SEND_CALIBRATED_ALTITUDE)->getValueBool() ? 1 : 0;
 
-  Vario["ACCELERATION_MEASURE_STANDARD_DEVIATION"] = params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION->getValue();
+  // 2 decimals
+  Vario["ACCELERATION_MEASURE_STANDARD_DEVIATION"] = round(params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION->getValue() * 100.0) / 100.0;
 
   //*****    Flight_Start *****
 
@@ -673,6 +678,7 @@ bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParame
   const char *key = param->getKey();
   if (section->containsKey(key))
   {
+    Serial.println("Json Recup - " + String(key) + " : " + String(section->getMember(key).as<float>()));
     param->setValue(section->getMember(key).as<float>());
     isFromJson = true;
     VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
