@@ -638,6 +638,10 @@ void VarioSettings::applySetting(const char *settingName, const char *settingVal
   {
     params->P_VERTACCEL_ACCEL_CAL_BIAS_MULTIPLIER->setValue(atoi(settingValue));
   }
+  else if (strcmp(settingName, PARAM_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER) == 0)
+  {
+    params->P_VERTACCEL_MAG_CAL_BIAS_MULTIPLIER->setValue(atoi(settingValue));
+  }
 }
 
 uint8_t VarioSettings::correctParseVertAccelBias(const char *settingValue)
