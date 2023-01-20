@@ -209,6 +209,11 @@ bool VarioSettings::loadConfigurationVario(char *filename)
   // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_MIN_SPEED)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_MIN_SPEED");
   // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_RECORD_WHEN_FLIGHT_START)->setParameterFromJsonObject(&FlightStart, "RECORD_WHEN_FLIGHT_START");
 
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&FlightStart, params->P_FLIGHT_START_VARIO_LOW_THRESHOLD);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&FlightStart, params->P_FLIGHT_START_VARIO_HIGH_THRESHOLD);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&FlightStart, params->P_FLIGHT_START_MIN_SPEED);
+  isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&FlightStart, params->P_RECORD_WHEN_FLIGHT_START);
+
   // Close the file (Curiously, File's destructor doesn't close the file)
   file.close();
 
@@ -223,7 +228,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
   Serial.printf_P(PSTR("free heap memory: %d\n"), ESP.getFreeHeap());
 #endif
 
-  // Mise à jour du fichier params.jso
+  // Mise à jour du fichier params.json
   if (!isFileParamsOK)
   {
     saveConfigurationVario(filename);
@@ -409,7 +414,7 @@ void VarioSettings::saveConfigurationVario(char *filename)
     return;
   }
 
-  VARIO_SDCARD_DEBUG_PRINTLN("****** SAUVEGARDE params.jso *******");
+  VARIO_SDCARD_DEBUG_PRINTLN("****** SAUVEGARDE params.json *******");
 #ifdef SDCARD_DEBUG
   Serial.printf_P(PSTR("free heap memory: %d\n"), ESP.getFreeHeap());
 #endif
@@ -500,6 +505,11 @@ void VarioSettings::saveConfigurationVario(char *filename)
   // FlightStart["FLIGHT_START_VARIO_HIGH_THRESHOLD"] = varioData.getParam(PARAM_FLIGHT_START_VARIO_HIGH_THRESHOLD)->getValueFloat();
   // FlightStart["FLIGHT_START_MIN_SPEED"] = varioData.getParam(PARAM_FLIGHT_START_MIN_SPEED)->getValueFloat();
   // FlightStart["RECORD_WHEN_FLIGHT_START"] = varioData.getParam(PARAM_RECORD_WHEN_FLIGHT_START)->getValueBool() ? 1 : 0;
+
+  FlightStart["FLIGHT_START_VARIO_LOW_THRESHOLD"] = params->P_FLIGHT_START_VARIO_LOW_THRESHOLD->getValue();
+  FlightStart["FLIGHT_START_VARIO_HIGH_THRESHOLD"] = params->P_FLIGHT_START_VARIO_HIGH_THRESHOLD->getValue();
+  FlightStart["FLIGHT_START_MIN_SPEED"] = params->P_FLIGHT_START_MIN_SPEED->getValue();
+  FlightStart["RECORD_WHEN_FLIGHT_START"] = params->P_RECORD_WHEN_FLIGHT_START->getValue() ? 1 : 0;
 
   // Serialize JSON to file
   if (serializeJson(VarioTool::jsonDoc, file) == 0)
