@@ -2,10 +2,13 @@
 
 #include "TextWidget.h"
 #include "VarioDisplay/bitmap/bitmap.h"
+#include "VarioParameter/Parameters.h"
 
 class ToolbarWidget : public TextWidget
 {
 private:
+    Parameters *params = Parameters::getInstance();
+
     char localText[20];
     uint8_t blinkFreq = 0;
 

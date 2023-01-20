@@ -8,6 +8,9 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
     int16_t imgWidth = 32;
     int16_t imgHeight = 32;
 
+    int16_t imgWidthSm = 16;
+    int16_t imgHeightSm = 16;
+
     if (isMute || (volume == 0))
     {
         _display.drawInvertedBitmap(topx, topy, volume0icons, imgWidth, imgHeight, GxEPD_BLACK);
@@ -23,6 +26,11 @@ void ToolbarWidget::addToBuffer(GxEPD2_GFX &_display)
     else
     {
         _display.drawInvertedBitmap(topx, topy, volume3icons, imgWidth, imgHeight, GxEPD_BLACK);
+    }
+
+    if (params->P_BT_ENABLE->getValue())
+    {
+        _display.drawInvertedBitmap(topx + imgWidthSm / 2, topy + imgHeight - 1, bluetoothicons, imgWidthSm, imgHeightSm, GxEPD_BLACK);
     }
 
     _display.setFont(&NotoSans6pt7b);
