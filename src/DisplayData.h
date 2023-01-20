@@ -27,7 +27,7 @@ ScreenData bootScreenData = {
 };
 
 ScreenData wifiScreenData = {
-    logo : {true, false, 0, 0, 128, 240, 94},
+    logo : {true, true, 0, 0, 128, 240, 99},
     txt1 : {true, false, 0, 180, 128, 41, 99},
     txt2 : {true, false, 0, 220, 128, 41, 99},
     txt3 : {true, false, 0, 260, 128, 40, 99},
@@ -173,13 +173,13 @@ ScreenData soundScreenData = {
 ScreenData statisticScreenData = {
     logo : {false, true, 0, 0, 128, 296, 99},
     txt1 : {true, false, 0, 0, 128, 21, 99},
-    txt2 : {true, false, 0, 20, 128, 21, 99},
-    txt3 : {true, false, 0, 40, 128, 21, 99},
-    txt4 : {true, false, 0, 60, 128, 21, 99},
-    txt5 : {true, false, 0, 80, 128, 21, 99},
-    txt6 : {true, false, 0, 100, 128, 21, 99},
-    txt7 : {true, false, 0, 120, 128, 21, 99},
-    txt8 : {true, false, 0, 140, 128, 21, 99},
+    txt2 : {true, false, 0, 28, 128, 39, 99},
+    txt3 : {true, false, 0, 66, 128, 39, 99},
+    txt4 : {true, false, 0, 104, 128, 39, 99},
+    txt5 : {true, false, 0, 142, 128, 39, 99},
+    txt6 : {true, false, 0, 180, 128, 39, 99},
+    txt7 : {true, false, 0, 218, 128, 39, 99},
+    txt8 : {true, false, 0, 256, 128, 39, 99},
     alti : {false, true, 0, 170, 65, 40, 99},
     vario : {false, true, 64, 170, 64, 40, 99},
     toolbar : {false, true, 0, 210, 128, 51, 99},
