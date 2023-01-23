@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Arduino.h"
-#include "AudioCos.h"
+#include "toneAC.h"
 #include "VarioDebug/VarioDebug.h"
 #include "FC.h"
 
@@ -14,7 +14,6 @@ private:
     uint8_t _volume = BEEP_DEFAULT_VOLUME;
     bool _muted = false;
     bool _isAmpOn = false;
-    AudioCos *audiocos;
 
 protected:
     const TickType_t delayT10 = pdMS_TO_TICKS(10); //(1) / portTICK_PERIOD_MS;
@@ -38,8 +37,6 @@ public:
     void mute();
     void unMute();
     bool isMute(void);
-    void stopBip();
-    void setFreq(uint32_t fHz);
 };
 
 extern FC fc;
