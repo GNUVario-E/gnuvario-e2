@@ -128,6 +128,11 @@ void SimpleCircleFit::calculateNewVector()
         bufSizeVector++;
     }
     indexVector = (indexVector + 1) % NB_VECTORS;
+
+    // set pointer to vector in FC
+    Serial.print("setWindVectors");
+    Serial.println(bufSizeVector);
+    fc.setWindVectors(vectors, bufSizeVector);
 }
 
 bool SimpleCircleFit::linearSolve2x2(double matrix[4], double vector[2], double &x, double &y)
