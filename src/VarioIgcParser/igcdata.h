@@ -23,6 +23,7 @@ struct igcdata
     String md5 = "";
     String filename = "";
     int16_t site_id = 0;
+    uint32_t stl_id = 0;
     String comment = "";
 };
 

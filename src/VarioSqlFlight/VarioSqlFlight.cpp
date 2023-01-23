@@ -398,6 +398,79 @@ bool VarioSqlFlight::updateFlight(uint8_t id, igcdata myIgcData)
     return true;
 }
 
+bool VarioSqlFlight::updateFlightSTL(uint8_t id, igcdata myIgcData)
+{
+
+    VARIO_SQL_DEBUG_PRINTLN("updateFlight");
+    VARIO_SQL_DEBUG_PRINTLN(data);
+
+    int rc;
+    sqlite3_stmt *res;
+    const char *tail;
+
+    VARIO_SQL_DEBUG_PRINTLN("openDb");
+
+    if (!isOpened)
+    {
+        if (openDb((char *)dbPath.c_str(), &myDb))
+        {
+            return false;
+        }
+    }
+
+    String sql = F("UPDATE flight SET stl_id = ?");
+
+    sql = sql + " WHERE id = ?";
+
+    rc = sqlite3_prepare_v2(myDb, (char *)sql.c_str(), sql.length(), &res, &tail);
+    if (rc != SQLITE_OK)
+    {
+
+        VARIO_SQL_DEBUG_PRINT("ERROR preparing sql: ");
+        VARIO_SQL_DEBUG_PRINTLN(sqlite3_errmsg(myDb));
+
+        closeDb();
+
+        return false;
+    }
+
+    VARIO_SQL_DEBUG_PRINTLN("Début binding");
+
+    sqlite3_bind_int(res, 1, myIgcData.stl_id);
+    sqlite3_bind_int(res, 2, id);
+
+#ifdef SQL_DEBUG
+    Serial.printf("Début step");
+#endif // SQL_DEBUG
+
+    if (sqlite3_step(res) != SQLITE_DONE)
+    {
+        VARIO_SQL_DEBUG_PRINT("ERROR executing stmt: ");
+        VARIO_SQL_DEBUG_PRINTLN(sqlite3_errmsg(myDb));
+
+        closeDb();
+
+        return false;
+    }
+
+    VARIO_SQL_DEBUG_PRINTLN("sqlite3_clear_bindings");
+
+    sqlite3_clear_bindings(res);
+    rc = sqlite3_reset(res);
+    if (rc != SQLITE_OK)
+    {
+        VARIO_SQL_DEBUG_PRINTLN("reset failed");
+
+        closeDb();
+        return false;
+    }
+    VARIO_SQL_DEBUG_PRINTLN("sqlite3_finalize");
+
+    sqlite3_finalize(res);
+
+    return true;
+}
+
 bool VarioSqlFlight::updateFlightMap(uint8_t id, String data)
 {
     int rc;
@@ -758,7 +831,7 @@ bool VarioSqlFlight::initGetFlightsQuery(uint16_t limit, uint16_t offset)
 
     // String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) ORDER BY f.flight_date DESC, f.start_flight_time ASC LIMIT ?  OFFSET ?");
     // String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, 'toto' AS lib FROM flight f");
-    const char *sql = "SELECT f.id, f.site_id, f.filename, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) LIMIT ?  OFFSET ?";
+    const char *sql = "SELECT f.id, f.site_id, f.filename, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.stl_id, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) LIMIT ?  OFFSET ?";
 
     rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &nextFlightRes, &tail);
 
@@ -811,7 +884,7 @@ bool VarioSqlFlight::initGetFlightsQuery(String parcel)
 
     // String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) ORDER BY f.flight_date DESC, f.start_flight_time ASC LIMIT ?  OFFSET ?");
     // String sql = F("SELECT f.id, f.site_id, f.filename, f.md5, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.minimap, 'toto' AS lib FROM flight f");
-    const char *sql = "SELECT f.id, f.site_id, f.filename, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) WHERE strftime('%Y%m', f.flight_date) = ?";
+    const char *sql = "SELECT f.id, f.site_id, f.filename, f.pilot, f.wing, f.flight_date, f.start_flight_time, f.end_flight_time, f.start_height, f.end_height, f.min_height, f.max_height, f.start_lat, f.start_lon, f.end_lat, f.end_lon, f.comment, f.stl_id, s.lib FROM flight f LEFT JOIN site s ON(s.id = f.site_id) WHERE strftime('%Y%m', f.flight_date) = ?";
 
     rc = sqlite3_prepare_v2(myDb, sql, strlen(sql), &nextFlightRes, &tail);
 
@@ -935,11 +1008,16 @@ bool VarioSqlFlight::getNextFlight(bool &firstline, RingBuf<char, 1024> &buffer)
             strcat(unvol, tmp.c_str());
             strcat(unvol, ", ");
 
+            tmp = "\"stl_id\" : " + escapeJson(String(sqlite3_column_int(nextFlightRes, 17)));
+            strcat(unvol, tmp.c_str());
+            strcat(unvol, ", ");
+            // tmp = "\"minimap\" :
+
             // tmp = "\"minimap\" : " + escapeJson(String((char *)sqlite3_column_text(nextFlightRes, 18)));
             // strcat(unvol, tmp.c_str());
             // strcat(unvol, ", ");
 
-            tmp = "\"site_lib\" : " + escapeJson(String((char *)sqlite3_column_text(nextFlightRes, 17)));
+            tmp = "\"site_lib\" : " + escapeJson(String((char *)sqlite3_column_text(nextFlightRes, 18)));
             strcat(unvol, tmp.c_str());
             strcat(unvol, "}");
 
