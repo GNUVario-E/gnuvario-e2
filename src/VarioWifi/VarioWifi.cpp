@@ -383,6 +383,14 @@ void VarioWifi::startWebServer()
         "/flightsbdd", HTTP_POST, [](AsyncWebServerRequest *request) {},
         NULL, varioWebHandler.handleSetFlight);
 
+    // enregistrement un vol en BDD STL
+    server.on(
+        "/flightsbddstl", HTTP_POST, [](AsyncWebServerRequest *request)
+        {
+            // le reponse est envoyé par le handler sur le body
+        },
+        NULL, varioWebHandler.handleSetFlightSTL);
+
     // suppression d'un vol en BDD
     server.on("/flightsbdd", HTTP_DELETE, [](AsyncWebServerRequest *request)
               { request->send(varioWebHandler.handleDelFlight(request)); });

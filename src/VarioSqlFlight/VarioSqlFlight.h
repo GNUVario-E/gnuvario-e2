@@ -26,6 +26,7 @@ public:
     ~VarioSqlFlight();
     bool insertFlight(igcdata myIgcData);
     bool updateFlight(uint8_t id, igcdata myIgcData);
+    bool updateFlightSTL(uint8_t id, igcdata myIgcData);
     bool delFlight(uint8_t id);
     bool updateFlightMap(uint8_t id, String data);
     String getSites();
@@ -34,7 +35,7 @@ public:
     bool deleteSite(uint8_t id);
     bool initGetFlightsQuery(uint16_t limit, uint16_t offset);
     bool initGetFlightsQuery(String parcel);
-    //String getNextFlight();
+    // String getNextFlight();
     bool getNextFlight(bool &firstline, RingBuf<char, 1024> &buffer);
     void executeMigration(String version, String sql);
     String escapeJson(const String &s);
