@@ -63,6 +63,9 @@ public:
     // enregistrement un vol en BDD
     static void handleSetFlight(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 
+    // enregistrement un vol en BDD STL
+    static void handleSetFlightSTL(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
+
     // suppression d'un vol en BDD
     AsyncWebServerResponse *handleDelFlight(AsyncWebServerRequest *request);
 

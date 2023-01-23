@@ -773,6 +773,33 @@ void VarioWebHandler::handleSetFlight(AsyncWebServerRequest *request, uint8_t *d
     return;
 }
 
+void VarioWebHandler::handleSetFlightSTL(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+{
+#ifdef WIFI_DEBUG
+    SerialPort.println("handleSetFlight");
+#endif
+
+    VarioSqlFlight varioSqlFlight;
+    char content[len];
+    strncpy(content, (char *)data, len);
+    content[len] = '\0';
+    if (request->hasParam("id", false))
+    {
+        AsyncWebParameter *p = request->getParam("id");
+        uint8_t id = p->value().toInt();
+
+#ifdef WIFI_DEBUG
+        SerialPort.println(id);
+        SerialPort.println(content);
+#endif
+        varioSqlFlight.updateFlightSTL(id, jsonToIgcdata(content));
+    }
+
+    request->send(200);
+
+    return;
+}
+
 AsyncWebServerResponse *VarioWebHandler::handleDelFlight(AsyncWebServerRequest *request)
 {
     AsyncWebServerResponse *response;
@@ -1081,6 +1108,10 @@ igcdata VarioWebHandler::jsonToIgcdata(String data)
     if (VarioTool::jsonDoc.containsKey("comment"))
     {
         myIgcData.comment = VarioTool::jsonDoc["comment"].as<String>();
+    }
+    if (VarioTool::jsonDoc.containsKey("stl_id"))
+    {
+        myIgcData.stl_id = VarioTool::jsonDoc["stl_id"];
     }
 
     return myIgcData;
