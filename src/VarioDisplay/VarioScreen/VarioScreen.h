@@ -20,6 +20,7 @@
 #include "VarioDisplay/Widget/AltiGpsWidget.h"
 #include "VarioDisplay/Widget/AglWidget.h"
 #include "VarioDisplay/Widget/WindWidget.h"
+#include "VarioDisplay/Widget/CircleWidget.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include <VarioDisplay/VarioScreen/ScreenData.h>
 
@@ -50,6 +51,7 @@ private:
     AltiGpsWidget *altiGpsWidget;
     AglWidget *aglWidget;
     WindWidget *windWidget;
+    CircleWidget *circleWidget;
     // SoundeditWidget *soundEditWidget;
 
 protected:
@@ -81,4 +83,5 @@ public:
     AltiGpsWidget *getAltiGpsWidget();
     AglWidget *getAglWidget();
     WindWidget *getWindWidget();
+    CircleWidget *getCircleWidget();
 };

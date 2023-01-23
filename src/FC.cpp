@@ -710,3 +710,19 @@ uint32_t FC::getWindTimestamp()
 {
     return fcdata.wind.windTimestamp;
 }
+
+void FC::setWindVectors(Vector *vectors, uint16_t vectorsCount)
+{
+    fcdata.wind.vectors = vectors;
+    fcdata.wind.vectorsCount = vectorsCount;
+}
+
+Vector *FC::getWindVectors()
+{
+    return fcdata.wind.vectors;
+}
+
+uint16_t FC::getWindVectorsCount()
+{
+    return fcdata.wind.vectorsCount;
+}

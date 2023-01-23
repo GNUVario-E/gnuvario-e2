@@ -373,6 +373,9 @@ void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
 
   objInside = obj->getMember("wind");
   screenData->wind = getScreenDataInsideValues(&objInside);
+
+  objInside = obj->getMember("circle");
+  screenData->circle = getScreenDataInsideValues(&objInside);
 }
 
 S_WIDGET_DATA VarioSettings::getScreenDataInsideValues(JsonObject *objInside)

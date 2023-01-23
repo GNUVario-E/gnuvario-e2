@@ -23,7 +23,8 @@ ScreenData bootScreenData = {
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {false, false, 0, 210, 128, 51, 99},
+    circle: {false,false, 0, 0, 128, 128, 99}
 };
 
 ScreenData wifiScreenData = {
@@ -47,7 +48,8 @@ ScreenData wifiScreenData = {
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {false, false, 0, 210, 128, 51, 99},
+    circle: {false,false, 0, 0, 128, 128, 99}
 };
 
 ScreenData calibrationScreenData = {
@@ -71,7 +73,8 @@ ScreenData calibrationScreenData = {
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {false, false, 0, 210, 128, 51, 99},
+    circle: {false,false, 0, 0, 128, 128, 99}
 };
 
 ScreenData vario1ScreenData = {
@@ -95,7 +98,8 @@ ScreenData vario1ScreenData = {
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 46, 128, 51, 19},
     agl : {false, true, 0, 46, 128, 51, 9},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {false, false, 0, 210, 128, 51, 99},
+    circle: {false,false, 0, 0, 128, 128, 99}
 };
 
 ScreenData vario2ScreenData = {
@@ -119,11 +123,12 @@ ScreenData vario2ScreenData = {
     lon : {true, true, 0, 96, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {false, false, 0, 210, 128, 51, 99},
+    circle: {false,false, 0, 0, 128, 128, 99}
 };
 
 ScreenData vario3ScreenData = {
-    logo : {true, true, 0, 0, 128, 296, 99},
+    logo : {false, true, 0, 0, 128, 296, 99},
     txt1 : {false, true, 0, 100, 128, 20, 99},
     txt2 : {false, true, 29, 210, 100, 21, 99},
     txt3 : {false, true, 20, 130, 100, 41, 99},
@@ -134,7 +139,7 @@ ScreenData vario3ScreenData = {
     txt8 : {false, true, 20, 130, 100, 41, 99},
     alti : {false, true, 10, 230, 100, 20, 99},
     vario : {false, true, 10, 190, 100, 20, 99},
-    toolbar : {false, true, 0, 230, 128, 41, 99},
+    toolbar : {true, true, 0, 0, 128, 47, 99},
     speed : {false, true, 0, 210, 128, 51, 99},
     bearing : {false, true, 0, 210, 128, 51, 99},
     time : {false, true, 0, 210, 128, 51, 99},
@@ -143,7 +148,8 @@ ScreenData vario3ScreenData = {
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {true, false, 0, 174, 128, 51, 99},
+    circle: {true,false, 0, 46, 128, 175, 99}
 };
 
 ScreenData soundScreenData = {
@@ -167,7 +173,8 @@ ScreenData soundScreenData = {
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {false, false, 0, 210, 128, 51, 99},
+    circle: {false,false, 0, 0, 128, 128, 99}
 };
 
 ScreenData statisticScreenData = {
@@ -191,7 +198,8 @@ ScreenData statisticScreenData = {
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {false, false, 0, 210, 128, 51, 99},
+    circle: {false,false, 0, 0, 128, 128, 99}
 };
 
 ScreenData rebootScreenData = {
@@ -215,7 +223,8 @@ ScreenData rebootScreenData = {
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {false, false, 0, 210, 128, 51, 99},
+    circle: {false,false, 0, 0, 128, 128, 99}
 };
 
 ScreenData messageScreenData = {
@@ -239,5 +248,6 @@ ScreenData messageScreenData = {
     lon : {false, true, 0, 210, 128, 51, 99},
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
-    wind : {false, false, 0, 210, 128, 51, 99}
+    wind : {false, false, 0, 210, 128, 51, 99},
+    circle: {false,false, 0, 0, 128, 128, 99}
 };
