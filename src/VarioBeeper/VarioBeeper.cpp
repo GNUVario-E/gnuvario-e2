@@ -102,8 +102,8 @@ void VarioBeeper::startTaskImpl(void *parm)
 
 void VarioBeeper::task()
 {
+    enableAmp();
     VARIOCYCLE tCycle;
-    // enableAmp();
 
     while (1)
     {
@@ -137,16 +137,14 @@ void VarioBeeper::task()
 
         if (vario.isSilent || isMute())
         {
-            stopBip();
-
-            // stopTone();
+            stopTone();
         }
         else
         {
             if (_withZerotage && _isPreviousToneIsZerotage && !isZerotage(vario.msIs))
             {
                 // on sort de la zone de zerotage, ce doit etre immédiat
-                // enableAmp();
+                enableAmp();
                 vario.timeToneOn = 0;
             }
             tCycle = getToneFromMs(vario.msIs);
@@ -181,9 +179,7 @@ void VarioBeeper::startTone(float_t frequency, float_t cycle, float_t duty)
         vario.duttyIsOn = false;
         vario.timeToneOn = now; // date de demarrage du cycle
 
-        setFreq(vario.frequency);
-
-        // toneAC(vario.frequency, getVolume());
+        toneAC(vario.frequency, getVolume());
     }
     else if (vario.cycleIsOn)
     {
@@ -210,17 +206,15 @@ void VarioBeeper::startTone(float_t frequency, float_t cycle, float_t duty)
                 else
                 {
                     vario.duttyIsOn = true;
-                    stopTone();
-                    // toneAC(30000, getVolume());
-                    // noToneAC();
-                    // disableAmp();
+                    toneAC(30000, getVolume());
+                    noToneAC();
+                    disableAmp();
                 }
             }
             else
             {
                 // on est en cours de cycle, on change la frequence
-                setFreq(vario.frequency);
-                // toneAC(vario.frequency, getVolume());
+                toneAC(vario.frequency, getVolume());
             }
         }
     }
@@ -233,13 +227,12 @@ void VarioBeeper::startTone(float_t frequency, float_t cycle, float_t duty)
 void VarioBeeper::stopTone()
 {
     vario.frequency = 0;
-    // vario.timeToneOn = 0;
-    stopBip();
-    // // pour supprimer le "tac"
-    // toneAC(30000, getVolume());
+    vario.timeToneOn = 0;
+    // pour supprimer le "tac"
+    toneAC(30000, getVolume());
 
-    // noToneAC();
-    // disableAmp();
+    noToneAC();
+    disableAmp();
 }
 
 void VarioBeeper::setVelocity(float_t climb)
