@@ -2,6 +2,9 @@
 
 #include <Arduino.h>
 #include "VarioTool/VarioTool.h"
+#include "_vector.h"
+#include "FC.h"
+
 #define NB_VECTORS 500 // nb points for wind calculation
 
 typedef struct
@@ -34,12 +37,6 @@ typedef struct
     long timestamp;
 } GPSPoint;
 
-typedef struct
-{
-    double x;
-    double y;
-} Vector;
-
 class SimpleCircleFit
 {
 private:
@@ -49,7 +46,7 @@ private:
 
     Vector *vectors;
     uint16_t indexVector = 0;
-    uint8_t bufSizeVector = 0;
+    uint16_t bufSizeVector = 0;
 
     uint8_t nbPointsGps = 0;
     GPSPoint *pointsGps;
@@ -67,3 +64,5 @@ public:
 
     Circle fitCircleFromVectors();
 };
+
+extern FC fc;

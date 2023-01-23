@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "Observer/Subject.h"
 #include "VarioParameter/Parameters.h"
+#include "VarioWind/_vector.h"
 
 struct power_data
 {
@@ -116,6 +117,8 @@ struct wind_data
     uint16_t heading = 0;
     int8_t meanSpeed = 0;
     uint32_t windTimestamp = 0;
+    Vector *vectors;
+    uint16_t vectorsCount = 0;
 };
 
 struct fcdata_t
@@ -291,4 +294,7 @@ public:
     uint16_t getWindHeading();
     int8_t getWindMeanSpeed();
     uint32_t getWindTimestamp();
+    void setWindVectors(Vector *vectors, uint16_t vectorsCount);
+    Vector *getWindVectors();
+    uint16_t getWindVectorsCount();
 };

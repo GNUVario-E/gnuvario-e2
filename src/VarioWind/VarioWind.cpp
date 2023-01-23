@@ -1,5 +1,6 @@
 #include "VarioWind.h"
 
+#define PERIOD_WIND_CALCULATION 5000 // 5s
 #define IS_FROM_TEST
 #if defined(IS_FROM_TEST)
 #include "windTestData.h"
@@ -16,11 +17,11 @@ void VarioWind::init()
 {
     TimerHandle_t timerHndl10Sec;
     timerHndl10Sec = xTimerCreate(
-        "timer10Sec",         /* name */
-        pdMS_TO_TICKS(10000), /* period/time */
-        pdTRUE,               /* auto reload */
-        (void *)this,         /* timer ID */
-        startTimers10sImpl);  /* callback */
+        "timer10Sec",                           /* name */
+        pdMS_TO_TICKS(PERIOD_WIND_CALCULATION), /* period/time */
+        pdTRUE,                                 /* auto reload */
+        (void *)this,                           /* timer ID */
+        startTimers10sImpl);                    /* callback */
 
     if (xTimerStart(timerHndl10Sec, 0) != pdPASS)
     {
