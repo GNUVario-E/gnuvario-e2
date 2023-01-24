@@ -18,11 +18,14 @@ void CircleWidget::addToBuffer(GxEPD2_GFX &_display)
     int rMax = 64;    // rayon max en pt
     int maxValue = 0; // max value in km/h
 
+    int16_t w2 = width / 2;
+    int16_t h2 = height / 2;
+
     uint16_t nb = fc.getWindVectorsCount();
 
     // axis
-    _display.drawLine(topx + width / 2, topy, topx + width / 2, topy + height, GxEPD_BLACK);
-    _display.drawLine(topx, topy + height / 2, topx + width, topy + height / 2, GxEPD_BLACK);
+    _display.drawLine(topx + w2, topy, topx + w2, topy + height, GxEPD_BLACK);
+    _display.drawLine(topx, topy + h2, topx + width, topy + h2, GxEPD_BLACK);
 
     if (nb < 1)
     {
@@ -55,7 +58,7 @@ void CircleWidget::addToBuffer(GxEPD2_GFX &_display)
         // Serial.print(vectors[i].x);
         // Serial.print(" y=");
         // Serial.println(vectors[i].y);
-        _display.drawCircle(rMax + x, rMax - y, 2, GxEPD_BLACK);
+        _display.drawCircle(topx + w2 + x, topy + h2 - y, 2, GxEPD_BLACK);
     }
 
     if (fc.getWindSpeed() && fc.getWindHeading())
@@ -65,42 +68,41 @@ void CircleWidget::addToBuffer(GxEPD2_GFX &_display)
         Serial.println(angle);
         int x2 = rMax - fc.getWindSpeed() * cos(radians(angle)) * coef;
         int y2 = rMax + fc.getWindSpeed() * sin(radians(angle) * coef);
-        Serial.print("x2=");
-        Serial.print(x2);
-        Serial.print(" y2=");
-        Serial.println(y2);
+        // Serial.print("x2=");
+        // Serial.print(x2);
+        // Serial.print(" y2=");
+        // Serial.println(y2);
 
-        // _display.drawLine(rMax, rMax, x2, y2, GxEPD_BLACK);
-        drawThickLine(_display, rMax, rMax, x2, y2, 2, GxEPD_BLACK);
+        drawThickLine(_display, topx + rMax, topy + rMax, topx + x2, topy + y2, 2, GxEPD_BLACK);
     }
 
     // origine
-    _display.drawCircle(rMax, rMax, 1, GxEPD_BLACK);
+    _display.drawCircle(topx + w2, topy + h2, 1, GxEPD_BLACK);
 
     // cercle 10km/h
-    _display.drawCircle(rMax, rMax, (int16_t)10 * coef, GxEPD_BLACK);
+    _display.drawCircle(topx + w2, topy + h2, (int16_t)10 * coef, GxEPD_BLACK);
 
     if (maxValue > 20)
     {
         // cercle 20km/h
-        _display.drawCircle(rMax, rMax, (int16_t)20 * coef, GxEPD_BLACK);
+        _display.drawCircle(topx + w2, topy + h2, (int16_t)20 * coef, GxEPD_BLACK);
     }
 
     if (maxValue > 30)
     {
         // cercle 30km/h
-        _display.drawCircle(rMax, rMax, (int16_t)30 * coef, GxEPD_BLACK);
+        _display.drawCircle(topx + w2, topy + h2, (int16_t)30 * coef, GxEPD_BLACK);
     }
 
     if (maxValue > 40)
     {
         // cercle 40km/h
-        _display.drawCircle(rMax, rMax, (int16_t)40 * coef, GxEPD_BLACK);
+        _display.drawCircle(topx + w2, topy + h2, (int16_t)40 * coef, GxEPD_BLACK);
     }
     if (maxValue > 50)
     {
         // cercle 50km/h
-        _display.drawCircle(rMax, rMax, (int16_t)50 * coef, GxEPD_BLACK);
+        _display.drawCircle(topx + w2, topy + h2, (int16_t)50 * coef, GxEPD_BLACK);
     }
 }
 

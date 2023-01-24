@@ -24,7 +24,7 @@ ScreenData bootScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
     wind : {false, false, 0, 210, 128, 51, 99},
-    circle: {false,false, 0, 0, 128, 128, 99}
+    circle : {false, false, 0, 0, 128, 128, 99}
 };
 
 ScreenData wifiScreenData = {
@@ -49,7 +49,7 @@ ScreenData wifiScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
     wind : {false, false, 0, 210, 128, 51, 99},
-    circle: {false,false, 0, 0, 128, 128, 99}
+    circle : {false, false, 0, 0, 128, 128, 99}
 };
 
 ScreenData calibrationScreenData = {
@@ -74,7 +74,7 @@ ScreenData calibrationScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
     wind : {false, false, 0, 210, 128, 51, 99},
-    circle: {false,false, 0, 0, 128, 128, 99}
+    circle : {false, false, 0, 0, 128, 128, 99}
 };
 
 ScreenData vario1ScreenData = {
@@ -99,7 +99,7 @@ ScreenData vario1ScreenData = {
     altigps : {false, true, 0, 46, 128, 51, 19},
     agl : {false, true, 0, 46, 128, 51, 9},
     wind : {false, false, 0, 210, 128, 51, 99},
-    circle: {false,false, 0, 0, 128, 128, 99}
+    circle : {false, false, 0, 0, 128, 128, 99}
 };
 
 ScreenData vario2ScreenData = {
@@ -124,7 +124,7 @@ ScreenData vario2ScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
     wind : {false, false, 0, 210, 128, 51, 99},
-    circle: {false,false, 0, 0, 128, 128, 99}
+    circle : {false, false, 0, 0, 128, 128, 99}
 };
 
 ScreenData vario3ScreenData = {
@@ -149,7 +149,7 @@ ScreenData vario3ScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
     wind : {true, false, 0, 174, 128, 51, 99},
-    circle: {true,false, 0, 46, 128, 175, 99}
+    circle : {true, true, 0, 46, 128, 128, 99}
 };
 
 ScreenData soundScreenData = {
@@ -174,7 +174,7 @@ ScreenData soundScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
     wind : {false, false, 0, 210, 128, 51, 99},
-    circle: {false,false, 0, 0, 128, 128, 99}
+    circle : {false, false, 0, 0, 128, 128, 99}
 };
 
 ScreenData statisticScreenData = {
@@ -199,7 +199,7 @@ ScreenData statisticScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
     wind : {false, false, 0, 210, 128, 51, 99},
-    circle: {false,false, 0, 0, 128, 128, 99}
+    circle : {false, false, 0, 0, 128, 128, 99}
 };
 
 ScreenData rebootScreenData = {
@@ -224,7 +224,7 @@ ScreenData rebootScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
     wind : {false, false, 0, 210, 128, 51, 99},
-    circle: {false,false, 0, 0, 128, 128, 99}
+    circle : {false, false, 0, 0, 128, 128, 99}
 };
 
 ScreenData messageScreenData = {
@@ -249,5 +249,5 @@ ScreenData messageScreenData = {
     altigps : {false, true, 0, 210, 128, 51, 99},
     agl : {false, true, 0, 210, 128, 51, 99},
     wind : {false, false, 0, 210, 128, 51, 99},
-    circle: {false,false, 0, 0, 128, 128, 99}
+    circle : {false, false, 0, 0, 128, 128, 99}
 };
