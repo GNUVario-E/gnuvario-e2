@@ -34,5 +34,5 @@
 /* Set the freq */
 #define VARIO_TW_FREQ 400000UL
 
-#define MPU_STATIC_ADDRESS 0x68
+#define MPU_STATIC_ADDRESS 0x4A
 #define MS5611_STATIC_ADDRESS 0x77

@@ -4,6 +4,8 @@
 #include "VarioTool/VarioTool.h"
 #include "VarioBle/VarioBle.h"
 #include "tasksBitsMask.h"
+#include "Variometer/ImuBno08x/bno.h"
+#include <Wire.h>
 
 #define COEF_ALTI_FILTERED 0.1
 #define VARIO_TASK_PRIORITY 11
@@ -34,15 +36,19 @@ void Variometer::task()
     bool lastSentence;
     double firstAlti;
 
-    firstAlti = preTaskInitFirstAlti();
+    //firstAlti = preTaskInitFirstAlti(); //set to 0
+    firstAlti = 0;
     varioHisto->init(firstAlti, millis());
     speedHisto->init(firstAlti, millis());
     // ici la loop du vario
     while (true)
     {
-        if (varioImu->updateData())
+
+        Serial.println(bno->getAccel());
+
+        /*if (varioImu->updateData())
         {
-            alti = varioImu->getAlti();
+            alti = varioImu->getAlti(); //to be replace by pull accel
             if (altiFiltered != 0)
             {
                 altiFiltered = altiFiltered + COEF_ALTI_FILTERED * (alti - altiFiltered);
@@ -52,7 +58,7 @@ void Variometer::task()
                 altiFiltered = alti; // first reading so set filtered to reading
             }
 
-            accel = varioImu->getAccel();
+            accel = varioImu->getAccel(); //to be replace by pull accel
 
             unsigned long myTime = millis();
             kalmanvert->update(altiFiltered, accel, myTime);
@@ -93,11 +99,11 @@ void Variometer::task()
             }
             // Serial.print("velocity:");
             // Serial.println(velocity);
-        }
+        }*/
         // // give time to other tasks
         // vTaskDelay(delayT50);
 
-        bearing = varioImu->getBearing();
+        /*bearing = varioImu->getBearing();
         if (bearing != -1)
         {
             char bearingTxt[3];
@@ -106,7 +112,7 @@ void Variometer::task()
 
             VARIO_DATA_DEBUG_PRINT("Bearingtxt :");
             VARIO_DATA_DEBUG_PRINTLN(bearingTxt);
-        }
+        }*/
 
         // give time to other tasks
         vTaskDelay(delayT10);
@@ -115,22 +121,31 @@ void Variometer::task()
 
 Variometer::Variometer(VarioBeeper *_varioBeeper, VarioSD *_varioSD)
 {
+
+    Wire.setClock(400000);
+    delay(100);
+    Wire.flush();
+    Wire.begin (SDA_PIN, SCL_PIN);
+
     varioBeeper = _varioBeeper;
     varioSD = _varioSD;
     kalmanvert = new Kalmanvert();
     varioImu = new VarioImu(kalmanvert);
     varioGPS = new VarioGPS();
+    
     if (params->P_BT_ENABLE->getValue())
     {
         varioBle = new VarioBle();
     }
     varioHisto = new VarioHisto<50, 40>();
     speedHisto = new SpeedHisto<500, 120, 2>();
+
+    bno = new BNO();
 }
 
 void Variometer::init()
 {
-    varioImu->init();
+    //varioImu->init();
     varioBeeper->startTask();
     varioGPS->init();
     varioGPS->startTask();
@@ -143,6 +158,9 @@ void Variometer::init()
     {
         varioBeeper->mute();
     }
+
+    //BNO part
+    bno->initBNO();
 }
 
 double Variometer::preTaskInitFirstAlti()

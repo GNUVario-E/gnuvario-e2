@@ -9,6 +9,12 @@
 #include "VarioBle/VarioBle.h"
 #include "VarioHisto/VarioHisto.h"
 #include "VarioParameter/Parameters.h"
+#include "Variometer/ImuBno08x/bno.h"
+
+#define SDA_PIN 27
+#define SCL_PIN 32
+#define POWER_PIN 12
+#define POWER_PIN_STATE HIGH 
 
 class Variometer
 {
@@ -21,6 +27,7 @@ private:
     double preTaskInitFirstAlti();
     void task();
 
+    BNO *bno;
     Kalmanvert *kalmanvert;
     VarioImu *varioImu;
     VarioGPS *varioGPS;
