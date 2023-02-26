@@ -4,11 +4,16 @@
 #include "VarioTool/VarioTool.h"
 #include "VarioBle/VarioBle.h"
 #include "tasksBitsMask.h"
-#include "Variometer/ImuBno08x/bno.h"
+#include "Variometer/ImuTW/ImuTW.h"
 #include <Wire.h>
+//#include "Variometer/ms5611TW/ms5611TW.h"
+#include <MS5611.h>
 
 #define COEF_ALTI_FILTERED 0.1
 #define VARIO_TASK_PRIORITY 11
+
+#define R2D 57.2958
+#define POSITION_MEASURE_STANDARD_DEVIATION 0.1
 
 void Variometer::startTask()
 {
@@ -36,70 +41,69 @@ void Variometer::task()
     bool lastSentence;
     double firstAlti;
 
-    //firstAlti = preTaskInitFirstAlti(); //set to 0
-    firstAlti = 0;
+    firstAlti = preTaskInitFirstAlti();
     varioHisto->init(firstAlti, millis());
     speedHisto->init(firstAlti, millis());
     // ici la loop du vario
     while (true)
     {
 
-        Serial.println(bno->getAccel());
+        imutw->getpressure();
+        double accel = imutw->getAccel();
+        Serial.println(accel);
+        
+        double alti = imutw->getAlti();
+        Serial.println(alti);
 
-        /*if (varioImu->updateData())
+        if (altiFiltered != 0)
         {
-            alti = varioImu->getAlti(); //to be replace by pull accel
-            if (altiFiltered != 0)
+            altiFiltered = altiFiltered + COEF_ALTI_FILTERED * (alti - altiFiltered);
+        }
+        else
+        {
+            altiFiltered = alti; // first reading so set filtered to reading
+        }
+
+        unsigned long myTime = millis();
+        kalmanvert->update(altiFiltered, accel, myTime);
+
+        velocity = kalmanvert->getVelocity();
+
+        varioBeeper->setVelocity(velocity);
+        fc.setVarioVelocity(velocity, millis());
+
+        calibratedAlti = kalmanvert->getCalibratedPosition();
+
+        if (calibratedAlti < 0)
+            calibratedAlti = 0;
+
+        // varioHisto->setAlti(calibratedAlti, millis());
+        // // speedHisto->setAlti(calibratedAlti, millis());
+
+        // if (varioHisto->haveNewClimbRate())
+        // {
+        //     Serial.println("haveNewClimbRate");
+        //     Serial.println(varioHisto->getClimbRate(30));
+        // }
+
+        // if (speedHisto->haveNewClimbRate())
+        // {
+        //     Serial.println("haveNewClimbRate");
+        //     Serial.println(speedHisto->getGlideRatio(100));
+        // }
+
+        fc.setVarioAlti(round(calibratedAlti), millis());
+
+        if (params->P_BT_ENABLE->getValue())
+        {
+            if (VarioBle::_taskVarioBleHandle != NULL)
             {
-                altiFiltered = altiFiltered + COEF_ALTI_FILTERED * (alti - altiFiltered);
+                xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_LXWP0_SENTENCE_BIT, eSetBits);
             }
-            else
-            {
-                altiFiltered = alti; // first reading so set filtered to reading
-            }
-
-            accel = varioImu->getAccel(); //to be replace by pull accel
-
-            unsigned long myTime = millis();
-            kalmanvert->update(altiFiltered, accel, myTime);
-
-            velocity = kalmanvert->getVelocity();
-
-            varioBeeper->setVelocity(velocity);
-            fc.setVarioVelocity(velocity, millis());
-
-            calibratedAlti = kalmanvert->getCalibratedPosition();
-
-            if (calibratedAlti < 0)
-                calibratedAlti = 0;
-
-            // varioHisto->setAlti(calibratedAlti, millis());
-            // // speedHisto->setAlti(calibratedAlti, millis());
-
-            // if (varioHisto->haveNewClimbRate())
-            // {
-            //     Serial.println("haveNewClimbRate");
-            //     Serial.println(varioHisto->getClimbRate(30));
-            // }
-
-            // if (speedHisto->haveNewClimbRate())
-            // {
-            //     Serial.println("haveNewClimbRate");
-            //     Serial.println(speedHisto->getGlideRatio(100));
-            // }
-
-            fc.setVarioAlti(round(calibratedAlti), millis());
-
-            if (params->P_BT_ENABLE->getValue())
-            {
-                if (VarioBle::_taskVarioBleHandle != NULL)
-                {
-                    xTaskNotify(VarioBle::_taskVarioBleHandle, BLE_LXWP0_SENTENCE_BIT, eSetBits);
-                }
-            }
-            // Serial.print("velocity:");
-            // Serial.println(velocity);
-        }*/
+        }
+        // Serial.print("velocity:");
+        // Serial.println(velocity);
+    
         // // give time to other tasks
         // vTaskDelay(delayT50);
 
@@ -121,16 +125,10 @@ void Variometer::task()
 
 Variometer::Variometer(VarioBeeper *_varioBeeper, VarioSD *_varioSD)
 {
-
-    Wire.setClock(400000);
-    delay(100);
-    Wire.flush();
-    Wire.begin (SDA_PIN, SCL_PIN);
-
+    
     varioBeeper = _varioBeeper;
     varioSD = _varioSD;
     kalmanvert = new Kalmanvert();
-    varioImu = new VarioImu(kalmanvert);
     varioGPS = new VarioGPS();
     
     if (params->P_BT_ENABLE->getValue())
@@ -140,8 +138,14 @@ Variometer::Variometer(VarioBeeper *_varioBeeper, VarioSD *_varioSD)
     varioHisto = new VarioHisto<50, 40>();
     speedHisto = new SpeedHisto<500, 120, 2>();
 
-    bno = new BNO();
+    imutw = new IMUTW();   
+    
+    
+    
 }
+
+uint8_t volatile ms5611Output[3 * 3];
+
 
 void Variometer::init()
 {
@@ -159,13 +163,21 @@ void Variometer::init()
         varioBeeper->mute();
     }
 
+   
     //BNO part
-    bno->initBNO();
+    imutw->initBNO();
+    
 }
 
 double Variometer::preTaskInitFirstAlti()
 {
-    return varioImu->postInitFirstAlti();
+    double alti = imutw->getAccel();
+        kalmanvert->init(alti,
+                     0.0,
+                     POSITION_MEASURE_STANDARD_DEVIATION,
+                     params->P_ACCELERATION_MEASURE_STANDARD_DEVIATION->getValue(),
+                     millis());
+    return alti;
 }
 
 void Variometer::initFromAgl()
@@ -190,7 +202,7 @@ void Variometer::initFromAgl()
 
 void Variometer::disableAcquisition()
 {
-    varioImu->disableAcquisition();
+    //varioImu->disableAcquisition();
 }
 
 extern TaskHandle_t _taskVarioBleHandle;

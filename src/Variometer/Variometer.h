@@ -2,19 +2,21 @@
 #pragma once
 
 #include "kalmanvert/kalmanvert.h"
-#include "VarioImu/VarioImu.h"
 #include "VarioGPS/VarioGPS.h"
 #include "VarioBeeper/VarioBeeper.h"
 #include "VarioSD/VarioSD.h"
 #include "VarioBle/VarioBle.h"
 #include "VarioHisto/VarioHisto.h"
 #include "VarioParameter/Parameters.h"
-#include "Variometer/ImuBno08x/bno.h"
+#include "Variometer/ImuTW/ImuTW.h"
+//#include "Variometer/ms5611TW/ms5611TW.h"
+#include <MS5611.h>
 
 #define SDA_PIN 27
 #define SCL_PIN 32
 #define POWER_PIN 12
 #define POWER_PIN_STATE HIGH 
+
 
 class Variometer
 {
@@ -26,10 +28,10 @@ private:
     static void startTaskImpl(void *);
     double preTaskInitFirstAlti();
     void task();
+    double getAlti(void);
 
-    BNO *bno;
+    IMUTW *imutw;
     Kalmanvert *kalmanvert;
-    VarioImu *varioImu;
     VarioGPS *varioGPS;
     VarioBeeper *varioBeeper;
     VarioSD *varioSD;
@@ -38,6 +40,7 @@ private:
     SpeedHisto<500, 120, 2> *speedHisto;
 
 public:
+
     Variometer(VarioBeeper *varioBeeper, VarioSD *varioSD);
     void init();
     void startTask();

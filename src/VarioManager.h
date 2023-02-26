@@ -13,7 +13,7 @@
 #include "VarioWifi/VarioWifi.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include "VarioButton/VarioButton.h"
-#include "VarioCalibration/VarioCalibration.h"
+//#include "VarioCalibration/VarioCalibration.h"
 #include "Variometer/Variometer.h"
 #include "AglManager/src/AglManager.h"
 #include "VarioStat/VarioStat.h"
@@ -43,7 +43,7 @@ public:
     VarioButton *varioButton;
     VarioWifi *varioWifi;
     VarioLanguage *varioLanguage;
-    VarioCalibration *varioCalibration;
+    //VarioCalibration *varioCalibration;
     Variometer *variometer;
     AglManager *aglManager;
     VarioIgc *varioIgc;
