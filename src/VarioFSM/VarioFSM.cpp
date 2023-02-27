@@ -188,6 +188,8 @@ void VarioFSM::sound_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("sound_on_enter");
     varioDisplay->displayScreen(varioDisplay->soundScreen);
+    VARIO_PROG_DEBUG_DUMP(varioDisplay->soundScreen->getVolumeTextWidget()->getIsActif());
+    varioDisplay->soundScreen->getVolumeTextWidget()->setForceRefresh();
 }
 
 void VarioFSM::sound_on()
@@ -288,10 +290,12 @@ void VarioFSM::onSignalReceived(uint8_t _val)
         case BTN_SHORT_A:
             // volume down
             _notifyObserver(VOLUME_DOWN_ASKED);
+                varioDisplay->soundScreen->getVolumeIconWidget()->setForceRefresh();
             break;
         case BTN_SHORT_C:
             // volume up
             _notifyObserver(VOLUME_UP_ASKED);
+                varioDisplay->soundScreen->getVolumeIconWidget()->setForceRefresh();
             break;
         default:
             break;

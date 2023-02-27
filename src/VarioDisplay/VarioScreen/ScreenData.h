@@ -17,6 +17,8 @@ struct S_WIDGET_DATA
 struct ScreenData
 {
     S_WIDGET_DATA logo;
+    S_WIDGET_DATA volumeIcon;
+    S_WIDGET_DATA volumeText;
     S_WIDGET_DATA txt1;
     S_WIDGET_DATA txt2;
     S_WIDGET_DATA txt3;

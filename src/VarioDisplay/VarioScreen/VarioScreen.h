@@ -21,6 +21,8 @@
 #include "VarioDisplay/Widget/AglWidget.h"
 #include "VarioDisplay/Widget/WindWidget.h"
 #include "VarioDisplay/Widget/CircleWidget.h"
+#include "VarioDisplay/Widget/VolumeIconWidget.h"
+#include "VarioDisplay/Widget/VolumeTextWidget.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include <VarioDisplay/VarioScreen/ScreenData.h>
 
@@ -52,7 +54,8 @@ private:
     AglWidget *aglWidget;
     WindWidget *windWidget;
     CircleWidget *circleWidget;
-    // SoundeditWidget *soundEditWidget;
+    VolumeIconWidget *volumeIconWidget;
+    TextWidget *volumeTextWidget;
 
 protected:
 public:
@@ -84,4 +87,6 @@ public:
     AglWidget *getAglWidget();
     WindWidget *getWindWidget();
     CircleWidget *getCircleWidget();
+    VolumeIconWidget *getVolumeIconWidget();
+    TextWidget *getVolumeTextWidget();
 };

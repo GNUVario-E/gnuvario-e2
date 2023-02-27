@@ -1,10 +1,21 @@
 #include "VarioScreen.h"
+#include "VarioDebug/VarioDebug.h"
 
 VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
 {
     logoWidget = new LogoWidget(_varioLanguage, data.logo.altWidgetIndex, data.logo.x, data.logo.y, data.logo.w, data.logo.h);
     logoWidget->setIsActif(data.logo.isactif);
     logoWidget->setIsBorder(data.logo.isborder);
+
+    volumeIconWidget = new VolumeIconWidget(_varioLanguage, data.volumeIcon.altWidgetIndex, data.volumeIcon.x, data.volumeIcon.y, data.volumeIcon.w, data.volumeIcon.h);
+    volumeIconWidget->setIsActif(data.volumeIcon.isactif);
+    volumeIconWidget->setIsBorder(data.volumeIcon.isborder);
+
+    volumeTextWidget = new VolumeTextWidget(_varioLanguage, data.volumeText.altWidgetIndex, data.volumeText.x, data.volumeText.y, data.volumeText.w, data.volumeText.h);
+    volumeTextWidget->setIsActif(data.volumeText.isactif);
+    volumeTextWidget->setIsBorder(data.volumeText.isborder);
+    volumeTextWidget->setText("Volume");
+
 
     textWidget1 = new TextWidget(_varioLanguage, data.txt1.altWidgetIndex, data.txt1.x, data.txt1.y, data.txt1.w, data.txt1.h);
     textWidget1->setIsActif(data.txt1.isactif);
@@ -128,6 +139,8 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     tabWidgets[nb_widgets++] = aglWidget;
     tabWidgets[nb_widgets++] = windWidget;
     tabWidgets[nb_widgets++] = circleWidget;
+    tabWidgets[nb_widgets++] = volumeIconWidget;
+    tabWidgets[nb_widgets++] = volumeTextWidget;
 }
 
 uint8_t VarioScreen::getNbWidgets()
@@ -152,6 +165,16 @@ bool VarioScreen::isRefreshNeeded(uint32_t lastDisplayTime)
 LogoWidget *VarioScreen::getLogoWidget()
 {
     return logoWidget;
+}
+
+VolumeIconWidget *VarioScreen::getVolumeIconWidget()
+{
+    return volumeIconWidget;
+}
+
+TextWidget *VarioScreen::getVolumeTextWidget()
+{
+    return volumeTextWidget;
 }
 
 TextWidget *VarioScreen::getTextWidget1()

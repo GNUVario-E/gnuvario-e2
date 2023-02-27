@@ -22,10 +22,17 @@ private:
     static uint32_t lastDisplayTime;
     static uint32_t lastDisplayTimeToggle;
     static uint16_t minTimeRefresh ;
-    void bufferTask();
-    void buildScreens();
-    void updateScreen(void);
     VarioLanguage *varioLanguage;
+    void bufferTask();
+    void updateScreen(void);
+    void buildScreens();
+    void buildScreenBoot();
+    void buildScreenWifi();
+    void buildScreenCalibration();
+    void buildScreenSound();
+    void buildScreenStatistics();
+    void buildScreenReboot();
+    void buildScreenMessage();
 
 public:
     VarioDisplay();
