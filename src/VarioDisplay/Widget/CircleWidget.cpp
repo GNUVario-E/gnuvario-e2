@@ -64,8 +64,8 @@ void CircleWidget::addToBuffer(GxEPD2_GFX &_display)
     if (fc.getWindSpeed() && fc.getWindHeading())
     {
         uint16_t angle = (270 - fc.getWindHeading()) % 360;
-        Serial.print("angle=");
-        Serial.println(angle);
+        //Serial.print("angle=");
+        //Serial.println(angle);
         int x2 = rMax - fc.getWindSpeed() * cos(radians(angle)) * coef;
         int y2 = rMax + fc.getWindSpeed() * sin(radians(angle) * coef);
         // Serial.print("x2=");

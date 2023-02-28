@@ -28,14 +28,10 @@ void IMUTW::initBNO() {
         while (1);
     }
     
-    Serial.println(F("Rotation vector enabled"));
-
     MS5611.setOversampling(OSR_ULTRA_HIGH);
     //Wire.setClock(400000);
     myIMU.enableGravity(50); //Send data update every 50ms
     myIMU.enableLinearAccelerometer(50);
-    
-    Serial.println("Initialized MS5611 Sensor");
 }
 
 void IMUTW::getpressure() {
@@ -49,6 +45,7 @@ void IMUTW::getpressure() {
 }
 
 double IMUTW::getAlti(){
+    MS5611.read();
     return computeAlti(MS5611.getPressure() * 100);
 }
 
@@ -76,9 +73,7 @@ double IMUTW::getAccel() {
         acc = 0;
         }
 
-        Serial.print(acc, 2);
-
-        Serial.println();
+        //Serial.println(acc, 2);
         return acc;
     }
     return 0;
@@ -86,7 +81,5 @@ double IMUTW::getAccel() {
 
 double IMUTW::computeAlti(double pressure, double seaLevelPressure)
 {
-    Serial.println("Pressure");
-    Serial.println(pressure);
     return (44330.0f * (1.0f - pow((double)pressure / (double)seaLevelPressure, 0.1902949f)));
 }

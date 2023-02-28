@@ -2,7 +2,7 @@
 
 #include "VarioDebug/ArduinoTrace.h"
 
-#define VARIO_DEBUG // activate desactivate debuging
+//#define VARIO_DEBUG // activate desactivate debuging
 
 //              DEBUGING MODE
 // #define PROG_DEBUG // debug principal program

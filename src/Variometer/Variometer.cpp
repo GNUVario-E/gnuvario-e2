@@ -48,12 +48,12 @@ void Variometer::task()
     while (true)
     {
 
-        imutw->getpressure();
+        //imutw->getpressure();
         double accel = imutw->getAccel();
-        Serial.println(accel);
+        //Serial.println(accel);
         
         double alti = imutw->getAlti();
-        Serial.println(alti);
+        //Serial.println(alti);
 
         if (altiFiltered != 0)
         {
@@ -68,6 +68,8 @@ void Variometer::task()
         kalmanvert->update(altiFiltered, accel, myTime);
 
         velocity = kalmanvert->getVelocity();
+        
+        Serial.println(velocity);
 
         varioBeeper->setVelocity(velocity);
         fc.setVarioVelocity(velocity, millis());
