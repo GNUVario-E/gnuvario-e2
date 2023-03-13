@@ -20,7 +20,6 @@
 // #define MS5611_DEBUG
 // #define KALMAN_DEBUG
 // #define ACCEL_DEBUG
-// #define EEPROM_DEBUG
 // #define NMEAPARSER_DEBUG
 // #define SDCARD_DEBUG
 // #define IGC_DEBUG
@@ -36,6 +35,7 @@
 // #define MEMORY_DEBUG
 // #define FSM_DEBUG
 // #define PARAM_DEBUG
+#define PREFS_DEBUG
 
 #if !defined(VARIO_DEBUG) || !defined(PROG_DEBUG)
 #define VARIO_PROG_DEBUG_PRINTLN(x)
@@ -205,6 +205,16 @@
 #define VARIO_PARAM_DEBUG_DUMP(x)
 #define VARIO_PARAM_DEBUG_DUMP2(x, y)
 #define VARIO_PARAM_DEBUG_TRACE()
+#endif
+
+#if !defined(VARIO_DEBUG) || !defined(PREFS_DEBUG)
+#define VARIO_PREFS_DEBUG_PRINTLN(x)
+#define VARIO_PREFS_DEBUG_PRINTLN2(x, y)
+#define VARIO_PREFS_DEBUG_PRINT(x)
+#define VARIO_PREFS_DEBUG_PRINT2(x, y)
+#define VARIO_PREFS_DEBUG_DUMP(x)
+#define VARIO_PREFS_DEBUG_DUMP2(x, y)
+#define VARIO_PREFS_DEBUG_TRACE()
 #endif
 /*************************************************/
 
@@ -376,4 +386,14 @@
 #define VARIO_PARAM_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_PARAM_DEBUG_DUMP2(x, y) DUMP2(x, y)
 #define VARIO_PARAM_DEBUG_TRACE() TRACE()
+#endif
+
+#if defined(VARIO_DEBUG) && defined(PREFS_DEBUG)
+#define VARIO_PREFS_DEBUG_PRINTLN(x) Serial.println(x);
+#define VARIO_PREFS_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
+#define VARIO_PREFS_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_PREFS_DEBUG_PRINT2(x, y) Serial.print(x, y)
+#define VARIO_PREFS_DEBUG_DUMP(x) DUMP(x)
+#define VARIO_PREFS_DEBUG_DUMP2(x, y) DUMP2(x, y)
+#define VARIO_PREFS_DEBUG_TRACE() TRACE()
 #endif
