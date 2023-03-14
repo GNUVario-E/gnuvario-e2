@@ -4,8 +4,30 @@
 
 #define VARIO_DEBUG // activate desactivate debuging
 
+#define SD_LOGGING // activate desactivate sd logging
+
+#if defined(SD_LOGGING)
+#include "VarioDebug/SdDebug.h"
+extern SdDebug sdDebug;
+#define SD_PRINT_LN(x) sdDebug.println(x)
+#define SD_PRINT_LN2(x, y) sdDebug.println(x, y)
+#define SD_PRINT(x) sdDebug.print(x)
+#define SD_PRINT2(x, y)
+#define SD_DUMP(x)
+#define SD_DUMP2(x, y)
+#define SD_TRACE()
+#else
+#define SD_PRINT_LN(x)
+#define SD_PRINT_LN2(x, y)
+#define SD_PRINT(x)
+#define SD_PRINT2(x, y)
+#define SD_DUMP(x)
+#define SD_DUMP2(x, y)
+#define SD_TRACE()
+#endif
+
 //              DEBUGING MODE
-// #define PROG_DEBUG // debug principal program
+#define PROG_DEBUG // debug principal program
 // #define BTN_DEBUG  //Boutons
 // #define HARDWARE_DEBUG
 // #define IMU_DEBUG // debug IMU
@@ -15,7 +37,6 @@
 // #define SCREEN_DEBUG
 // #define SCREEN_DEBUG2
 // #define GPS_DEBUG
-// #define BUTTON_DEBUG
 // #define TONEDAC_DEBUG
 // #define MS5611_DEBUG
 // #define KALMAN_DEBUG
@@ -26,7 +47,7 @@
 // #define DATA_DEBUG
 // #define BT_DEBUG
 // #define WIFI_DEBUG
-// #define SOUND_DEBUG
+#define SOUND_DEBUG
 // #define AGL_DEBUG
 // #define SQL_DEBUG
 // #define BEARING_DEBUG
@@ -35,7 +56,8 @@
 // #define MEMORY_DEBUG
 // #define FSM_DEBUG
 // #define PARAM_DEBUG
-#define PREFS_DEBUG
+// #define PREFS_DEBUG
+
 
 #if !defined(VARIO_DEBUG) || !defined(PROG_DEBUG)
 #define VARIO_PROG_DEBUG_PRINTLN(x)
@@ -46,9 +68,9 @@
 #define VARIO_PROG_DEBUG_DUMP2(x, y)
 #define VARIO_PROG_DEBUG_TRACE()
 #else
-#define VARIO_PROG_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_PROG_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_PROG_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_PROG_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_PROG_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_PROG_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_PROG_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_PROG_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_PROG_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -64,9 +86,9 @@
 #define VARIO_IMU_DEBUG_DUMP2(x, y)
 #define VARIO_IMU_DEBUG_TRACE()
 #else
-#define VARIO_IMU_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_IMU_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_IMU_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_IMU_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_IMU_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_IMU_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_IMU_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_IMU_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_IMU_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -82,9 +104,9 @@
 #define VARIO_BTN_DEBUG_DUMP2(x, y)
 #define VARIO_BTN_DEBUG_TRACE()
 #else
-#define VARIO_BTN_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_BTN_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_BTN_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_BTN_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_BTN_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_BTN_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_BTN_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_BTN_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_BTN_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -100,9 +122,9 @@
 #define VARIO_SDCARD_DEBUG_DUMP2(x, y)
 #define VARIO_SDCARD_DEBUG_TRACE()
 #else
-#define VARIO_SDCARD_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_SDCARD_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_SDCARD_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_SDCARD_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_SDCARD_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_SDCARD_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_SDCARD_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_SDCARD_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_SDCARD_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -118,9 +140,9 @@
 #define VARIO_SOUND_DEBUG_DUMP2(x, y)
 #define VARIO_SOUND_DEBUG_TRACE()
 #else
-#define VARIO_SOUND_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_SOUND_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_SOUND_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_SOUND_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_SOUND_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_SOUND_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_SOUND_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_SOUND_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_SOUND_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -136,9 +158,9 @@
 #define VARIO_SQL_DEBUG_DUMP2(x, y)
 #define VARIO_SQL_DEBUG_TRACE()
 #else
-#define VARIO_SQL_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_SQL_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_SQL_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_SQL_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_SQL_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_SQL_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_SQL_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_SQL_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_SQL_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -154,9 +176,9 @@
 #define VARIO_MEMORY_DEBUG_DUMP2(x, y)
 #define VARIO_MEMORY_DEBUG_TRACE()
 #else
-#define VARIO_MEMORY_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_MEMORY_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_MEMORY_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_MEMORY_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_MEMORY_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_MEMORY_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_MEMORY_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_MEMORY_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_MEMORY_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -172,9 +194,9 @@
 #define VARIO_CAL_DEBUG_DUMP2(x, y)
 #define VARIO_CAL_DEBUG_TRACE()
 #else
-#define VARIO_CAL_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_CAL_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_CAL_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_CAL_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_CAL_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_CAL_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_CAL_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_CAL_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_CAL_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -190,9 +212,9 @@
 #define VARIO_WIFI_DEBUG_DUMP2(x, y)
 #define VARIO_WIFI_DEBUG_TRACE()
 #else
-#define VARIO_WIFI_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_WIFI_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_WIFI_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_WIFI_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_WIFI_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_WIFI_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_WIFI_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_WIFI_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_WIFI_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -208,9 +230,9 @@
 #define VARIO_DATA_DEBUG_DUMP2(x, y)
 #define VARIO_DATA_DEBUG_TRACE()
 #else
-#define VARIO_DATA_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_DATA_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_DATA_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_DATA_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_DATA_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_DATA_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_DATA_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_DATA_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_DATA_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -226,9 +248,9 @@
 #define VARIO_GPS_DEBUG_DUMP2(x, y)
 #define VARIO_GPS_DEBUG_TRACE()
 #else
-#define VARIO_GPS_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_GPS_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_GPS_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_GPS_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_GPS_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_GPS_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_GPS_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_GPS_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_GPS_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -244,9 +266,9 @@
 #define VARIO_NMEAPARSER_DEBUG_DUMP2(x, y)
 #define VARIO_NMEAPARSER_DEBUG_TRACE()
 #else
-#define VARIO_NMEAPARSER_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_NMEAPARSER_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_NMEAPARSER_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_NMEAPARSER_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_NMEAPARSER_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_NMEAPARSER_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_NMEAPARSER_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_NMEAPARSER_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_NMEAPARSER_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -262,9 +284,9 @@
 #define VARIO_FSM_DEBUG_DUMP2(x, y)
 #define VARIO_FSM_DEBUG_TRACE()
 #else
-#define VARIO_FSM_DEBUG_PRINTLN(x) Serial.println(x)
-#define VARIO_FSM_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_FSM_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_FSM_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x)
+#define VARIO_FSM_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_FSM_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_FSM_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_FSM_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_FSM_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -280,9 +302,9 @@
 #define VARIO_AGL_DEBUG_DUMP2(x, y)
 #define VARIO_AGL_DEBUG_TRACE()
 #else
-#define VARIO_AGL_DEBUG_PRINTLN(x) Serial.println(x);
-#define VARIO_AGL_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_AGL_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_AGL_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x);
+#define VARIO_AGL_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_AGL_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_AGL_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_AGL_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_AGL_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -290,9 +312,9 @@
 #endif
 
 #if defined(VARIO_DEBUG) && defined(IGC_DEBUG)
-#define VARIO_IGC_DEBUG_PRINTLN(x) Serial.println(x);
-#define VARIO_IGC_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_IGC_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_IGC_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x);
+#define VARIO_IGC_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_IGC_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_IGC_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_IGC_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_IGC_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -308,9 +330,9 @@
 #endif
 
 #if defined(VARIO_DEBUG) && defined(PARAM_DEBUG)
-#define VARIO_PARAM_DEBUG_PRINTLN(x) Serial.println(x);
-#define VARIO_PARAM_DEBUG_PRINTLN2(x, y) Serial.println(x, y)
-#define VARIO_PARAM_DEBUG_PRINT(x) Serial.print(x)
+#define VARIO_PARAM_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x);
+#define VARIO_PARAM_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_PARAM_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
 #define VARIO_PARAM_DEBUG_PRINT2(x, y) Serial.print(x, y)
 #define VARIO_PARAM_DEBUG_DUMP(x) DUMP(x)
 #define VARIO_PARAM_DEBUG_DUMP2(x, y) DUMP2(x, y)
@@ -323,4 +345,23 @@
 #define VARIO_PARAM_DEBUG_DUMP(x)
 #define VARIO_PARAM_DEBUG_DUMP2(x, y)
 #define VARIO_PARAM_DEBUG_TRACE()
+#endif
+
+
+#if defined(VARIO_DEBUG) && defined(PREFS_DEBUG)
+#define VARIO_PREFS_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x);
+#define VARIO_PREFS_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_PREFS_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
+#define VARIO_PREFS_DEBUG_PRINT2(x, y) Serial.print(x, y)
+#define VARIO_PREFS_DEBUG_DUMP(x) DUMP(x)
+#define VARIO_PREFS_DEBUG_DUMP2(x, y) DUMP2(x, y)
+#define VARIO_PREFS_DEBUG_TRACE() TRACE()
+#else
+#define VARIO_PREFS_DEBUG_PRINTLN(x)
+#define VARIO_PREFS_DEBUG_PRINTLN2(x, y)
+#define VARIO_PREFS_DEBUG_PRINT(x)
+#define VARIO_PREFS_DEBUG_PRINT2(x, y)
+#define VARIO_PREFS_DEBUG_DUMP(x)
+#define VARIO_PREFS_DEBUG_DUMP2(x, y)
+#define VARIO_PREFS_DEBUG_TRACE()
 #endif

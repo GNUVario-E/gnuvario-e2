@@ -43,12 +43,13 @@ boolean VarioManager::init()
     }
     else
     {
+        VarioSD::isStarted = true;
         VARIO_PROG_DEBUG_PRINTLN("Succes initialisation SD");
         varioBeeper->generateToneSuccess();
     }
 
     // Affiche parametre
-    VARIO_PROG_DEBUG_DUMP(params->P_PILOT_NAME->getValue(););
+    VARIO_PROG_DEBUG_DUMP(params->P_PILOT_NAME->getValue());
 
     varioLanguage->init(params->P_LANGUAGE->getValue());
 

@@ -1,6 +1,4 @@
-
-#ifndef _VARIO_SD_H
-#define _VARIO_SD_H
+#pragma once
 
 #include "FS.h"
 #include "SD.h"
@@ -11,11 +9,10 @@ class VarioSD
 public:
     bool init(void);
     void end(void);
+    static bool isStarted;
     //   void printDirectory();
     //   void printAllDirectory(File dir, int numTabs);
 
 private:
     SPIClass spiSdCard{HSPI};
 };
-
-#endif //_VARIO_SD_H

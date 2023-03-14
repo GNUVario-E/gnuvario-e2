@@ -6,12 +6,14 @@
 #include "HardwareConfig/HardwareConfig.h"
 #include "VarioDebug/VarioDebug.h"
 
+bool VarioSD::isStarted = false;
+
 bool VarioSD::init(void)
 {
   // issue with SD not resolved
   // https://github.com/espressif/arduino-esp32/issues/2171
   spiSdCard.begin(PIN_SDCARD_SCK, PIN_SDCARD_MISO, PIN_SDCARD_MOSI, PIN_SDCARD_CS);
-
+  
   return (SD.begin(PIN_SDCARD_CS, spiSdCard, 80000000));
 }
 
