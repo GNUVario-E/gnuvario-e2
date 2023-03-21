@@ -59,9 +59,26 @@ void VarioDisplay::init(VarioLanguage *_varioLanguage)
 
 void VarioDisplay::buildScreens()
 {
+    buildScreenBoot();
+    buildScreenWifi();
+    buildScreenCalibration();
     char sound[] = "SOUND ...";
 
-    // construction de l'écran de démarrage
+    // construction des écrans vario
+    vario1Screen = new VarioScreen(vario1ScreenData, varioLanguage);
+    vario2Screen = new VarioScreen(vario2ScreenData, varioLanguage);
+    vario3Screen = new VarioScreen(vario3ScreenData, varioLanguage);
+
+    buildScreenSound();
+    buildScreenStatistics();
+    buildScreenReboot();
+    buildScreenMessage();
+}
+
+/**
+ * Construction de l'écran de démarrage
+ */
+void VarioDisplay::buildScreenBoot() {
     char tmpbuffer[50];
     bootScreen = new VarioScreen(bootScreenData, varioLanguage);
     bootScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_DEMAR));
@@ -83,14 +100,17 @@ void VarioDisplay::buildScreens()
 
     sprintf(tmpbuffer, "%d%% (%.2fV)", fc.getPowerCapacite(), fc.getPowerTension());
     bootScreen->getTextWidget5()->setText(tmpbuffer);
+}
 
-    // construction de l'écran WIFI
+/**
+ * Construction de l'écran WIFI
+ */
+void VarioDisplay::buildScreenWifi() {
     wifiScreen = new VarioScreen(wifiScreenData, varioLanguage);
     wifiScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_CONNECT));
     wifiScreen->getTextWidget1()->setIndexTxtFC(1);
 
     fc.setText1(false, varioLanguage->getText(TITRE_CONNECTA));
-
     // sprintf(fc.text.text1, "%s", varioLanguage->getText(TITRE_CONNECTA));
     wifiScreen->getTextWidget2()->setText("");
     wifiScreen->getTextWidget2()->setTextSize(1);
@@ -98,20 +118,35 @@ void VarioDisplay::buildScreens()
     wifiScreen->getTextWidget3()->setText("");
     wifiScreen->getTextWidget3()->setTextSize(1);
     wifiScreen->getTextWidget3()->setIndexTxtFC(3);
+}
 
-    // construction de l'écran calibration
+/**
+* Construction de l'écran calibration
+*/
+void VarioDisplay::buildScreenCalibration() {
     calibrationScreen = new VarioScreen(calibrationScreenData, varioLanguage);
     calibrationScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_CALIBR));
+}
 
-    // construction des écrans vario
-    vario1Screen = new VarioScreen(vario1ScreenData, varioLanguage);
-    vario2Screen = new VarioScreen(vario2ScreenData, varioLanguage);
-    vario3Screen = new VarioScreen(vario3ScreenData, varioLanguage);
-
-    // construction de l'écran son
+/**
+ * Construction de l'écran de réglage du volume
+ */
+void VarioDisplay::buildScreenSound() {
     soundScreen = new VarioScreen(soundScreenData, varioLanguage);
-    soundScreen->getTextWidget1()->setText(sound);
+    soundScreen->getTextWidget1()->setText("SOUND ...");
+    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.isactif);
+    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.x);
+    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.y);
+    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.w);
+    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.h);
+    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.altWidgetIndex);
+    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.isborder);
+}
 
+/**
+ * Construction de l'écran stats
+ */
+void VarioDisplay::buildScreenStatistics() {
     statisticScreen = new VarioScreen(statisticScreenData, varioLanguage);
     // statisticScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_STAT));
     statisticScreen->getTextWidget1()->setIndexTxtFC(1);
@@ -122,12 +157,21 @@ void VarioDisplay::buildScreens()
     statisticScreen->getTextWidget6()->setIndexTxtFC(6);
     statisticScreen->getTextWidget7()->setIndexTxtFC(7);
     statisticScreen->getTextWidget8()->setIndexTxtFC(8);
+    statisticScreen->getTextWidget1()->setText("STATISTIC ...");
+}
 
-    // construction de l'écran de reboot
+/**
+ * Construction de l'écran de redémarrage
+ */
+void VarioDisplay::buildScreenReboot() {
     rebootScreen = new VarioScreen(rebootScreenData, varioLanguage);
     rebootScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_REDEMAR));
+}
 
-    // construction de l'écran de message
+/**
+ * Construction de l'écran de message
+ */
+void VarioDisplay::buildScreenMessage() {
     messageScreen = new VarioScreen(messageScreenData, varioLanguage);
     messageScreen->getTextWidget1()->setText("");
     messageScreen->getTextWidget1()->setTextSize(1);

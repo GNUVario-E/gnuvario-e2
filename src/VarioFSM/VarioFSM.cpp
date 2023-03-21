@@ -188,6 +188,8 @@ void VarioFSM::sound_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("sound_on_enter");
     varioDisplay->displayScreen(varioDisplay->soundScreen);
+    VARIO_PROG_DEBUG_DUMP(varioDisplay->soundScreen->getVolumeTextWidget()->getIsActif());
+    varioDisplay->soundScreen->getVolumeTextWidget()->setForceRefresh();
 }
 
 void VarioFSM::sound_on()
@@ -263,17 +265,23 @@ void VarioFSM::onSignalReceived(uint8_t _val)
     }
     else if (_val == BTN_LONG_A && (fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)))
     {
-        // toggle mute
+        // init AGL
         VARIO_FSM_DEBUG_PRINTLN("AGL_INIT_ASKED");
         _notifyObserver(AGL_INIT_ASKED);
     }
+    else if (_val == BTN_LONG_B && (fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)))
+    {
+        // request deep sleep
+        VARIO_FSM_DEBUG_PRINTLN("DEEP_SLEEP_ASKED");
+        _notifyObserver(DEEP_SLEEP_ASKED);
+    }
     else if (_val == BTN_LONG_C && (fsm.is_in_state(_state_vario1) || fsm.is_in_state(_state_vario2) || fsm.is_in_state(_state_vario3)))
     {
-        // toggle mute
+        // force flight start
         VARIO_FSM_DEBUG_PRINTLN("FLIGHT_START_ASKED");
         _notifyObserver(FLIGHT_START_ASKED);
     }
-    else if (fsm.is_in_state(_state_sound_edit))
+    else if (_val != BTN_SHORT_B && fsm.is_in_state(_state_sound_edit))
     {
         // gestion de l'edition du son
         VARIO_FSM_DEBUG_PRINTLN("sound edit");
@@ -282,10 +290,12 @@ void VarioFSM::onSignalReceived(uint8_t _val)
         case BTN_SHORT_A:
             // volume down
             _notifyObserver(VOLUME_DOWN_ASKED);
+                varioDisplay->soundScreen->getVolumeIconWidget()->setForceRefresh();
             break;
         case BTN_SHORT_C:
             // volume up
             _notifyObserver(VOLUME_UP_ASKED);
+                varioDisplay->soundScreen->getVolumeIconWidget()->setForceRefresh();
             break;
         default:
             break;

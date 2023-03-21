@@ -116,7 +116,7 @@ void VarioIgc::initHeaders(const char *pilot, const char *glider, uint8_t day, u
         return;
     }
     char line[80];
-    const char *A = "A%s %s";
+    const char *A = "A%s%s";
     const char *DTE = "HFDTE%02u%02u%02u";
     const char *PLT = "HFPLTPILOTINCHARGE:%s";
     const char *GTY = "HFGTYGLIDERTYPE:%s";

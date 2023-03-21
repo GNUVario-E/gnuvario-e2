@@ -273,34 +273,34 @@ void VarioSettings::loadScreenVario(char *filename)
 
   JsonObject obj;
 
-  obj = VarioTool::jsonDoc[section[0]];
+  obj = VarioTool::jsonDoc["boot"];
   setScreenDataValues(&obj, &bootScreenData);
 
-  obj = VarioTool::jsonDoc[section[1]];
+  obj = VarioTool::jsonDoc["wifi"];
   setScreenDataValues(&obj, &wifiScreenData);
 
-  obj = VarioTool::jsonDoc[section[2]];
+  obj = VarioTool::jsonDoc["calibration"];
   setScreenDataValues(&obj, &calibrationScreenData);
 
-  obj = VarioTool::jsonDoc[section[3]];
+  obj = VarioTool::jsonDoc["vario1"];
   setScreenDataValues(&obj, &vario1ScreenData);
 
-  obj = VarioTool::jsonDoc[section[4]];
+  obj = VarioTool::jsonDoc["vario2"];
   setScreenDataValues(&obj, &vario2ScreenData);
 
-  obj = VarioTool::jsonDoc[section[5]];
+  obj = VarioTool::jsonDoc["vario3"];
   setScreenDataValues(&obj, &vario3ScreenData);
 
-  obj = VarioTool::jsonDoc[section[6]];
+  obj = VarioTool::jsonDoc["sound"];
   setScreenDataValues(&obj, &soundScreenData);
 
-  obj = VarioTool::jsonDoc[section[7]];
+  obj = VarioTool::jsonDoc["statistic"];
   setScreenDataValues(&obj, &statisticScreenData);
 
-  obj = VarioTool::jsonDoc[section[8]];
+  obj = VarioTool::jsonDoc["reboot"];
   setScreenDataValues(&obj, &rebootScreenData);
 
-  obj = VarioTool::jsonDoc[section[9]];
+  obj = VarioTool::jsonDoc["message"];
   setScreenDataValues(&obj, &messageScreenData);
 
   // Clearing Buffer
@@ -376,26 +376,29 @@ void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
 
   objInside = obj->getMember("circle");
   screenData->circle = getScreenDataInsideValues(&objInside);
+
+  objInside = obj->getMember("volIcon");
+  if (!objInside.isNull()) {
+      screenData->volumeIcon = getScreenDataInsideValues(&objInside);
+  }
+
+  objInside = obj->getMember("volText");
+  if (!objInside.isNull()) {
+    screenData->volumeText = getScreenDataInsideValues(&objInside);
+  }
 }
 
 S_WIDGET_DATA VarioSettings::getScreenDataInsideValues(JsonObject *objInside)
 {
-  char key[][30] = {
-      "a",
-      "b",
-      "x",
-      "y",
-      "w",
-      "h",
-      "n"};
-
-  return {objInside->getMember(key[0]).as<bool>(),
-          objInside->getMember(key[1]).as<bool>(),
-          objInside->getMember(key[2]).as<unsigned short>(),
-          objInside->getMember(key[3]).as<unsigned short>(),
-          objInside->getMember(key[4]).as<unsigned short>(),
-          objInside->getMember(key[5]).as<unsigned short>(),
-          objInside->getMember(key[6]).as<unsigned char>()};
+  return {
+      objInside->getMember("a").as<bool>(),
+      objInside->getMember("b").as<bool>(),
+      objInside->getMember("x").as<unsigned short>(),
+      objInside->getMember("y").as<unsigned short>(),
+      objInside->getMember("w").as<unsigned short>(),
+      objInside->getMember("h").as<unsigned short>(),
+      objInside->getMember("n").as<unsigned char>()
+  };
 }
 
 // Saves the configuration to a file

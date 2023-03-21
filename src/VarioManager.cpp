@@ -143,7 +143,7 @@ void VarioManager::setPowerDataToFC()
     {
         if (fc.getPowerTension() < POWER_DOWN_TENSION)
         {
-            deepSleep("Low battery");
+            deepSleep("Low battery", "");
         }
 
         // lissage
@@ -257,7 +257,7 @@ void VarioManager::onSignalReceived(uint8_t _val)
         fc.checkFlightStart(true);
         break;
     case DEEP_SLEEP_ASKED:
-        deepSleep("Low battery");
+        deepSleep("Standby", "Middle button to wake");
         break;
     case HISTO_DISPLAY_ENTER:
         // set text values for histo screen
@@ -268,13 +268,14 @@ void VarioManager::onSignalReceived(uint8_t _val)
     }
 }
 
-void VarioManager::deepSleep(const char *msg)
+void VarioManager::deepSleep(const char *txt1, const char *txt2 = "")
 {
     varioBeeper->generateToneFailure();
 
     esp_sleep_enable_ext0_wakeup(GPIO_BUTTON_B, 0); // 1 = High, 0 = PIN_BUTTON_B
 
-    fc.setText1(true, msg);
+    fc.setText1(true, txt1);
+    fc.setText2(true, txt2);
     varioDisplay->displayScreen(varioDisplay->messageScreen);
 
     delay(1000);

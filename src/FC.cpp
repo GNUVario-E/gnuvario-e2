@@ -675,12 +675,13 @@ uint8_t FC::getFlightTimeDurationHour()
 
 uint8_t FC::getFlightTimeDurationMinute()
 {
-    return getFlightDurationSecond() / 60 - getFlightTimeDurationHour() * 60;
+    return getFlightDurationSecond() / 60 % 60;
+    return getFlightDurationSecond() / 60 - getFlightTimeDurationHour() * 60; // Erreur de logique, utiliser l'opérateur modulo
 }
 
 uint8_t FC::getFlightTimeDurationSecond()
 {
-    return getFlightDurationSecond() - getFlightTimeDurationMinute() * 60 - getFlightTimeDurationHour() * 60 * 60;
+    return getFlightDurationSecond() - getFlightTimeDurationMinute() * 60 - getFlightTimeDurationHour() * 60 * 60; // Erreur de logique, utiliser l'opérateur modulo
 }
 
 void FC::setWind(int8_t _speed, uint16_t heading, int8_t _meanSpeed, uint32_t timestamp)
