@@ -1,5 +1,6 @@
 #include "VarioStat.h"
 #include <Arduino.h>
+#include "VarioDebug/VarioDebug.h"
 
 VarioStat::VarioStat(const char *_title)
 {
@@ -12,11 +13,17 @@ VarioStat::VarioStat(const char *_title)
 
 void VarioStat::loadLastHisto()
 {
+    VARIO_PREFS_DEBUG_PRINTLN("loadLastHisto");
     isFlightStarted = false;
     // get index of last recorded flight
     preferences->begin(PREFERENCES_NAMESPACE_HISTO, false);
     currentHistoIndex = preferences->getUInt(PREFERENCES_STAT_INDEX_KEY, 0);
     nbRecordedFiles = preferences->getUInt(PREFERENCES_STAT_NB_KEY, 0);
+    VARIO_PREFS_DEBUG_PRINT("currentHistoIndex: ");
+    VARIO_PREFS_DEBUG_PRINTLN(currentHistoIndex);
+    VARIO_PREFS_DEBUG_PRINT("nbRecordedFiles: ");
+    VARIO_PREFS_DEBUG_PRINTLN(nbRecordedFiles);
+
     preferences->end();
 
     strcpy(currentNamespace, getNamespaceIndexBased(currentHistoIndex));
