@@ -138,7 +138,7 @@ ScreenData vario2ScreenData = {
 };
 
 ScreenData vario3ScreenData = {
-    logo : {true, true, 0, 0, 128, 296, 99},
+    logo : {false, true, 0, 0, 128, 296, 99},
     volumeIcon: {false, true, 0, 0, 128, 296, 99},
     volumeText: {false, true, 0, 0, 128, 296, 99},
     txt1 : {false, true, 0, 100, 128, 20, 99},
