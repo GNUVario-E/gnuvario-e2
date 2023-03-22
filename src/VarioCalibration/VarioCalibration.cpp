@@ -70,8 +70,6 @@ void VarioCalibration::task()
 
 void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 {
-	//intTW.begin();
-	//twScheduler.init();
     Wire.setClock(400000);
     delay(100);
     Wire.flush();

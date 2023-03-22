@@ -42,5 +42,5 @@ public:
 	void begin(VarioBeeper *_varioBeeper);
 	void startTask();
 };
-
+extern FC fc;
 #endif
