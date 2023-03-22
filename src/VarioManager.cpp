@@ -175,9 +175,9 @@ void VarioManager::onSignalReceived(uint8_t _val)
         break;
     case CALIBRATION_START_ASKED:
         VARIO_CAL_DEBUG_PRINTLN("Démarrage de la calibration");
-        //varioCalibration = new VarioCalibration();
-        //varioCalibration->begin(varioBeeper);
-        //varioCalibration->startTask();
+        varioCalibration = new VarioCalibration();
+        varioCalibration->begin(varioBeeper);
+        varioCalibration->startTask();
         break;
     case HISTO_START_ASKED:
         varioStat = new VarioStat(varioLanguage->getText(TITRE_STAT));
