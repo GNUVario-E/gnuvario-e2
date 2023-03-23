@@ -32,6 +32,8 @@
 #define CALIBRATION_TASK_PRIORITY 9
 
 VarioCalibration Calibration;
+char *cal_mag;
+char *cal_gyro;
 
 void VarioCalibration::startTask()
 {
@@ -50,20 +52,66 @@ void VarioCalibration::task()
 {
 	while (1)
 	{
+
+        if(Serial.available())
+  {
+    byte incoming = Serial.read();
+
+    if(incoming == 's')
+    {
+        myIMU.saveCalibration(); //Saves the current dynamic calibration data (DCD) to memory
+        myIMU.requestCalibrationStatus(); //Sends command to get the latest calibration status
+
+        //Wait for calibration response, timeout if no response
+        int counter = 100;
+        while(1)
+        {
+            if(--counter == 0) break;
+            if(myIMU.dataAvailable() == true)
+            {
+                //The IMU can report many different things. We must wait
+                //for the ME Calibration Response Status byte to go to zero
+                if(myIMU.calibrationComplete() == true)
+                {
+                    Serial.println("Calibration data successfully stored");
+                    vTaskDelay(1000);
+                    break;
+                }
+            }
+
+            vTaskDelay(delayT50);
+        }
+        if(counter == 0)
+        {
+            Serial.println("Calibration data failed to store. Please try again.");
+        }
+
+        //myIMU.endCalibration(); //Turns off all calibration
+        //In general, calibration should be left on at all times. The BNO080
+        //auto-calibrates and auto-records cal data roughly every 5 minutes
+        }
+    }
+
 		vTaskDelay(delayT50);
         //Look for reports from the IMU
         if (myIMU.dataAvailable() == true)
         {
-
+            
             byte accuracy = myIMU.getMagAccuracy();
             byte sensorAccuracy = myIMU.getQuatAccuracy();
-
-            printAccuracyLevel(accuracy);
+            Serial.print(F("Mag calibration: "));
+            cal_mag = printAccuracyLevel(accuracy);
+            Serial.print(cal_mag);
             Serial.print(F(","));
 
             Serial.print("\t");
-            printAccuracyLevel(sensorAccuracy);
+            Serial.print(F("Gyro calibration: "));
+            cal_gyro = printAccuracyLevel(sensorAccuracy);
+            Serial.print(cal_gyro);
             Serial.println();
+
+            fc.setText3(true, cal_mag);
+            fc.setText5(true, cal_gyro);
         }
 	}
 }
@@ -96,10 +144,20 @@ void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 	VARIO_CAL_DEBUG_PRINTLN("Begin calibration");
 }
 
-void VarioCalibration::printAccuracyLevel(byte accuracyNumber)
+char* VarioCalibration::printAccuracyLevel(byte accuracyNumber)
 {
-  if (accuracyNumber == 0) Serial.print(F("Unreliable"));
-  else if (accuracyNumber == 1) Serial.print(F("Low"));
-  else if (accuracyNumber == 2) Serial.print(F("Medium"));
-  else if (accuracyNumber == 3) Serial.print(F("High"));
+    if (accuracyNumber == 0) {
+        return "Unreliable";
+    }
+    else if (accuracyNumber == 1){ 
+        return "Low";
+    }
+    else if (accuracyNumber == 2) {
+        return "Medium";
+    }
+    else if (accuracyNumber == 3) {
+        return "High";
+    }
+        return "";
 }
+

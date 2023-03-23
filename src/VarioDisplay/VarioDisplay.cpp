@@ -103,6 +103,23 @@ void VarioDisplay::buildScreens()
     calibrationScreen = new VarioScreen(calibrationScreenData, varioLanguage);
     calibrationScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_CALIBR));
 
+    calibrationScreen->getTextWidget2()->setText("Mag:");
+    calibrationScreen->getTextWidget2()->setTextSize(1);
+    calibrationScreen->getTextWidget2()->setIndexTxtFC(2);
+
+    calibrationScreen->getTextWidget3()->setText("");
+    calibrationScreen->getTextWidget3()->setTextSize(1);
+    calibrationScreen->getTextWidget3()->setIndexTxtFC(3);
+
+    calibrationScreen->getTextWidget4()->setText("Gyro:");
+    calibrationScreen->getTextWidget4()->setTextSize(1);
+    calibrationScreen->getTextWidget4()->setIndexTxtFC(4);
+
+    calibrationScreen->getTextWidget5()->setText("");
+    calibrationScreen->getTextWidget5()->setTextSize(1);
+    calibrationScreen->getTextWidget5()->setIndexTxtFC(5);
+
+
     // construction des écrans vario
     vario1Screen = new VarioScreen(vario1ScreenData, varioLanguage);
     vario2Screen = new VarioScreen(vario2ScreenData, varioLanguage);

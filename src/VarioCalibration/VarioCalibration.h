@@ -1,7 +1,7 @@
 
-#ifndef VARIOCALIBRATION_H
-#define VARIOCALIBRATION_H
+#pragma once
 
+#include "FC.h"
 #include <Arduino.h>
 #include "VarioDebug/VarioDebug.h"
 #include "VarioSettings/VarioSettings.h"
@@ -32,7 +32,7 @@ private:
 	const TickType_t delayT50 = pdMS_TO_TICKS(50);
 	TaskHandle_t _taskCalibHandle = NULL;
 	static void startTaskImpl(void *);
-    void printAccuracyLevel(byte accuracyNumber);
+    char* printAccuracyLevel(byte accuracyNumber);
 	void task();
 
 	const TickType_t delayT100 = pdMS_TO_TICKS(100);
@@ -43,4 +43,3 @@ public:
 	void startTask();
 };
 extern FC fc;
-#endif
