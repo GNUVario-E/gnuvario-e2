@@ -290,6 +290,17 @@ void VarioFSM::onSignalReceived(uint8_t _val)
         default:
             break;
         }
+    }else if (fsm.is_in_state(_state_calibration))
+    {
+        switch (_val)
+        {
+        case BTN_SHORT_B:
+            // Save calibration
+            _notifyObserver(CALIBRATION_SAVE_ASKED);
+            break;
+        default:
+            break;
+        }
     }
     else
     {

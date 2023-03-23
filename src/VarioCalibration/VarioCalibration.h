@@ -24,7 +24,7 @@
 #define POWER_PIN 12
 #define POWER_PIN_STATE HIGH 
 
-class VarioCalibration
+class VarioCalibration: public Observer
 {
 
 private:
@@ -37,9 +37,11 @@ private:
 
 	const TickType_t delayT100 = pdMS_TO_TICKS(100);
 	VarioBeeper *varioBeeper = NULL;
+	void saveCalibate();
 
 public:
 	void begin(VarioBeeper *_varioBeeper);
 	void startTask();
+	void onSignalReceived(uint8_t _val);
 };
 extern FC fc;

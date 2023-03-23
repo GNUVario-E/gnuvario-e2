@@ -5,7 +5,7 @@
 #include "VarioDebug/VarioDebug.h"
 
 #include "VarioBeeper/VarioBeeper.h"
-
+#include "event.h"
 
 
 /* need beeps */
@@ -52,46 +52,6 @@ void VarioCalibration::task()
 {
 	while (1)
 	{
-
-        if(Serial.available())
-  {
-    byte incoming = Serial.read();
-
-    if(incoming == 's')
-    {
-        myIMU.saveCalibration(); //Saves the current dynamic calibration data (DCD) to memory
-        myIMU.requestCalibrationStatus(); //Sends command to get the latest calibration status
-
-        //Wait for calibration response, timeout if no response
-        int counter = 100;
-        while(1)
-        {
-            if(--counter == 0) break;
-            if(myIMU.dataAvailable() == true)
-            {
-                //The IMU can report many different things. We must wait
-                //for the ME Calibration Response Status byte to go to zero
-                if(myIMU.calibrationComplete() == true)
-                {
-                    Serial.println("Calibration data successfully stored");
-                    vTaskDelay(1000);
-                    break;
-                }
-            }
-
-            vTaskDelay(delayT50);
-        }
-        if(counter == 0)
-        {
-            Serial.println("Calibration data failed to store. Please try again.");
-        }
-
-        //myIMU.endCalibration(); //Turns off all calibration
-        //In general, calibration should be left on at all times. The BNO080
-        //auto-calibrates and auto-records cal data roughly every 5 minutes
-        }
-    }
-
 		vTaskDelay(delayT50);
         //Look for reports from the IMU
         if (myIMU.dataAvailable() == true)
@@ -99,16 +59,8 @@ void VarioCalibration::task()
             
             byte accuracy = myIMU.getMagAccuracy();
             byte sensorAccuracy = myIMU.getQuatAccuracy();
-            Serial.print(F("Mag calibration: "));
             cal_mag = printAccuracyLevel(accuracy);
-            Serial.print(cal_mag);
-            Serial.print(F(","));
-
-            Serial.print("\t");
-            Serial.print(F("Gyro calibration: "));
             cal_gyro = printAccuracyLevel(sensorAccuracy);
-            Serial.print(cal_gyro);
-            Serial.println();
 
             fc.setText3(true, cal_mag);
             fc.setText5(true, cal_gyro);
@@ -119,7 +71,7 @@ void VarioCalibration::task()
 void VarioCalibration::begin(VarioBeeper *_varioBeeper)
 {
     Wire.setClock(400000);
-    delay(100);
+    vTaskDelay(delayT100);
     Wire.flush();
     Wire.begin (SDA_PIN, SCL_PIN);
 
@@ -159,5 +111,49 @@ char* VarioCalibration::printAccuracyLevel(byte accuracyNumber)
         return "High";
     }
         return "";
+}
+
+void VarioCalibration::saveCalibate(){
+    fc.setText1(true, "Saving...");
+    myIMU.saveCalibration(); //Saves the current dynamic calibration data (DCD) to memory
+	myIMU.requestCalibrationStatus(); //Sends command to get the latest calibration status
+
+	//Wait for calibration response, timeout if no response
+	int counter = 100;
+	while(1)
+	{
+		if(--counter == 0) break;
+		if(myIMU.dataAvailable() == true)
+		{
+			//The IMU can report many different things. We must wait
+			//for the ME Calibration Response Status byte to go to zero
+			if(myIMU.calibrationComplete() == true)
+			{
+				Serial.println("Calibration data successfully stored");
+                fc.setText1(true, "Calibration saved...");
+				vTaskDelay(1000);
+				break;
+			}
+		}
+
+		vTaskDelay(delayT50);
+	}
+	if(counter == 0)
+	{
+		Serial.println("Calibration data failed to store. Please try again.");
+	}
+}
+
+
+void VarioCalibration::onSignalReceived(uint8_t _val)
+{
+    switch (_val)
+    {
+        case CALIBRATION_SAVE_ASKED:
+            saveCalibate();
+            break;
+        default:
+            break;
+    }
 }
 

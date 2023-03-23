@@ -176,6 +176,7 @@ void VarioManager::onSignalReceived(uint8_t _val)
     case CALIBRATION_START_ASKED:
         VARIO_CAL_DEBUG_PRINTLN("Démarrage de la calibration");
         varioCalibration = new VarioCalibration();
+        fsm.registerObserver(varioCalibration);
         varioCalibration->begin(varioBeeper);
         varioCalibration->startTask();
         break;
