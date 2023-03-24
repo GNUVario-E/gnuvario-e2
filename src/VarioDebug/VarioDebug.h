@@ -54,7 +54,7 @@ extern SdDebug sdDebug;
 // #define TWOWIRESCH_DEBUG
 // #define POWER_DEBUG
 // #define MEMORY_DEBUG
-// #define FSM_DEBUG
+#define FSM_DEBUG
 // #define PARAM_DEBUG
 // #define PREFS_DEBUG
 
