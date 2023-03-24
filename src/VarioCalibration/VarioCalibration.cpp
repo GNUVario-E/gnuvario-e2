@@ -114,7 +114,7 @@ char* VarioCalibration::printAccuracyLevel(byte accuracyNumber)
 }
 
 void VarioCalibration::saveCalibate(){
-    fc.setText1(true, "Saving...");
+    fc.setText6(true, "Saving...");
     myIMU.saveCalibration(); //Saves the current dynamic calibration data (DCD) to memory
 	myIMU.requestCalibrationStatus(); //Sends command to get the latest calibration status
 
@@ -129,8 +129,7 @@ void VarioCalibration::saveCalibate(){
 			//for the ME Calibration Response Status byte to go to zero
 			if(myIMU.calibrationComplete() == true)
 			{
-				Serial.println("Calibration data successfully stored");
-                fc.setText1(true, "Calibration saved...");
+                fc.setText6(true, "Saved...");
 				vTaskDelay(1000);
 				break;
 			}
@@ -140,7 +139,7 @@ void VarioCalibration::saveCalibate(){
 	}
 	if(counter == 0)
 	{
-		Serial.println("Calibration data failed to store. Please try again.");
+        fc.setText6(true, "Failed to store");
 	}
 }
 

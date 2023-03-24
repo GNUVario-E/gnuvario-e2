@@ -119,6 +119,9 @@ void VarioDisplay::buildScreens()
     calibrationScreen->getTextWidget5()->setTextSize(1);
     calibrationScreen->getTextWidget5()->setIndexTxtFC(5);
 
+    calibrationScreen->getTextWidget6()->setText("");
+    calibrationScreen->getTextWidget6()->setTextSize(3);
+    calibrationScreen->getTextWidget6()->setIndexTxtFC(6);
 
     // construction des écrans vario
     vario1Screen = new VarioScreen(vario1ScreenData, varioLanguage);
