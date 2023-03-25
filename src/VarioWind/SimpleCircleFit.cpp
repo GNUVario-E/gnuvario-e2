@@ -1,4 +1,5 @@
 #include "SimpleCircleFit.h"
+#include "VarioDebug/VarioDebug.h"
 
 SimpleCircleFit::SimpleCircleFit()
 {
@@ -14,11 +15,11 @@ SimpleCircleFit::SimpleCircleFit()
     vectors = (Vector *)malloc(NB_VECTORS * sizeof(Vector));
     if (vectors == NULL)
     {
-        Serial.println("malloc failed");
+        VARIO_WIND_DEBUG_PRINTLN("malloc failed");
     }
     else
     {
-        Serial.println("malloc succeeded");
+        VARIO_WIND_DEBUG_PRINTLN("malloc succeeded");
     }
 }
 
@@ -130,8 +131,8 @@ void SimpleCircleFit::calculateNewVector()
     indexVector = (indexVector + 1) % NB_VECTORS;
 
     // set pointer to vector in FC
-    Serial.print("setWindVectors");
-    Serial.println(bufSizeVector);
+    // Serial.print("setWindVectors");
+    // Serial.println(bufSizeVector);
     fc.setWindVectors(vectors, bufSizeVector);
 }
 
@@ -246,14 +247,14 @@ Circle SimpleCircleFit::computeFromVectors()
         result.s += radius2 - len2;
     }
 
-    Serial.print("a=");
-    Serial.print(result.a, 10);
-    Serial.print(" b=");
-    Serial.print(result.b, 10);
-    Serial.print(" r=");
-    Serial.print(result.r, 10);
-    Serial.print(" s=");
-    Serial.println(result.s, 10);
+    VARIO_WIND_DEBUG_PRINT("a=");
+    VARIO_WIND_DEBUG_PRINT2(result.a, 10);
+    VARIO_WIND_DEBUG_PRINT(" b=");
+    VARIO_WIND_DEBUG_PRINT2(result.b, 10);
+    VARIO_WIND_DEBUG_PRINT(" r=");
+    VARIO_WIND_DEBUG_PRINT2(result.r, 10);
+    VARIO_WIND_DEBUG_PRINT(" s=");
+    VARIO_WIND_DEBUG_PRINTLN2(result.s, 10);
 
     return result;
 }

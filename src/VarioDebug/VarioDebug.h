@@ -47,7 +47,7 @@ extern SdDebug sdDebug;
 // #define DATA_DEBUG
 // #define BT_DEBUG
 // #define WIFI_DEBUG
-#define SOUND_DEBUG
+// #define SOUND_DEBUG
 // #define AGL_DEBUG
 // #define SQL_DEBUG
 // #define BEARING_DEBUG
@@ -57,6 +57,7 @@ extern SdDebug sdDebug;
 // #define FSM_DEBUG
 // #define PARAM_DEBUG
 // #define PREFS_DEBUG
+// #define WIND_DEBUG
 
 
 #if !defined(VARIO_DEBUG) || !defined(PROG_DEBUG)
@@ -364,4 +365,22 @@ extern SdDebug sdDebug;
 #define VARIO_PREFS_DEBUG_DUMP(x)
 #define VARIO_PREFS_DEBUG_DUMP2(x, y)
 #define VARIO_PREFS_DEBUG_TRACE()
+#endif
+
+#if defined(VARIO_DEBUG) && defined(WIND_DEBUG)
+#define VARIO_WIND_DEBUG_PRINTLN(x) Serial.println(x); SD_PRINT_LN(x);
+#define VARIO_WIND_DEBUG_PRINTLN2(x, y) Serial.println(x, y); SD_PRINT_LN2(x, y)
+#define VARIO_WIND_DEBUG_PRINT(x) Serial.print(x); SD_PRINT(x)
+#define VARIO_WIND_DEBUG_PRINT2(x, y) Serial.print(x, y)
+#define VARIO_WIND_DEBUG_DUMP(x) DUMP(x)
+#define VARIO_WIND_DEBUG_DUMP2(x, y) DUMP2(x, y)
+#define VARIO_WIND_DEBUG_TRACE() TRACE()
+#else
+#define VARIO_WIND_DEBUG_PRINTLN(x)
+#define VARIO_WIND_DEBUG_PRINTLN2(x, y)
+#define VARIO_WIND_DEBUG_PRINT(x)
+#define VARIO_WIND_DEBUG_PRINT2(x, y)
+#define VARIO_WIND_DEBUG_DUMP(x)
+#define VARIO_WIND_DEBUG_DUMP2(x, y)
+#define VARIO_WIND_DEBUG_TRACE()
 #endif
