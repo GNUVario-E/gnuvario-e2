@@ -17,6 +17,7 @@ struct sound_data
 {
     bool isMute;
     float volume;
+    bool isInEditMode;
 };
 
 struct vario_data
@@ -161,8 +162,11 @@ public:
     // SOUND
     void setSoundIsMute(bool isMute);
     void setSoundVolume(float volume);
+    void setSoundIsInEditMode(bool isInEditMode);
     bool getSoundIsMute();
     float getSoundVolume();
+    bool getSoundIsInEditMode();
+
 
     // VARIO
     void setVarioAlti(int16_t alti, uint32_t altiTimestamp);

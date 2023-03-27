@@ -140,19 +140,19 @@ public:
                        [this]()
                        { sound_on_exit(); }),
 
-          _state_statistic([this]()
-                           { statistic_on_enter(); },
-                           [this]()
-                           { statistic_on(); },
-                           [this]()
-                           { statistic_on_exit(); }),
-
           _state_sound_edit([this]()
                             { soundedit_on_enter(); },
                             [this]()
                             { soundedit_on(); },
                             [this]()
                             { soundedit_on_exit(); }),
+
+          _state_statistic([this]()
+                           { statistic_on_enter(); },
+                           [this]()
+                           { statistic_on(); },
+                           [this]()
+                           { statistic_on_exit(); }),
 
           _state_reboot([this]()
                         { reboot_on_enter(); },

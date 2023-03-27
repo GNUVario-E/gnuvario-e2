@@ -96,6 +96,11 @@ void FC::setSoundVolume(float volume)
     fcdata.sound.volume = volume;
 }
 
+void FC::setSoundIsInEditMode(bool isInEditMode)
+{
+    fcdata.sound.isInEditMode = isInEditMode;
+}
+
 bool FC::getSoundIsMute()
 {
     return fcdata.sound.isMute;
@@ -104,6 +109,11 @@ bool FC::getSoundIsMute()
 float FC::getSoundVolume()
 {
     return fcdata.sound.volume;
+}
+
+bool FC::getSoundIsInEditMode()
+{
+    return fcdata.sound.isInEditMode;
 }
 
 // VARIO
