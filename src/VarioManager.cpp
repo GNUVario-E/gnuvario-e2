@@ -188,11 +188,13 @@ void VarioManager::onSignalReceived(uint8_t _val)
         varioDisplay->setMinTimeRefresh(1000);
         variometer = new Variometer(varioBeeper, varioSD);
         fc.registerObserver(this);
-        variometer->init();
-        variometer->startTask();
+        
+        
         varioWind = new VarioWind();
         aglManager = new AglManager();
         aglManager->init();
+        variometer->init();
+        variometer->startTask();
 
         break;
     case AGL_INIT_ASKED:
