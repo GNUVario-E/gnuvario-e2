@@ -30,7 +30,7 @@ public:
     void generateToneSuccess();
     void generateToneSoftFailure();
     void generateToneFailure();
-    void setVolume(uint8_t newVolume = BEEP_DEFAULT_VOLUME);
+    void setVolume(int8_t newVolume = BEEP_DEFAULT_VOLUME);
     void increaseVolume();
     void decreaseVolume();
     uint8_t getVolume();

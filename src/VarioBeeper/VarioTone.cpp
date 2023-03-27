@@ -130,13 +130,13 @@ void VarioTone::generateToneFailure()
     }
 }
 
-void VarioTone::setVolume(uint8_t newVolume)
+void VarioTone::setVolume(int8_t newVolume)
 {
-    if (_volume < 0)
+    if (newVolume < 0)
     {
         _volume = 0;
     }
-    else if (_volume > 10)
+    else if (newVolume > 10)
     {
         _volume = 10;
     }
