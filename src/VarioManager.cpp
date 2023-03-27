@@ -263,6 +263,12 @@ void VarioManager::onSignalReceived(uint8_t _val)
         // set text values for histo screen
         varioStat->setValuesToFc();
         break;
+    case VOLUME_EDIT_ENTER:
+        fc.setSoundIsInEditMode(true);
+        break;
+    case VOLUME_EDIT_EXIT:
+        fc.setSoundIsInEditMode(false);
+        break;
     default:
         break;
     }

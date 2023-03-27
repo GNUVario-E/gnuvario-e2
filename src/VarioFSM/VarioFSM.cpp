@@ -188,8 +188,6 @@ void VarioFSM::sound_on_enter()
 {
     VARIO_FSM_DEBUG_PRINTLN("sound_on_enter");
     varioDisplay->displayScreen(varioDisplay->soundScreen);
-    VARIO_PROG_DEBUG_DUMP(varioDisplay->soundScreen->getVolumeTextWidget()->getIsActif());
-    varioDisplay->soundScreen->getVolumeTextWidget()->setForceRefresh();
 }
 
 void VarioFSM::sound_on()
@@ -200,7 +198,23 @@ void VarioFSM::sound_on()
 void VarioFSM::sound_on_exit()
 {
     VARIO_FSM_DEBUG_PRINTLN("sound_on_exit");
-    _notifyObserver(VOLUME_SAVE_ASKED);
+}
+
+void VarioFSM::soundedit_on_enter()
+{
+    VARIO_FSM_DEBUG_PRINTLN("soundedit_on_enter");
+    _notifyObserver(VOLUME_EDIT_ENTER);
+}
+
+void VarioFSM::soundedit_on()
+{
+    VARIO_FSM_DEBUG_PRINTLN("soundedit_on");
+}
+
+void VarioFSM::soundedit_on_exit()
+{
+    VARIO_FSM_DEBUG_PRINTLN("soundedit_on_exit");
+    _notifyObserver(VOLUME_EDIT_EXIT);
 }
 
 void VarioFSM::statistic_on_enter()
@@ -218,23 +232,6 @@ void VarioFSM::statistic_on()
 void VarioFSM::statistic_on_exit()
 {
     VARIO_FSM_DEBUG_PRINTLN("statistic_on_exit");
-}
-
-void VarioFSM::soundedit_on_enter()
-{
-    VARIO_FSM_DEBUG_PRINTLN("soundedit_on_enter");
-    // varioDisplay->displayScreen(varioDisplay->soundeditScreen);
-}
-
-void VarioFSM::soundedit_on()
-{
-    VARIO_FSM_DEBUG_PRINTLN("soundedit_on");
-}
-
-void VarioFSM::soundedit_on_exit()
-{
-    VARIO_FSM_DEBUG_PRINTLN("soundedit_on_exit");
-    // sauvegarde du volume
 }
 
 void VarioFSM::reboot_on_enter()
@@ -290,12 +287,12 @@ void VarioFSM::onSignalReceived(uint8_t _val)
         case BTN_SHORT_A:
             // volume down
             _notifyObserver(VOLUME_DOWN_ASKED);
-                varioDisplay->soundScreen->getVolumeIconWidget()->setForceRefresh();
+            varioDisplay->soundScreen->getVolumeIconWidget()->setForceRefresh();
             break;
         case BTN_SHORT_C:
             // volume up
             _notifyObserver(VOLUME_UP_ASKED);
-                varioDisplay->soundScreen->getVolumeIconWidget()->setForceRefresh();
+            varioDisplay->soundScreen->getVolumeIconWidget()->setForceRefresh();
             break;
         default:
             break;

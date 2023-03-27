@@ -7,7 +7,7 @@
 #include "VarioDisplay/VarioScreen/VarioScreen.h"
 #include "VarioDisplay/VarioScreen/ScreenData.h"
 
-#define SCREEN_STACK_SIZE 2000
+#define SCREEN_STACK_SIZE 2500
 #define SCREEN_CORE 1
 #define SCREEN_PRIORITY 10
 
