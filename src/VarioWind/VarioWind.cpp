@@ -1,4 +1,5 @@
 #include "VarioWind.h"
+#include "VarioDebug/VarioDebug.h"
 
 #define PERIOD_WIND_CALCULATION 5000 // 5s
 #define IS_FROM_TEST
@@ -32,6 +33,7 @@ void VarioWind::init()
 
 void VarioWind::startTimers10sImpl(TimerHandle_t timerHndlWind)
 {
+    VARIO_WIND_DEBUG_PRINTLN("startTimers10sImpl");
     // wrapper for timer
     VarioWind *obj;
     obj = (VarioWind *)pvTimerGetTimerID(timerHndlWind);
@@ -41,6 +43,9 @@ void VarioWind::startTimers10sImpl(TimerHandle_t timerHndlWind)
 
 void VarioWind::timerWind()
 {
+
+    VARIO_WIND_DEBUG_PRINTLN("timerWind");
+
     Circle circle = circleFit->fitCircleFromVectors();
 
     float windSpeed;
@@ -58,13 +63,13 @@ void VarioWind::timerWind()
     }
     fc.setWind(windSpeed, heading, meanSpeed, millis());
 
-    Serial.print("windSpeed:");
-    Serial.print(windSpeed);
-    Serial.print("km/h, heading:");
-    Serial.print(heading);
-    Serial.print("°, meanSpeed:");
-    Serial.print(meanSpeed);
-    Serial.println("km/h");
+    VARIO_WIND_DEBUG_PRINT("windSpeed:");
+    VARIO_WIND_DEBUG_PRINT(windSpeed);
+    VARIO_WIND_DEBUG_PRINT("km/h, heading:");
+    VARIO_WIND_DEBUG_PRINT(heading);
+    VARIO_WIND_DEBUG_PRINT("°, meanSpeed:");
+    VARIO_WIND_DEBUG_PRINT(meanSpeed);
+    VARIO_WIND_DEBUG_PRINTLN("km/h");
 }
 
 void VarioWind::addPoint(double lat, double lon, uint32_t timestamp)

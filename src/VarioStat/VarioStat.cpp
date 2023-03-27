@@ -33,7 +33,7 @@ void VarioStat::loadLastHisto()
 
 void VarioStat::newHisto()
 {
-    isFlightStarted = true;
+
     // unless histo is empty, increment index
     if (nbRecordedFiles > 0)
     {
@@ -69,6 +69,8 @@ void VarioStat::newHisto()
     varioStatFlight = new VarioStatFlight(preferences, currentNamespace);
     // clear old data from previous flight at current index
     varioStatFlight->beginHisto();
+
+    isFlightStarted = true;
 }
 
 char *VarioStat::getFormatedStartDate()
