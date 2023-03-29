@@ -302,11 +302,12 @@ void VarioLanguage::setDefaultValue()
 
 bool VarioLanguage::setParameterFromJsonObject(JsonObject *section, const char *key, uint8_t index, uint8_t maxSize)
 {
+	JsonObject sec = *section;	
 	bool isFromJson = false;
 	const char *tVal;
 	if (section->containsKey(key))
 	{
-		if ((tVal = section->getMember(key).as<const char *>()) != NULL)
+		if ((tVal = sec[key].as<const char *>()) != NULL)
 		{
 			// uint8_t s = sizeof(tVal);
 			strncpy(TITRE_TAB[index], tVal, maxSize);
