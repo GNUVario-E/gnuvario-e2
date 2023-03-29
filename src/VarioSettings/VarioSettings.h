@@ -15,11 +15,12 @@ private:
 
   File myFile;
   S_WIDGET_DATA getScreenDataInsideValues(JsonObject *objInside);
+  bool readJsonSectionToScreenData(const char *section, File &input, ScreenData *screenData);
   void setScreenDataValues(JsonObject *obj, ScreenData *screenData);
   void applySetting(const char *settingName, const char *settingValue);
   uint8_t correctParseVertAccelBias(const char *settingValue);
   const char *trimSpace(char *str);
-  
+
   bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<bool> *param);
   bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<float> *param);
   bool setParameterFromJsonObject(JsonObject *section, ConfigParameter<int8_t> *param);

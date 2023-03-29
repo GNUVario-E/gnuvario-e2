@@ -4,7 +4,7 @@
 #include <ArduinoJson.h>
 
 #define RL_MAX_CHARS 128
-#define JSON_SIZE 40000
+#define JSON_SIZE 10000
 
 class VarioTool
 {

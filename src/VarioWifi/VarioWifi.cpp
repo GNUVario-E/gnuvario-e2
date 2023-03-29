@@ -21,7 +21,7 @@ void VarioWifi::startTask()
 {
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskVarioWifi started");
-    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioWifi", 10000, this, 2, &_taskVarioWifiHandle, 0);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioWifi", 15000, this, 2, &_taskVarioWifiHandle, 0);
 }
 
 void VarioWifi::startTaskImpl(void *parm)
@@ -64,11 +64,11 @@ bool VarioWifi::begin()
     VARIO_MEMORY_DEBUG_PRINTLN("Free heap setMDNS");
     VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
 
-    setMDNS();
+    // setMDNS();
 
-    checkDbVersion();
+    // checkDbVersion();
 
-    esp32FOTA.checkURL = params->P_URL_UPDATE->getValue(); //"http://gnuvario-e.yj.fr/update/firmware.json";
+    // esp32FOTA.checkURL = params->P_URL_UPDATE->getValue(); //"http://gnuvario-e.yj.fr/update/firmware.json";
 
     VARIO_MEMORY_DEBUG_PRINTLN("Free heap startWebServer");
     VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
@@ -122,18 +122,22 @@ bool VarioWifi::connectToWifi()
 
     if (ssid_1[0] != '\0' && password_1[0] != '\0')
     {
+        VARIO_WIFI_DEBUG_PRINTLN("add AP 1");
         wifiMulti.addAP(ssid_1, password_1); // add Wi-Fi networks you want to connect to, it connects strongest to weakest
     }
     if (ssid_2[0] != '\0' && password_2[0] != '\0')
     {
+        VARIO_WIFI_DEBUG_PRINTLN("add AP 2");
         wifiMulti.addAP(ssid_2, password_2);
     }
     if (ssid_3[0] != '\0' && password_3[0] != '\0')
     {
+        VARIO_WIFI_DEBUG_PRINTLN("add AP 3");
         wifiMulti.addAP(ssid_3, password_3);
     }
     if (ssid_4[0] != '\0' && password_4[0] != '\0')
     {
+        VARIO_WIFI_DEBUG_PRINTLN("add AP 4");
         wifiMulti.addAP(ssid_4, password_4);
     }
 
@@ -426,64 +430,79 @@ void VarioWifi::startWebServer()
 
     server.onNotFound([](AsyncWebServerRequest *request)
                       {
-                          VARIO_WIFI_DEBUG_PRINTLN("NOT_FOUND: ");
-                          if (request->method() == HTTP_GET)
-                              VARIO_WIFI_DEBUG_PRINTLN("GET");
-                          else if (request->method() == HTTP_POST)
-                              VARIO_WIFI_DEBUG_PRINTLN("POST");
-                          else if (request->method() == HTTP_DELETE)
-                              VARIO_WIFI_DEBUG_PRINTLN("DELETE");
-                          else if (request->method() == HTTP_PUT)
-                              VARIO_WIFI_DEBUG_PRINTLN("PUT");
-                          else if (request->method() == HTTP_PATCH)
-                              VARIO_WIFI_DEBUG_PRINTLN("PATCH");
-                          else if (request->method() == HTTP_HEAD)
-                              VARIO_WIFI_DEBUG_PRINTLN("HEAD");
-                          else if (request->method() == HTTP_OPTIONS)
-                              VARIO_WIFI_DEBUG_PRINTLN("OPTIONS");
-                          else
-                              VARIO_WIFI_DEBUG_PRINTLN("UNKNOWN");
+    VARIO_WIFI_DEBUG_PRINTLN("NOT_FOUND: ");
+    if (request->method() == HTTP_GET)
+    {
+        VARIO_WIFI_DEBUG_PRINTLN("GET");
+    }
+    else if (request->method() == HTTP_POST)
+    {
+        VARIO_WIFI_DEBUG_PRINTLN("POST");
+    }
+    else if (request->method() == HTTP_DELETE)
+    {
+        VARIO_WIFI_DEBUG_PRINTLN("DELETE");
+    }
+    else if (request->method() == HTTP_PUT)
+    {
+        VARIO_WIFI_DEBUG_PRINTLN("PUT");
+    }
+    else if (request->method() == HTTP_PATCH)
+    {
+        VARIO_WIFI_DEBUG_PRINTLN("PATCH");
+    }
+    else if (request->method() == HTTP_HEAD)
+    {
+        VARIO_WIFI_DEBUG_PRINTLN("HEAD");
+    }
+    else if (request->method() == HTTP_OPTIONS)
+    {
+        VARIO_WIFI_DEBUG_PRINTLN("OPTIONS");
+    } else {
+        VARIO_WIFI_DEBUG_PRINTLN("UNKNOWN");
+    }
+
                           Serial.printf(" http://%s%s\n", request->host().c_str(), request->url().c_str());
 
                           if (request->contentLength())
                           {
-                              Serial.printf("_CONTENT_TYPE: %s\n", request->contentType().c_str());
-                              Serial.printf("_CONTENT_LENGTH: %u\n", request->contentLength());
+        Serial.printf("_CONTENT_TYPE: %s\n", request->contentType().c_str());
+        Serial.printf("_CONTENT_LENGTH: %u\n", request->contentLength());
                           }
 
                           int headers = request->headers();
                           int i;
                           for (i = 0; i < headers; i++)
                           {
-                              AsyncWebHeader *h = request->getHeader(i);
-                              Serial.printf("_HEADER[%s]: %s\n", h->name().c_str(), h->value().c_str());
+        AsyncWebHeader *h = request->getHeader(i);
+        Serial.printf("_HEADER[%s]: %s\n", h->name().c_str(), h->value().c_str());
                           }
 
                           int params = request->params();
                           for (i = 0; i < params; i++)
                           {
-                              AsyncWebParameter *p = request->getParam(i);
-                              if (p->isFile())
-                              {
-                                  Serial.printf("_FILE[%s]: %s, size: %u\n", p->name().c_str(), p->value().c_str(), p->size());
-                              }
-                              else if (p->isPost())
-                              {
-                                  Serial.printf("_POST[%s]: %s\n", p->name().c_str(), p->value().c_str());
-                              }
-                              else
-                              {
-                                  Serial.printf("_GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
-                              }
+        AsyncWebParameter *p = request->getParam(i);
+        if (p->isFile())
+        {
+            Serial.printf("_FILE[%s]: %s, size: %u\n", p->name().c_str(), p->value().c_str(), p->size());
+        }
+        else if (p->isPost())
+        {
+            Serial.printf("_POST[%s]: %s\n", p->name().c_str(), p->value().c_str());
+        }
+        else
+        {
+            Serial.printf("_GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
+        }
                           }
 
                           if (request->method() == HTTP_OPTIONS)
                           {
-                              request->send(200);
+        request->send(200);
                           }
                           else
                           {
-                              request->send(404);
+        request->send(404);
                           } });
 
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");

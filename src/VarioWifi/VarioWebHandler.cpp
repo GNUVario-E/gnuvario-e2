@@ -775,9 +775,8 @@ void VarioWebHandler::handleSetFlight(AsyncWebServerRequest *request, uint8_t *d
 
 void VarioWebHandler::handleSetFlightSTL(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
-#ifdef WIFI_DEBUG
-    SerialPort.println("handleSetFlight");
-#endif
+
+    VARIO_WIFI_DEBUG_PRINTLN("handleSetFlight");
 
     VarioSqlFlight varioSqlFlight;
     char content[len];
@@ -788,10 +787,9 @@ void VarioWebHandler::handleSetFlightSTL(AsyncWebServerRequest *request, uint8_t
         AsyncWebParameter *p = request->getParam("id");
         uint8_t id = p->value().toInt();
 
-#ifdef WIFI_DEBUG
-        SerialPort.println(id);
-        SerialPort.println(content);
-#endif
+        VARIO_WIFI_DEBUG_PRINTLN(id);
+        VARIO_WIFI_DEBUG_PRINTLN(content);
+
         varioSqlFlight.updateFlightSTL(id, jsonToIgcdata(content));
     }
 
