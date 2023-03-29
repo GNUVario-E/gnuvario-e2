@@ -246,65 +246,100 @@ void VarioSettings::loadScreenVario(char *filename)
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to read file");
     return;
   }
-  // Clearing Buffer
+
+  // Clearing doc
   VarioTool::jsonDoc.clear();
 
-  // Deserialize the JSON document
-  DeserializationError error = deserializeJson(VarioTool::jsonDoc, file);
-  if (error)
+  JsonObject obj;
+
+  if (!readJsonSectionToScreenData("boot", file, &bootScreenData))
   {
-    VARIO_SDCARD_DEBUG_PRINTLN("Failed to parse file");
-    VARIO_SDCARD_DEBUG_PRINTLN(error.c_str());
     file.close();
     return;
   }
 
-  char section[][15] = {
-      "boot",
-      "wifi",
-      "calibration",
-      "vario1",
-      "vario2",
-      "vario3",
-      "sound",
-      "statistic",
-      "reboot",
-      "message"};
+  if (!readJsonSectionToScreenData("wifi", file, &wifiScreenData))
+  {
+    file.close();
+    return;
+  }
 
-  JsonObject obj;
+  if (!readJsonSectionToScreenData("calibration", file, &calibrationScreenData))
+  {
+    file.close();
+    return;
+  }
 
-  obj = VarioTool::jsonDoc["boot"];
-  setScreenDataValues(&obj, &bootScreenData);
+  if (!readJsonSectionToScreenData("vario1", file, &vario1ScreenData))
+  {
+    file.close();
+    return;
+  }
 
-  obj = VarioTool::jsonDoc["wifi"];
-  setScreenDataValues(&obj, &wifiScreenData);
+  if (!readJsonSectionToScreenData("vario2", file, &vario2ScreenData))
+  {
+    file.close();
+    return;
+  }
 
-  obj = VarioTool::jsonDoc["calibration"];
-  setScreenDataValues(&obj, &calibrationScreenData);
+  if (!readJsonSectionToScreenData("vario3", file, &vario3ScreenData))
+  {
+    file.close();
+    return;
+  }
 
-  obj = VarioTool::jsonDoc["vario1"];
-  setScreenDataValues(&obj, &vario1ScreenData);
+  if (!readJsonSectionToScreenData("sound", file, &soundScreenData))
+  {
+    file.close();
+    return;
+  }
 
-  obj = VarioTool::jsonDoc["vario2"];
-  setScreenDataValues(&obj, &vario2ScreenData);
+  if (!readJsonSectionToScreenData("statistic", file, &statisticScreenData))
+  {
+    file.close();
+    return;
+  }
 
-  obj = VarioTool::jsonDoc["vario3"];
-  setScreenDataValues(&obj, &vario3ScreenData);
+  if (!readJsonSectionToScreenData("reboot", file, &rebootScreenData))
+  {
+    file.close();
+    return;
+  }
 
-  obj = VarioTool::jsonDoc["sound"];
-  setScreenDataValues(&obj, &soundScreenData);
-
-  obj = VarioTool::jsonDoc["statistic"];
-  setScreenDataValues(&obj, &statisticScreenData);
-
-  obj = VarioTool::jsonDoc["reboot"];
-  setScreenDataValues(&obj, &rebootScreenData);
-
-  obj = VarioTool::jsonDoc["message"];
-  setScreenDataValues(&obj, &messageScreenData);
+  if (!readJsonSectionToScreenData("message", file, &messageScreenData))
+  {
+    file.close();
+    return;
+  }
 
   // Clearing Buffer
   VarioTool::jsonDoc.clear();
+}
+
+bool VarioSettings::readJsonSectionToScreenData(const char *sectionName, File &input, ScreenData *screenData)
+{
+  // Rewind the file pointer to the beginning of the file
+  input.seek(0);
+
+  VarioTool::jsonDoc.clear();
+
+  StaticJsonDocument<64> filter;
+  filter[sectionName] = true;
+  DeserializationError error = deserializeJson(VarioTool::jsonDoc, input, DeserializationOption::Filter(filter));
+
+  if (error)
+  {
+    VARIO_SDCARD_DEBUG_PRINTLN("Failed to parse file");
+    VARIO_SDCARD_DEBUG_PRINTLN(error.c_str());
+
+    return false;
+  }
+
+  JsonObject obj;
+  obj = VarioTool::jsonDoc[sectionName];
+  setScreenDataValues(&obj, screenData);
+
+  return true;
 }
 
 void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
@@ -378,12 +413,14 @@ void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
   screenData->circle = getScreenDataInsideValues(&objInside);
 
   objInside = obj->getMember("volIcon");
-  if (!objInside.isNull()) {
-      screenData->volumeIcon = getScreenDataInsideValues(&objInside);
+  if (!objInside.isNull())
+  {
+    screenData->volumeIcon = getScreenDataInsideValues(&objInside);
   }
 
   objInside = obj->getMember("volText");
-  if (!objInside.isNull()) {
+  if (!objInside.isNull())
+  {
     screenData->volumeText = getScreenDataInsideValues(&objInside);
   }
 }
@@ -397,8 +434,7 @@ S_WIDGET_DATA VarioSettings::getScreenDataInsideValues(JsonObject *objInside)
       objInside->getMember("y").as<unsigned short>(),
       objInside->getMember("w").as<unsigned short>(),
       objInside->getMember("h").as<unsigned short>(),
-      objInside->getMember("n").as<unsigned char>()
-  };
+      objInside->getMember("n").as<unsigned char>()};
 }
 
 // Saves the configuration to a file

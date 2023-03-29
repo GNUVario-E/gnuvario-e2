@@ -35,3 +35,23 @@ void ConfigParameter<T>::setValue(T _value)
 {
     value = _value;
 }
+
+// Specialization for const char*
+template <>
+class ConfigParameter<const char *>
+{
+public:
+    ConfigParameter(const char *key, const char *defaultValue) : key(key), value(defaultValue ? strdup(defaultValue) : nullptr) {}
+    void setValue(const char *_value)
+    {
+        if (value)
+            free((void *)value);
+        value = strdup(_value);
+    }
+    const char *getValue() const { return value; }
+    const char *getKey() const { return key; }
+
+private:
+    const char *key;
+    const char *value;
+};
