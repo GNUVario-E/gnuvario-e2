@@ -344,81 +344,82 @@ bool VarioSettings::readJsonSectionToScreenData(const char *sectionName, File &i
 
 void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
 {
+  JsonObject sec = *obj;
   JsonObject objInside;
 
-  objInside = obj->getMember("logo");
+  objInside = sec["logo"];
   screenData->logo = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("txt1");
+  objInside = sec["txt1"];
   screenData->txt1 = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("txt2");
+  objInside = sec["txt2"];
   screenData->txt2 = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("txt3");
+  objInside = sec["txt3"];
   screenData->txt3 = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("txt4");
+  objInside = sec["txt4"];
   screenData->txt4 = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("txt5");
+  objInside = sec["txt5"];
   screenData->txt5 = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("txt6");
+  objInside = sec["txt6"];
   screenData->txt6 = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("txt7");
+  objInside = sec["txt7"];
   screenData->txt7 = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("txt8");
+  objInside = sec["txt8"];
   screenData->txt8 = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("alti");
+  objInside = sec["alti"];
   screenData->alti = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("vario");
+  objInside = sec["vario"];
   screenData->vario = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("toolbar");
+  objInside = sec["toolbar"];
   screenData->toolbar = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("speed");
+  objInside = sec["speed"];
   screenData->speed = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("bearing");
+  objInside = sec["bearing"];
   screenData->bearing = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("time");
+  objInside = sec["time"];
   screenData->time = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("flighttime");
+  objInside = sec["flighttime"];
   screenData->flighttime = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("lat");
+  objInside = sec["lat"];
   screenData->lat = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("lon");
+  objInside = sec["lon"];
   screenData->lon = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("altigps");
+  objInside = sec["altigps"];
   screenData->altigps = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("agl");
+  objInside = sec["agl"];
   screenData->agl = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("wind");
+  objInside = sec["wind"];
   screenData->wind = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("circle");
+  objInside = sec["circle"];
   screenData->circle = getScreenDataInsideValues(&objInside);
 
-  objInside = obj->getMember("volIcon");
+  objInside = sec["volIcon"];
   if (!objInside.isNull())
   {
     screenData->volumeIcon = getScreenDataInsideValues(&objInside);
   }
 
-  objInside = obj->getMember("volText");
+  objInside = sec["volText"];
   if (!objInside.isNull())
   {
     screenData->volumeText = getScreenDataInsideValues(&objInside);
@@ -427,14 +428,15 @@ void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
 
 S_WIDGET_DATA VarioSettings::getScreenDataInsideValues(JsonObject *objInside)
 {
+  JsonObject sec = *objInside;
   return {
-      objInside->getMember("a").as<bool>(),
-      objInside->getMember("b").as<bool>(),
-      objInside->getMember("x").as<unsigned short>(),
-      objInside->getMember("y").as<unsigned short>(),
-      objInside->getMember("w").as<unsigned short>(),
-      objInside->getMember("h").as<unsigned short>(),
-      objInside->getMember("n").as<unsigned char>()};
+      sec["a"].as<bool>(),
+      sec["b"].as<bool>(),
+      sec["x"].as<unsigned short>(),
+      sec["y"].as<unsigned short>(),
+      sec["w"].as<unsigned short>(),
+      sec["h"].as<unsigned short>(),
+      sec["n"].as<unsigned char>()};
 }
 
 // Saves the configuration to a file
@@ -710,12 +712,13 @@ uint8_t VarioSettings::correctParseVertAccelBias(const char *settingValue)
 
 bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<bool> *param)
 {
+  JsonObject ob = *section;
   bool isFromJson = false;
   const char *tVal;
   const char *key = param->getKey();
   if (section->containsKey(key))
   {
-    param->setValue(section->getMember(key).as<bool>());
+    param->setValue(ob[key].as<bool>());
     isFromJson = true;
     VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
   }
@@ -729,12 +732,13 @@ bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParame
 
 bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<float> *param)
 {
+  JsonObject ob = *section;
   bool isFromJson = false;
   const char *tVal;
   const char *key = param->getKey();
   if (section->containsKey(key))
   {
-    param->setValue(section->getMember(key).as<float>());
+    param->setValue(ob[key].as<float>());
     isFromJson = true;
     VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
   }
@@ -748,12 +752,13 @@ bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParame
 
 bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<int8_t> *param)
 {
+  JsonObject ob = *section;
   bool isFromJson = false;
   const char *tVal;
   const char *key = param->getKey();
   if (section->containsKey(key))
   {
-    param->setValue(section->getMember(key).as<int8_t>());
+    param->setValue(ob[key].as<int8_t>());
     isFromJson = true;
     VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
   }
@@ -767,12 +772,14 @@ bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParame
 
 bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<uint8_t> *param)
 {
+  JsonObject ob = *section;
+
   bool isFromJson = false;
   const char *tVal;
   const char *key = param->getKey();
   if (section->containsKey(key))
   {
-    param->setValue(section->getMember(key).as<uint8_t>());
+    param->setValue(ob[key].as<uint8_t>());
     isFromJson = true;
     VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
   }
@@ -786,12 +793,13 @@ bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParame
 
 bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<int16_t> *param)
 {
+  JsonObject ob = *section;
   bool isFromJson = false;
   const char *tVal;
   const char *key = param->getKey();
   if (section->containsKey(key))
   {
-    param->setValue(section->getMember(key).as<int16_t>());
+    param->setValue(ob[key].as<int16_t>());
     isFromJson = true;
     VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
   }
@@ -805,12 +813,13 @@ bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParame
 
 bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<uint16_t> *param)
 {
+  JsonObject ob = *section;
   bool isFromJson = false;
   const char *tVal;
   const char *key = param->getKey();
   if (section->containsKey(key))
   {
-    param->setValue(section->getMember(key).as<uint16_t>());
+    param->setValue(ob[key].as<uint16_t>());
     isFromJson = true;
     VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
   }
@@ -824,12 +833,13 @@ bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParame
 
 bool VarioSettings::setParameterFromJsonObject(JsonObject *section, ConfigParameter<const char *> *param)
 {
+  JsonObject ob = *section;
   bool isFromJson = false;
   const char *tVal;
   const char *key = param->getKey();
   if (section->containsKey(key))
   {
-    param->setValue(section->getMember(key).as<const char *>());
+    param->setValue(ob[key].as<const char *>());
     isFromJson = true;
     VARIO_SDCARD_DEBUG_PRINTLN("Json Recup - " + String(key) + " : " + String(param->getValue()));
   }
