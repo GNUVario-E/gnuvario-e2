@@ -133,14 +133,6 @@ void VarioDisplay::buildScreenCalibration() {
  */
 void VarioDisplay::buildScreenSound() {
     soundScreen = new VarioScreen(soundScreenData, varioLanguage);
-    // soundScreen->getTextWidget1()->setText("SOUND ...");
-    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.isactif);
-    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.x);
-    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.y);
-    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.w);
-    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.h);
-    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.altWidgetIndex);
-    VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.isborder);
 }
 
 /**
