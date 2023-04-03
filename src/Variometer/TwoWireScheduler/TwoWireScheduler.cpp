@@ -46,6 +46,10 @@
 #define bunset(bit) status &= ~(1 << bit)
 #define bisset(bit) (status & (1 << bit))
 
+
+UBaseType_t TWScheduler::minRemainingStackSize = 10000;
+
+
 TWScheduler twScheduler;
 
 Ms5611 TWScheduler::ms5611;
@@ -710,6 +714,12 @@ void TWScheduler::interruptScheduler(void *param)
 
     /* launch interrupt */
     mainInterrupt();
+
+    if (uxTaskGetStackHighWaterMark(NULL) < minRemainingStackSize)
+    {
+      minRemainingStackSize = uxTaskGetStackHighWaterMark(NULL);
+      Serial.printf("task TWOWIRE: %d", minRemainingStackSize);
+    }
   }
 }
 

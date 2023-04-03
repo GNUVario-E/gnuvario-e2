@@ -26,6 +26,7 @@ private:
     uint32_t lastCharProcessedTime;
     CircularBuffer<char, BUFFER_SIZE> sentenceBuffer;
     void sendSentenceToFC();
+    UBaseType_t minRemainingStackSize = 10000;
 
 public:
     VarioGPS();

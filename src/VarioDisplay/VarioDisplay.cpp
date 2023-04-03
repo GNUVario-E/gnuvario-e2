@@ -17,6 +17,9 @@ uint32_t VarioDisplay::lastDisplayTimeToggle = 0;
 uint16_t VarioDisplay::minTimeRefresh = 0;
 bool forceIgnoreMinTimeRefresh = false;
 
+UBaseType_t VarioDisplay::minRemainingStackSizeScreen = 10000;
+UBaseType_t VarioDisplay::minRemainingStackSizeBuffer = 10000;
+
 /**
  * Initialisetion des différents objets
  */
@@ -78,7 +81,8 @@ void VarioDisplay::buildScreens()
 /**
  * Construction de l'écran de démarrage
  */
-void VarioDisplay::buildScreenBoot() {
+void VarioDisplay::buildScreenBoot()
+{
     char tmpbuffer[50];
     bootScreen = new VarioScreen(bootScreenData, varioLanguage);
     bootScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_DEMAR));
@@ -105,7 +109,8 @@ void VarioDisplay::buildScreenBoot() {
 /**
  * Construction de l'écran WIFI
  */
-void VarioDisplay::buildScreenWifi() {
+void VarioDisplay::buildScreenWifi()
+{
     wifiScreen = new VarioScreen(wifiScreenData, varioLanguage);
     wifiScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_CONNECT));
     wifiScreen->getTextWidget1()->setIndexTxtFC(1);
@@ -121,9 +126,10 @@ void VarioDisplay::buildScreenWifi() {
 }
 
 /**
-* Construction de l'écran calibration
-*/
-void VarioDisplay::buildScreenCalibration() {
+ * Construction de l'écran calibration
+ */
+void VarioDisplay::buildScreenCalibration()
+{
     calibrationScreen = new VarioScreen(calibrationScreenData, varioLanguage);
     calibrationScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_CALIBR));
 }
@@ -131,7 +137,8 @@ void VarioDisplay::buildScreenCalibration() {
 /**
  * Construction de l'écran de réglage du volume
  */
-void VarioDisplay::buildScreenSound() {
+void VarioDisplay::buildScreenSound()
+{
     soundScreen = new VarioScreen(soundScreenData, varioLanguage);
     // soundScreen->getTextWidget1()->setText("SOUND ...");
     VARIO_PROG_DEBUG_DUMP(soundScreenData.volumeText.isactif);
@@ -146,7 +153,8 @@ void VarioDisplay::buildScreenSound() {
 /**
  * Construction de l'écran stats
  */
-void VarioDisplay::buildScreenStatistics() {
+void VarioDisplay::buildScreenStatistics()
+{
     statisticScreen = new VarioScreen(statisticScreenData, varioLanguage);
     // statisticScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_STAT));
     statisticScreen->getTextWidget1()->setIndexTxtFC(1);
@@ -163,7 +171,8 @@ void VarioDisplay::buildScreenStatistics() {
 /**
  * Construction de l'écran de redémarrage
  */
-void VarioDisplay::buildScreenReboot() {
+void VarioDisplay::buildScreenReboot()
+{
     rebootScreen = new VarioScreen(rebootScreenData, varioLanguage);
     rebootScreen->getTextWidget1()->setText(varioLanguage->getText(TITRE_REDEMAR));
 }
@@ -171,7 +180,8 @@ void VarioDisplay::buildScreenReboot() {
 /**
  * Construction de l'écran de message
  */
-void VarioDisplay::buildScreenMessage() {
+void VarioDisplay::buildScreenMessage()
+{
     messageScreen = new VarioScreen(messageScreenData, varioLanguage);
     messageScreen->getTextWidget1()->setText("");
     messageScreen->getTextWidget1()->setTextSize(1);
@@ -211,6 +221,12 @@ void VarioDisplay::screenTask(void *parameter)
                 xTaskNotify(VarioDisplay::bufferTaskHandler, 0, eNoAction);
             }
             xSemaphoreGive(displayMutex);
+        }
+
+        if (uxTaskGetStackHighWaterMark(NULL) < minRemainingStackSizeScreen)
+        {
+            minRemainingStackSizeScreen = uxTaskGetStackHighWaterMark(NULL);
+            Serial.printf("screenTask stack: %d", minRemainingStackSizeScreen);
         }
     }
 }
@@ -321,6 +337,11 @@ void VarioDisplay::bufferTask()
                 xSemaphoreGive(displayMutex);
             }
         }
+        if (uxTaskGetStackHighWaterMark(NULL) < minRemainingStackSizeBuffer)
+        {
+            minRemainingStackSizeBuffer = uxTaskGetStackHighWaterMark(NULL);
+            Serial.printf("bufferTask stack: %d", minRemainingStackSizeBuffer);
+        }
     }
 }
 
@@ -361,7 +382,7 @@ void VarioDisplay::displayScreen(VarioScreen *screen)
     {
         if (bufferTaskHandler == NULL)
         {
-            if (xTaskCreatePinnedToCore(this->startTaskBuffer, "TaskBuffer", SCREEN_STACK_SIZE, this, SCREEN_PRIORITY, &bufferTaskHandler, SCREEN_CORE) == pdPASS)
+            if (xTaskCreatePinnedToCore(this->startTaskBuffer, "TaskBuffer", SCREEN_BUFFER_STACK_SIZE, this, SCREEN_PRIORITY, &bufferTaskHandler, SCREEN_CORE) == pdPASS)
             {
                 VARIO_PROG_DEBUG_PRINTLN("TaskBuffer created");
             }

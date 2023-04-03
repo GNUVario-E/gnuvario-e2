@@ -24,6 +24,7 @@ private:
     uint32_t lastTimestampLXWP0Sentence = 0;
     void sendTramesGps();
     void sendTrameLXWP0();
+    UBaseType_t minRemainingStackSize = 10000;
 
 public:
     static TaskHandle_t _taskVarioBleHandle;

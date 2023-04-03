@@ -29,6 +29,7 @@ private:
     VarioBle *varioBle;
     VarioHisto<50, 40> *varioHisto;
     SpeedHisto<500, 120, 2> *speedHisto;
+    UBaseType_t minRemainingStackSize = 10000;
 
 public:
     Variometer(VarioBeeper *varioBeeper, VarioSD *varioSD);

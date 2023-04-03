@@ -35,6 +35,12 @@ void VarioButton::task()
 
 		// give time to other tasks
 		vTaskDelay(delayT100);
+
+		if (uxTaskGetStackHighWaterMark(NULL) < minRemainingStackSize)
+		{
+			minRemainingStackSize = uxTaskGetStackHighWaterMark(NULL);
+			Serial.printf("TaskVarioButton stack: %d", minRemainingStackSize);
+		}
 	}
 }
 

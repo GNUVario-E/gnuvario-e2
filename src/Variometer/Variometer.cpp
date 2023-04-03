@@ -13,7 +13,7 @@ void Variometer::startTask()
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("Task Vario started");
     // xTaskCreate(this->startTaskImpl, "TaskVario", 4096, this, VARIO_TASK_PRIORITY, &_taskVarioHandle);
-    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVario", 4096, this, VARIO_TASK_PRIORITY, &_taskVarioHandle, 1);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVario", 2000, this, VARIO_TASK_PRIORITY, &_taskVarioHandle, 1);
 }
 
 void Variometer::startTaskImpl(void *parm)
@@ -110,6 +110,12 @@ void Variometer::task()
 
         // give time to other tasks
         vTaskDelay(delayT10);
+
+        if (uxTaskGetStackHighWaterMark(NULL) < minRemainingStackSize)
+        {
+            minRemainingStackSize = uxTaskGetStackHighWaterMark(NULL);
+            Serial.printf("task VARIO: %d", minRemainingStackSize);
+        }
     }
 }
 

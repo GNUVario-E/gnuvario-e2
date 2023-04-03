@@ -81,6 +81,7 @@ private:
     void reboot_on_exit();
 
     VarioDisplay *varioDisplay;
+    UBaseType_t minRemainingStackSize = 10000;
 
 public:
     VarioFSM()

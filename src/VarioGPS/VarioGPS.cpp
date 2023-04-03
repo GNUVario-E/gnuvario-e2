@@ -25,7 +25,7 @@ void VarioGPS::startTask()
     // task creation
     VARIO_PROG_DEBUG_PRINTLN("TaskVarioGPS started");
     // xTaskCreate(this->startTaskImpl, "TaskVarioGPS", 4096, this, GPS_TASK_PRIORITY, &_taskVarioGPSHandle);
-    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioGPS", 6000, this, GPS_TASK_PRIORITY, &_taskVarioGPSHandle, 1);
+    xTaskCreatePinnedToCore(this->startTaskImpl, "TaskVarioGPS", 3000, this, GPS_TASK_PRIORITY, &_taskVarioGPSHandle, 1);
 }
 
 void VarioGPS::startTaskImpl(void *parm)
@@ -86,6 +86,12 @@ void VarioGPS::task()
 
         // give time to other tasks
         vTaskDelay(delayT10);
+
+        if (uxTaskGetStackHighWaterMark(NULL) < minRemainingStackSize)
+        {
+            minRemainingStackSize = uxTaskGetStackHighWaterMark(NULL);
+            Serial.printf("task GPS: %d", minRemainingStackSize);
+        }
     }
 }
 

@@ -1,4 +1,8 @@
 // #define CLEAR_NVS
+// #define TRACE_TASK
+#ifdef TRACE_TASK
+#include "varioTraceTask.h"
+#endif
 
 #include <Arduino.h>
 #include <Adafruit_I2CDevice.h>
@@ -51,6 +55,10 @@ void setup()
     while (1)
     {
       vTaskDelay(delayT1000);
+
+#ifdef TRACE_TASK
+      displayTaskStats();
+#endif
     }
   }
 }

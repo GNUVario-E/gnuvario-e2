@@ -34,6 +34,8 @@ private:
     VARIOBEEP vario;
     VARIOCYCLE getToneFromMs(float_t m);
 
+    UBaseType_t minRemainingStackSize = 10000;
+
     float _msclimb[BEEPER_SIZE] = {-10.00, -3.00, -2.00, -1.00, -0.30, 0.10, 0.50, 1.00, 2.00, 3.00, 5.00, 10.00};
     uint16_t _hertz[BEEPER_SIZE] = {200, 293, 369, 440, 475, 493, 550, 595, 675, 745, 880, 1108};
     uint16_t _cycle[BEEPER_SIZE] = {200, 200, 200, 200, 600, 600, 550, 500, 400, 310, 250, 200};

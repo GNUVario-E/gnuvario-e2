@@ -25,6 +25,12 @@ void VarioFSM::task()
 
         // give time to other tasks
         vTaskDelay(delayT50 * 2);
+
+        if (uxTaskGetStackHighWaterMark(NULL) < minRemainingStackSize)
+        {
+            minRemainingStackSize = uxTaskGetStackHighWaterMark(NULL);
+            Serial.printf("task FSM: %d", minRemainingStackSize);
+        }
     }
 }
 

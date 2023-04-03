@@ -7,7 +7,8 @@
 #include "VarioDisplay/VarioScreen/VarioScreen.h"
 #include "VarioDisplay/VarioScreen/ScreenData.h"
 
-#define SCREEN_STACK_SIZE 2500
+#define SCREEN_STACK_SIZE 1500
+#define SCREEN_BUFFER_STACK_SIZE 2000
 #define SCREEN_CORE 1
 #define SCREEN_PRIORITY 10
 
@@ -33,6 +34,8 @@ private:
     void buildScreenStatistics();
     void buildScreenReboot();
     void buildScreenMessage();
+	static UBaseType_t minRemainingStackSizeScreen;
+	static UBaseType_t minRemainingStackSizeBuffer;
 
 public:
     VarioDisplay();

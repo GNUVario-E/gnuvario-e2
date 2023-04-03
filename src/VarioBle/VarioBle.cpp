@@ -75,6 +75,12 @@ void VarioBle::task()
                 }
             }
         }
+        
+        if (uxTaskGetStackHighWaterMark(NULL) < minRemainingStackSize)
+        {
+            minRemainingStackSize = uxTaskGetStackHighWaterMark(NULL);
+            Serial.printf("task BLE: %d", minRemainingStackSize);
+        }
     }
 }
 

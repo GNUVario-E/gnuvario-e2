@@ -17,6 +17,7 @@ private:
 	TaskHandle_t _taskVarioButtonHandle = NULL;
 	static void startTaskImpl(void *);
 	void task();
+	UBaseType_t minRemainingStackSize = 10000;
 	bool _stateBA = false;
 	bool _stateBB = false;
 	bool _stateBC = false;

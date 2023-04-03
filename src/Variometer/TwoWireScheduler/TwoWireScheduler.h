@@ -189,6 +189,8 @@ private:
   static void magHaveDataCallback(void);
   static void interruptScheduler(void *param);
   static void timerCallback(void);
+
+  static UBaseType_t minRemainingStackSize;
 };
 
 extern TWScheduler twScheduler;
