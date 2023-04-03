@@ -61,6 +61,8 @@ void VarioLanguage::init(uint8_t language)
 
 void VarioLanguage::loadConfigurationLangue(const char *filename)
 {
+	DynamicJsonDocument doc(2048);
+	
 	// Open file for reading
 	boolean isFileLangOK = true;
 
@@ -80,10 +82,10 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 
 	VARIO_SDCARD_DEBUG_PRINTLN("deserialisation");
 
-	VarioTool::jsonDoc.clear();
+	doc.clear();
 
 	// Deserialize the JSON document
-	DeserializationError error = deserializeJson(VarioTool::jsonDoc, file);
+	DeserializationError error = deserializeJson(doc, file);
 
 	if (error)
 	{
@@ -104,7 +106,7 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 
 	VARIO_SDCARD_DEBUG_PRINTLN("Systeme : ");
 
-	const char *GnuvarioE_version_langue = VarioTool::jsonDoc["gnuvarioe"]["version"]; // "1.0"
+	const char *GnuvarioE_version_langue = doc["gnuvarioe"]["version"]; // "1.0"
 	if (strcmp(GnuvarioE_version_langue, PARAMS_VERSION_LANGUE) != 0)
 	{
 		isFileLangOK = false;
@@ -113,7 +115,7 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 
 	VARIO_SDCARD_DEBUG_PRINTLN("****** Titre *******");
 
-	JsonObject Titre = VarioTool::jsonDoc["titre"];
+	JsonObject Titre = doc["titre"];
 
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "TIME", TITRE_TIME, MAX_CAR_TITRE_TIME);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Titre, "TDV", TITRE_TDV, MAX_CAR_TITRE_TDV);
@@ -134,7 +136,7 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 
 	VARIO_SDCARD_DEBUG_PRINTLN("****** Message *******");
 
-	JsonObject Message = VarioTool::jsonDoc["message"];
+	JsonObject Message = doc["message"];
 
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Message, "STAT", TITRE_STAT, MAX_CAR_TITRE_STAT);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&Message, "DATE", TITRE_DATE, MAX_CAR_TITRE_DATE);
@@ -155,7 +157,7 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 
 	VARIO_SDCARD_DEBUG_PRINTLN("****** Stat *******");
 
-	JsonObject State = VarioTool::jsonDoc["stat"];
+	JsonObject State = doc["stat"];
 
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&State, "DUREE", TITRE_STAT_DUREE, MAX_CAR_TITRE_STAT_DUREE);
 	isFileLangOK = isFileLangOK && setParameterFromJsonObject(&State, "SPEED", TITRE_STAT_SPEED, MAX_CAR_TITRE_STAT_SPEED);
@@ -170,13 +172,15 @@ void VarioLanguage::loadConfigurationLangue(const char *filename)
 		saveConfigurationVario(GnuvarioE_version_langue, filename);
 	}
 
-	VarioTool::jsonDoc.clear();
+	doc.clear();
 }
 
 // Saves the configuration to a file
 void VarioLanguage::saveConfigurationVario(const char *version, const char *filename)
 {
-	VarioTool::jsonDoc.clear();
+	DynamicJsonDocument doc(2048);
+
+	doc.clear();
 	// Delete existing file, otherwise the configuration is appended to the file
 	SD.remove(filename);
 
@@ -193,14 +197,14 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 	VARIO_SDCARD_DEBUG_PRINTLN(" *******");
 
 	// Set the values in the document
-	JsonObject GnuvarioE = VarioTool::jsonDoc.createNestedObject("gnuvarioe");
+	JsonObject GnuvarioE = doc.createNestedObject("gnuvarioe");
 	GnuvarioE["version"] = version;
 
 	//*****    SYSTEME *****
 
 	VARIO_SDCARD_DEBUG_PRINTLN("****** Titre *******");
 
-	JsonObject Titre = VarioTool::jsonDoc.createNestedObject("titre");
+	JsonObject Titre = doc.createNestedObject("titre");
 
 	Titre["TIME"] = TITRE_TAB[TITRE_TIME];
 	Titre["TDV"] = TITRE_TAB[TITRE_TDV];
@@ -221,7 +225,7 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 
 	VARIO_SDCARD_DEBUG_PRINTLN("****** Message *******");
 
-	JsonObject Message = VarioTool::jsonDoc.createNestedObject("message");
+	JsonObject Message = doc.createNestedObject("message");
 	Message["STAT"] = TITRE_TAB[TITRE_STAT];
 	Message["DATE"] = TITRE_TAB[TITRE_DATE];
 	Message["HEURE"] = TITRE_TAB[TITRE_HEURE];
@@ -243,12 +247,12 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 
 	VARIO_SDCARD_DEBUG_PRINTLN("****** Stat *******");
 
-	JsonObject State = VarioTool::jsonDoc.createNestedObject("stat");
+	JsonObject State = doc.createNestedObject("stat");
 	State["DUREE"] = TITRE_TAB[TITRE_DUREE];
 	State["SPEED"] = TITRE_TAB[TITRE_SPEED];
 
 	// Serialize JSON to file
-	if (serializeJson(VarioTool::jsonDoc, file) == 0)
+	if (serializeJson(doc, file) == 0)
 	{
 		VARIO_SDCARD_DEBUG_PRINTLN("Failed to write to file");
 	}
@@ -256,7 +260,7 @@ void VarioLanguage::saveConfigurationVario(const char *version, const char *file
 	// Close the file
 	file.close();
 	// Clearing Buffer
-	VarioTool::jsonDoc.clear();
+	doc.clear();
 }
 
 char *VarioLanguage::getText(uint8_t value)

@@ -92,6 +92,8 @@ boolean VarioSettings::readSDSettingsSound(char *fileName)
 
 bool VarioSettings::loadConfigurationVario(char *filename)
 {
+  DynamicJsonDocument doc(2048);
+
   // Open file for reading
   boolean isFileParamsOK = true;
 
@@ -110,10 +112,10 @@ bool VarioSettings::loadConfigurationVario(char *filename)
     return false;
   }
   // Clearing Buffer
-  VarioTool::jsonDoc.clear();
+  doc.clear();
 
   // Deserialize the JSON document
-  DeserializationError error = deserializeJson(VarioTool::jsonDoc, file);
+  DeserializationError error = deserializeJson(doc, file);
   if (error)
   {
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to read file, using default configuration");
@@ -124,7 +126,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
 
   VARIO_SDCARD_DEBUG_PRINTLN("Paramètres : ");
 
-  const char *GnuvarioE_version = VarioTool::jsonDoc["gnuvarioe"]["version"]; // "1.0"
+  const char *GnuvarioE_version = doc["gnuvarioe"]["version"]; // "1.0"
   if (strcmp(GnuvarioE_version, PARAMS_VERSION) != 0)
   {
     isFileParamsOK = false;
@@ -141,7 +143,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** Systeme *******");
 
-  JsonObject Systeme = VarioTool::jsonDoc["systeme"];
+  JsonObject Systeme = doc["systeme"];
 
   isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_BT_ENABLE);
   isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&Systeme, params->P_NO_RECORD);
@@ -160,7 +162,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** General *******");
 
-  JsonObject General = VarioTool::jsonDoc["general"];
+  JsonObject General = doc["general"];
   JsonObject General_GLIDER = General["GLIDER"];
 
   isFileParamsOK = isFileParamsOK && setParameterFromJsonObject(&General, params->P_PILOT_NAME);
@@ -175,7 +177,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** Vario *******");
 
-  JsonObject Vario = VarioTool::jsonDoc["vario"];
+  JsonObject Vario = doc["vario"];
 
   // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_SINKING_THRESHOLD)->setParameterFromJsonObject(&Vario, "SINKING_THRESHOLD");
   // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_CLIMBING_THRESHOLD)->setParameterFromJsonObject(&Vario, "CLIMBING_THRESHOLD");
@@ -201,7 +203,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** Flight start *******");
 
-  JsonObject FlightStart = VarioTool::jsonDoc["flightstart"];
+  JsonObject FlightStart = doc["flightstart"];
 
   // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_MIN_TIMESTAMP)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_MIN_TIMESTAMP");
   // isFileParamsOK = isFileParamsOK && varioData.getParam(PARAM_FLIGHT_START_VARIO_LOW_THRESHOLD)->setParameterFromJsonObject(&FlightStart, "FLIGHT_START_VARIO_LOW_THRESHOLD");
@@ -222,7 +224,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
 #endif
 
   // Clearing Buffer
-  VarioTool::jsonDoc.clear();
+  doc.clear();
 
 #ifdef SDCARD_DEBUG
   Serial.printf_P(PSTR("free heap memory: %d\n"), ESP.getFreeHeap());
@@ -239,6 +241,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
 
 void VarioSettings::loadScreenVario(char *filename)
 {
+
   // Open file for reading
   File file = SD.open(filename, FILE_READ);
   if (!file)
@@ -246,11 +249,6 @@ void VarioSettings::loadScreenVario(char *filename)
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to read file");
     return;
   }
-
-  // Clearing doc
-  VarioTool::jsonDoc.clear();
-
-  JsonObject obj;
 
   if (!readJsonSectionToScreenData("boot", file, &bootScreenData))
   {
@@ -311,21 +309,20 @@ void VarioSettings::loadScreenVario(char *filename)
     file.close();
     return;
   }
-
-  // Clearing Buffer
-  VarioTool::jsonDoc.clear();
 }
 
 bool VarioSettings::readJsonSectionToScreenData(const char *sectionName, File &input, ScreenData *screenData)
 {
+  DynamicJsonDocument doc(5000);
+
   // Rewind the file pointer to the beginning of the file
   input.seek(0);
 
-  VarioTool::jsonDoc.clear();
+  doc.clear();
 
   StaticJsonDocument<64> filter;
   filter[sectionName] = true;
-  DeserializationError error = deserializeJson(VarioTool::jsonDoc, input, DeserializationOption::Filter(filter));
+  DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter));
 
   if (error)
   {
@@ -336,7 +333,7 @@ bool VarioSettings::readJsonSectionToScreenData(const char *sectionName, File &i
   }
 
   JsonObject obj;
-  obj = VarioTool::jsonDoc[sectionName];
+  obj = doc[sectionName];
   setScreenDataValues(&obj, screenData);
 
   return true;
@@ -442,6 +439,7 @@ S_WIDGET_DATA VarioSettings::getScreenDataInsideValues(JsonObject *objInside)
 // Saves the configuration to a file
 void VarioSettings::saveConfigurationVario(char *filename)
 {
+  DynamicJsonDocument doc(2048);
 
   // Delete existing file, otherwise the configuration is appended to the file
   if (SD.exists(filename))
@@ -464,19 +462,19 @@ void VarioSettings::saveConfigurationVario(char *filename)
 #endif
 
   // Clearing Buffer
-  VarioTool::jsonDoc.clear();
+  doc.clear();
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** GnuvarioE *******");
 
   // Set the values in the document
-  JsonObject GnuvarioE = VarioTool::jsonDoc.createNestedObject("gnuvarioe");
+  JsonObject GnuvarioE = doc.createNestedObject("gnuvarioe");
   GnuvarioE["version"] = PARAMS_VERSION;
 
   //*****    SYSTEME *****
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** Systeme *******");
 
-  JsonObject Systeme = VarioTool::jsonDoc.createNestedObject("systeme");
+  JsonObject Systeme = doc.createNestedObject("systeme");
 
   Systeme["BT_ENABLE"] = params->P_BT_ENABLE->getValue() ? 1 : 0;
   Systeme["NO_RECORD"] = params->P_NO_RECORD->getValue() ? 1 : 0;
@@ -497,7 +495,7 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** General *******");
 
-  JsonObject General = VarioTool::jsonDoc.createNestedObject("general");
+  JsonObject General = doc.createNestedObject("general");
 
   General["PILOT_NAME"] = params->P_PILOT_NAME->getValue();
 
@@ -515,7 +513,7 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** Vario *******");
 
-  JsonObject Vario = VarioTool::jsonDoc.createNestedObject("vario");
+  JsonObject Vario = doc.createNestedObject("vario");
 
   // Vario["SINKING_THRESHOLD"] = varioData.getParam(PARAM_SINKING_THRESHOLD)->getValueFloat();
   // Vario["CLIMBING_THRESHOLD"] = varioData.getParam(PARAM_CLIMBING_THRESHOLD)->getValueFloat();
@@ -542,7 +540,7 @@ void VarioSettings::saveConfigurationVario(char *filename)
 
   VARIO_SDCARD_DEBUG_PRINTLN("****** Flight start *******");
 
-  JsonObject FlightStart = VarioTool::jsonDoc.createNestedObject("flightstart");
+  JsonObject FlightStart = doc.createNestedObject("flightstart");
 
   // FlightStart["FLIGHT_START_MIN_TIMESTAMP"] = varioData.getParam(PARAM_FLIGHT_START_MIN_TIMESTAMP)->getValueUInt16();
   // FlightStart["FLIGHT_START_VARIO_LOW_THRESHOLD"] = varioData.getParam(PARAM_FLIGHT_START_VARIO_LOW_THRESHOLD)->getValueFloat();
@@ -556,7 +554,7 @@ void VarioSettings::saveConfigurationVario(char *filename)
   FlightStart["RECORD_WHEN_FLIGHT_START"] = params->P_RECORD_WHEN_FLIGHT_START->getValue() ? 1 : 0;
 
   // Serialize JSON to file
-  if (serializeJson(VarioTool::jsonDoc, file) == 0)
+  if (serializeJson(doc, file) == 0)
   {
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to write to file");
   }
@@ -564,7 +562,7 @@ void VarioSettings::saveConfigurationVario(char *filename)
   // Close the file
   file.close();
   // Clearing Buffer
-  VarioTool::jsonDoc.clear();
+  doc.clear();
 
 #ifdef SDCARD_DEBUG
   Serial.printf_P(PSTR("free heap memory: %d\n"), ESP.getFreeHeap());

@@ -543,6 +543,7 @@ String VarioSqlFlight::getSites()
     int rc;
     sqlite3_stmt *res;
     const char *tail;
+    DynamicJsonDocument doc(2048);
 
     VARIO_SQL_DEBUG_PRINTLN("openDb");
 
@@ -563,7 +564,7 @@ String VarioSqlFlight::getSites()
         return output;
     }
 
-    VarioTool::jsonDoc.clear();
+    doc.clear();
 
     while (sqlite3_step(res) == SQLITE_ROW)
     {
@@ -574,15 +575,16 @@ String VarioSqlFlight::getSites()
         //     return;
         // }
         // doc.add(i);
-        JsonObject obj1 = VarioTool::jsonDoc.createNestedObject();
+        JsonObject obj1 = doc.createNestedObject();
         obj1["id"] = sqlite3_column_int(res, 0);
         obj1["lib"] = String((char *)sqlite3_column_text(res, 1));
         obj1["comment"] = String((char *)sqlite3_column_text(res, 2));
         obj1["lat"] = sqlite3_column_double(res, 3);
         obj1["lon"] = sqlite3_column_double(res, 4);
     }
-    serializeJson(VarioTool::jsonDoc, output);
+    serializeJson(doc, output);
     sqlite3_finalize(res);
+
     return output;
 }
 
@@ -590,9 +592,10 @@ bool VarioSqlFlight::insertSite(String data)
 {
     VARIO_SQL_DEBUG_PRINTLN(data);
 
-    VarioTool::jsonDoc.clear();
+    DynamicJsonDocument doc(2048);
+    doc.clear();
 
-    DeserializationError err = deserializeJson(VarioTool::jsonDoc, data);
+    DeserializationError err = deserializeJson(doc, data);
     if (err)
     {
         VARIO_SQL_DEBUG_PRINT(F("deserializeJson() failed with code "));
@@ -628,10 +631,10 @@ bool VarioSqlFlight::insertSite(String data)
 
     VARIO_SQL_DEBUG_PRINTLN("Début binding");
 
-    sqlite3_bind_text(res, 1, VarioTool::jsonDoc["lib"], strlen(VarioTool::jsonDoc["lib"]), SQLITE_STATIC);
-    sqlite3_bind_text(res, 2, VarioTool::jsonDoc["comment"], strlen(VarioTool::jsonDoc["comment"]), SQLITE_STATIC);
-    sqlite3_bind_double(res, 3, VarioTool::jsonDoc["lat"]);
-    sqlite3_bind_double(res, 4, VarioTool::jsonDoc["lon"]);
+    sqlite3_bind_text(res, 1, doc["lib"], strlen(doc["lib"]), SQLITE_STATIC);
+    sqlite3_bind_text(res, 2, doc["comment"], strlen(doc["comment"]), SQLITE_STATIC);
+    sqlite3_bind_double(res, 3, doc["lat"]);
+    sqlite3_bind_double(res, 4, doc["lon"]);
 
     VARIO_SQL_DEBUG_PRINTLN("Début step");
 
@@ -666,9 +669,11 @@ bool VarioSqlFlight::updateSite(uint8_t id, String data)
 {
     VARIO_SQL_DEBUG_PRINTLN(data);
 
-    VarioTool::jsonDoc.clear();
+    DynamicJsonDocument doc(2048);
 
-    DeserializationError err = deserializeJson(VarioTool::jsonDoc, data);
+    doc.clear();
+
+    DeserializationError err = deserializeJson(doc, data);
     if (err)
     {
         VARIO_SQL_DEBUG_PRINT("deserializeJson() failed with code ");
@@ -705,10 +710,10 @@ bool VarioSqlFlight::updateSite(uint8_t id, String data)
 
     VARIO_SQL_DEBUG_PRINTLN("Début binding");
 
-    sqlite3_bind_text(res, 1, VarioTool::jsonDoc["lib"], strlen(VarioTool::jsonDoc["lib"]), SQLITE_STATIC);
-    sqlite3_bind_text(res, 2, VarioTool::jsonDoc["comment"], strlen(VarioTool::jsonDoc["comment"]), SQLITE_STATIC);
-    sqlite3_bind_double(res, 3, VarioTool::jsonDoc["lat"]);
-    sqlite3_bind_double(res, 4, VarioTool::jsonDoc["lon"]);
+    sqlite3_bind_text(res, 1, doc["lib"], strlen(doc["lib"]), SQLITE_STATIC);
+    sqlite3_bind_text(res, 2, doc["comment"], strlen(doc["comment"]), SQLITE_STATIC);
+    sqlite3_bind_double(res, 3, doc["lat"]);
+    sqlite3_bind_double(res, 4, doc["lon"]);
     sqlite3_bind_int(res, 5, id);
 
     VARIO_SQL_DEBUG_PRINTLN("Début step");
@@ -737,7 +742,7 @@ bool VarioSqlFlight::updateSite(uint8_t id, String data)
 
     sqlite3_finalize(res);
 
-    VarioTool::jsonDoc.clear();
+    doc.clear();
 
     return true;
 }
@@ -1279,6 +1284,7 @@ String VarioSqlFlight::getFlightsShort(String mode, String parcel)
     const char *tail;
 
     VARIO_SQL_DEBUG_PRINTLN("openDb");
+    DynamicJsonDocument doc(10000);
 
     if (!isOpened)
     {
@@ -1320,11 +1326,11 @@ String VarioSqlFlight::getFlightsShort(String mode, String parcel)
         return output;
     };
 
-    VarioTool::jsonDoc.clear();
+    doc.clear();
 
     while ((step_res = sqlite3_step(res)) == SQLITE_ROW)
     {
-        JsonObject obj1 = VarioTool::jsonDoc.createNestedObject();
+        JsonObject obj1 = doc.createNestedObject();
         obj1["nf"] = sqlite3_column_int(res, 0);
         // obj1["ns"] = sqlite3_column_int(res, 1);
         obj1["du"] = String((char *)sqlite3_column_text(res, 1));
@@ -1347,7 +1353,7 @@ String VarioSqlFlight::getFlightsShort(String mode, String parcel)
         VARIO_SQL_DEBUG_PRINTLN(step_res);
     }
 
-    serializeJson(VarioTool::jsonDoc, output);
+    serializeJson(doc, output);
     sqlite3_finalize(res);
 
     return output;
