@@ -5,8 +5,6 @@
 
 #define R_M 6378137 // distance moyenne de la Terre à l'équateur en m
 
-StaticJsonDocument<JSON_SIZE> VarioTool::jsonDoc;
-
 void VarioTool::appendChar(char *s, char c)
 {
     int len = strlen(s);

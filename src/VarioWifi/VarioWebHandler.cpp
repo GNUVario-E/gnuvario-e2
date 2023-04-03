@@ -1027,10 +1027,11 @@ void VarioWebHandler::_doParseIgcAndInsert(void *parameter)
 igcdata VarioWebHandler::jsonToIgcdata(String data)
 {
     igcdata myIgcData;
+    DynamicJsonDocument doc(2048);
 
-    VarioTool::jsonDoc.clear();
+    doc.clear();
 
-    DeserializationError err = deserializeJson(VarioTool::jsonDoc, data);
+    DeserializationError err = deserializeJson(doc, data);
     if (err)
     {
         VARIO_SQL_DEBUG_PRINT(F("deserializeJson() failed with code "));
@@ -1039,77 +1040,77 @@ igcdata VarioWebHandler::jsonToIgcdata(String data)
         return myIgcData;
     }
 
-    if (VarioTool::jsonDoc.containsKey("pilot"))
+    if (doc.containsKey("pilot"))
     {
-        myIgcData.pilot = VarioTool::jsonDoc["pilot"].as<String>();
+        myIgcData.pilot = doc["pilot"].as<String>();
     }
-    if (VarioTool::jsonDoc.containsKey("wing"))
+    if (doc.containsKey("wing"))
     {
-        myIgcData.wing = VarioTool::jsonDoc["wing"].as<String>();
+        myIgcData.wing = doc["wing"].as<String>();
     }
-    if (VarioTool::jsonDoc.containsKey("flightDate"))
+    if (doc.containsKey("flightDate"))
     {
-        myIgcData.flightDate = VarioTool::jsonDoc["flightDate"].as<String>();
+        myIgcData.flightDate = doc["flightDate"].as<String>();
     }
-    if (VarioTool::jsonDoc.containsKey("startFlightTime"))
+    if (doc.containsKey("startFlightTime"))
     {
-        myIgcData.startFlightTime = VarioTool::jsonDoc["startFlightTime"].as<String>();
+        myIgcData.startFlightTime = doc["startFlightTime"].as<String>();
     }
-    if (VarioTool::jsonDoc.containsKey("endFlightTime"))
+    if (doc.containsKey("endFlightTime"))
     {
-        myIgcData.endFlightTime = VarioTool::jsonDoc["endFlightTime"].as<String>();
+        myIgcData.endFlightTime = doc["endFlightTime"].as<String>();
     }
-    if (VarioTool::jsonDoc.containsKey("startHeight"))
+    if (doc.containsKey("startHeight"))
     {
-        myIgcData.startHeight = VarioTool::jsonDoc["startHeight"];
+        myIgcData.startHeight = doc["startHeight"];
     }
-    if (VarioTool::jsonDoc.containsKey("endHeight"))
+    if (doc.containsKey("endHeight"))
     {
-        myIgcData.endHeight = VarioTool::jsonDoc["endHeight"];
+        myIgcData.endHeight = doc["endHeight"];
     }
-    if (VarioTool::jsonDoc.containsKey("minHeight"))
+    if (doc.containsKey("minHeight"))
     {
-        myIgcData.minHeight = VarioTool::jsonDoc["minHeight"];
+        myIgcData.minHeight = doc["minHeight"];
     }
-    if (VarioTool::jsonDoc.containsKey("maxHeight"))
+    if (doc.containsKey("maxHeight"))
     {
-        myIgcData.maxHeight = VarioTool::jsonDoc["maxHeight"];
+        myIgcData.maxHeight = doc["maxHeight"];
     }
-    if (VarioTool::jsonDoc.containsKey("startLat"))
+    if (doc.containsKey("startLat"))
     {
-        myIgcData.startLat = VarioTool::jsonDoc["startLat"];
+        myIgcData.startLat = doc["startLat"];
     }
-    if (VarioTool::jsonDoc.containsKey("startLon"))
+    if (doc.containsKey("startLon"))
     {
-        myIgcData.startLon = VarioTool::jsonDoc["startLon"];
+        myIgcData.startLon = doc["startLon"];
     }
-    if (VarioTool::jsonDoc.containsKey("endLat"))
+    if (doc.containsKey("endLat"))
     {
-        myIgcData.endLat = VarioTool::jsonDoc["endLat"];
+        myIgcData.endLat = doc["endLat"];
     }
-    if (VarioTool::jsonDoc.containsKey("endLon"))
+    if (doc.containsKey("endLon"))
     {
-        myIgcData.endLon = VarioTool::jsonDoc["endLon"];
+        myIgcData.endLon = doc["endLon"];
     }
-    if (VarioTool::jsonDoc.containsKey("md5"))
+    if (doc.containsKey("md5"))
     {
-        myIgcData.md5 = VarioTool::jsonDoc["md5"].as<String>();
+        myIgcData.md5 = doc["md5"].as<String>();
     }
-    if (VarioTool::jsonDoc.containsKey("filename"))
+    if (doc.containsKey("filename"))
     {
-        myIgcData.filename = VarioTool::jsonDoc["filename"].as<String>();
+        myIgcData.filename = doc["filename"].as<String>();
     }
-    if (VarioTool::jsonDoc.containsKey("site_id"))
+    if (doc.containsKey("site_id"))
     {
-        myIgcData.site_id = VarioTool::jsonDoc["site_id"];
+        myIgcData.site_id = doc["site_id"];
     }
-    if (VarioTool::jsonDoc.containsKey("comment"))
+    if (doc.containsKey("comment"))
     {
-        myIgcData.comment = VarioTool::jsonDoc["comment"].as<String>();
+        myIgcData.comment = doc["comment"].as<String>();
     }
-    if (VarioTool::jsonDoc.containsKey("stl_id"))
+    if (doc.containsKey("stl_id"))
     {
-        myIgcData.stl_id = VarioTool::jsonDoc["stl_id"];
+        myIgcData.stl_id = doc["stl_id"];
     }
 
     return myIgcData;
