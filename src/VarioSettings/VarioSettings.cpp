@@ -241,6 +241,7 @@ bool VarioSettings::loadConfigurationVario(char *filename)
 
 void VarioSettings::loadScreenVario(char *filename)
 {
+  DynamicJsonDocument doc(40000);
 
   // Open file for reading
   File file = SD.open(filename, FILE_READ);
@@ -250,94 +251,50 @@ void VarioSettings::loadScreenVario(char *filename)
     return;
   }
 
-  if (!readJsonSectionToScreenData("boot", file, &bootScreenData))
-  {
-    file.close();
-    return;
-  }
-
-  if (!readJsonSectionToScreenData("wifi", file, &wifiScreenData))
-  {
-    file.close();
-    return;
-  }
-
-  if (!readJsonSectionToScreenData("calibration", file, &calibrationScreenData))
-  {
-    file.close();
-    return;
-  }
-
-  if (!readJsonSectionToScreenData("vario1", file, &vario1ScreenData))
-  {
-    file.close();
-    return;
-  }
-
-  if (!readJsonSectionToScreenData("vario2", file, &vario2ScreenData))
-  {
-    file.close();
-    return;
-  }
-
-  if (!readJsonSectionToScreenData("vario3", file, &vario3ScreenData))
-  {
-    file.close();
-    return;
-  }
-
-  if (!readJsonSectionToScreenData("sound", file, &soundScreenData))
-  {
-    file.close();
-    return;
-  }
-
-  if (!readJsonSectionToScreenData("statistic", file, &statisticScreenData))
-  {
-    file.close();
-    return;
-  }
-
-  if (!readJsonSectionToScreenData("reboot", file, &rebootScreenData))
-  {
-    file.close();
-    return;
-  }
-
-  if (!readJsonSectionToScreenData("message", file, &messageScreenData))
-  {
-    file.close();
-    return;
-  }
-}
-
-bool VarioSettings::readJsonSectionToScreenData(const char *sectionName, File &input, ScreenData *screenData)
-{
-  DynamicJsonDocument doc(5000);
-
-  // Rewind the file pointer to the beginning of the file
-  input.seek(0);
-
-  doc.clear();
-
-  StaticJsonDocument<64> filter;
-  filter[sectionName] = true;
-  DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter));
+  DeserializationError error = deserializeJson(doc, file);
 
   if (error)
   {
     VARIO_SDCARD_DEBUG_PRINTLN("Failed to parse file");
     VARIO_SDCARD_DEBUG_PRINTLN(error.c_str());
 
-    return false;
+    return;
   }
+  file.close();
 
   JsonObject obj;
-  obj = doc[sectionName];
-  setScreenDataValues(&obj, screenData);
 
-  return true;
+  obj = doc["boot"];
+  setScreenDataValues(&obj, &bootScreenData);
+
+  obj = doc["wifi"];
+  setScreenDataValues(&obj, &wifiScreenData);
+
+  obj = doc["calibration"];
+  setScreenDataValues(&obj, &calibrationScreenData);
+
+  obj = doc["vario1"];
+  setScreenDataValues(&obj, &vario1ScreenData);
+
+  obj = doc["vario2"];
+  setScreenDataValues(&obj, &vario2ScreenData);
+
+  obj = doc["vario3"];
+  setScreenDataValues(&obj, &vario3ScreenData);
+
+  obj = doc["sound"];
+  setScreenDataValues(&obj, &soundScreenData);
+
+  obj = doc["statistic"];
+  setScreenDataValues(&obj, &statisticScreenData);
+
+  obj = doc["reboot"];
+  setScreenDataValues(&obj, &rebootScreenData);
+
+  obj = doc["message"];
+  setScreenDataValues(&obj, &messageScreenData);
 }
+
 
 void VarioSettings::setScreenDataValues(JsonObject *obj, ScreenData *screenData)
 {
