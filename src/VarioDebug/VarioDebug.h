@@ -4,7 +4,7 @@
 
 #define VARIO_DEBUG // activate desactivate debuging
 
-#define SD_LOGGING // activate desactivate sd logging
+// #define SD_LOGGING // activate desactivate sd logging
 
 #if defined(SD_LOGGING)
 #include "VarioDebug/SdDebug.h"
@@ -49,7 +49,7 @@ extern SdDebug sdDebug;
 #define WIFI_DEBUG
 // #define SOUND_DEBUG
 // #define AGL_DEBUG
-// #define SQL_DEBUG
+#define SQL_DEBUG
 // #define BEARING_DEBUG
 // #define TWOWIRESCH_DEBUG
 // #define POWER_DEBUG
@@ -57,7 +57,7 @@ extern SdDebug sdDebug;
 // #define FSM_DEBUG
 // #define PARAM_DEBUG
 // #define PREFS_DEBUG
-// #define WIND_DEBUG
+#define WIND_DEBUG
 
 
 #if !defined(VARIO_DEBUG) || !defined(PROG_DEBUG)

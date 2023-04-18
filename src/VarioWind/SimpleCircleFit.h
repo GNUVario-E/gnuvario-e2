@@ -5,7 +5,7 @@
 #include "_vector.h"
 #include "FC.h"
 
-#define NB_VECTORS 500 // nb points for wind calculation
+#define NB_VECTORS 150 // nb points for wind calculation
 
 typedef struct
 {

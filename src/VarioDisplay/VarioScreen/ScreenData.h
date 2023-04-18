@@ -40,4 +40,5 @@ struct ScreenData
     S_WIDGET_DATA agl;
     S_WIDGET_DATA wind;
     S_WIDGET_DATA circle;
+    S_WIDGET_DATA windg;
 };

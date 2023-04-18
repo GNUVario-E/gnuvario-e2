@@ -5,6 +5,8 @@
 #include "VarioManager.h"
 #include "VarioFSM/VarioFSM.h"
 #include <FC.h>
+#include "VarioDebug/VarioDebug.h"
+
 // global screen data objects
 #include "DisplayData.h"
 
@@ -36,6 +38,13 @@ void clearNVS()
 void setup()
 {
   Serial.begin(115200);
+  while (!Serial)
+  {
+    ; // wait for serial port to connect
+  }
+
+  VARIO_MEMORY_DEBUG_PRINTLN("Free heap boot");
+  VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
 
 #ifdef CLEAR_NVS
   clearNVS();
@@ -45,6 +54,9 @@ void setup()
   // initialisation des valeurs par defaut des parametres
   params->initDefault();
 
+  VARIO_MEMORY_DEBUG_PRINTLN("Free heap after params init");
+  VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
+  
   // initialisation
   if (!vm.init())
   {

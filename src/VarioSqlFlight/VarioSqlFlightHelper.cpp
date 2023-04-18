@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "VarioSqlFlight/VarioSqlFlightHelper.h"
+#include "VarioDebug/VarioDebug.h"
 
 VarioSqlFlightHelper::VarioSqlFlightHelper()
 {
@@ -16,15 +17,14 @@ void VarioSqlFlightHelper::init(int16_t vlimit, int16_t voffset)
     limit = vlimit;
     offset = voffset;
     parcel = "";
-    //ruse pour contourner le pb de mémoire sur sqlite
+    // ruse pour contourner le pb de mémoire sur sqlite
     limitTemp = limit;
     offsetTemp = offset;
     firstLine = true;
     isQueryInit = false;
     myRingBuffer.clear();
-#ifdef SQL_DEBUG
-    Serial.println("init");
-#endif
+
+    VARIO_SQL_DEBUG_PRINTLN("init");
 }
 
 void VarioSqlFlightHelper::init(String vParcel)
@@ -33,15 +33,14 @@ void VarioSqlFlightHelper::init(String vParcel)
     limit = 1000;
     offset = 0;
 
-    //ruse pour contourner le pb de mémoire sur sqlite
+    // ruse pour contourner le pb de mémoire sur sqlite
     limitTemp = limit;
     offsetTemp = offset;
     firstLine = true;
     isQueryInit = false;
     myRingBuffer.clear();
-#ifdef SQL_DEBUG
-    Serial.println("init");
-#endif
+
+    VARIO_SQL_DEBUG_PRINTLN("init");
 }
 
 void VarioSqlFlightHelper::feedBuffer()
@@ -65,7 +64,7 @@ void VarioSqlFlightHelper::feedBuffer()
             {
                 if (!varioSqlFlight->initGetFlightsQuery(limitTemp, offsetTemp))
                 {
-                    //erreur requete
+                    // erreur requete
                     limit = 0;
                     return;
                 }
@@ -74,7 +73,7 @@ void VarioSqlFlightHelper::feedBuffer()
             {
                 if (!varioSqlFlight->initGetFlightsQuery(parcel))
                 {
-                    //erreur requete
+                    // erreur requete
                     limit = 0;
                     return;
                 }
@@ -85,13 +84,13 @@ void VarioSqlFlightHelper::feedBuffer()
             if (firstLine)
             {
                 myRingBuffer.push('[');
-                //firstLine = false;
+                // firstLine = false;
             }
 
             res = varioSqlFlight->getNextFlight(firstLine, myRingBuffer);
             if (res == false)
             {
-                //pas la peine de continuer, on est a la fin
+                // pas la peine de continuer, on est a la fin
                 limit = 0;
                 myRingBuffer.push(']');
                 return;
@@ -123,31 +122,30 @@ uint16_t VarioSqlFlightHelper::readData(uint8_t *buffer, size_t maxLength)
     uint16_t bufLength;
     uint16_t nb = 0;
 
-#ifdef SQL_DEBUG
-    Serial.print("maxLength: ");
-    Serial.println(maxLength);
-#endif
+    VARIO_SQL_DEBUG_PRINT("maxLength: ");
+    VARIO_SQL_DEBUG_PRINTLN(maxLength);
 
-    //si le buffer est vide, on tente de le remplir
+    // si le buffer est vide, on tente de le remplir
     if (myRingBuffer.isEmpty())
     {
         if (limit <= 0)
         {
+            VARIO_SQL_DEBUG_PRINTLN("buffer vide et limit atteint");
             return 0;
         }
         else
         {
-#ifdef SQL_DEBUG
-            Serial.println("avant feed");
-#endif
+            VARIO_SQL_DEBUG_PRINTLN("avant feed");
+
             feedBuffer();
-#ifdef SQL_DEBUG
-            Serial.println("apres feed");
-#endif
+
+            VARIO_SQL_DEBUG_PRINTLN("apres feed");
         }
+    } else {
+        VARIO_SQL_DEBUG_PRINTLN("buffer non vide");
     }
 
-    //si le buffer est toujours vide, on renvoie 0 pour terminer
+    // si le buffer est toujours vide, on renvoie 0 pour terminer
     if (myRingBuffer.isEmpty())
     {
         return 0;
@@ -167,14 +165,13 @@ uint16_t VarioSqlFlightHelper::readData(uint8_t *buffer, size_t maxLength)
     {
         bufLength = max;
     }
-// if (bufLength > 100)
-// {
-//     bufLength = 100;
-// }
-#ifdef SQL_DEBUG
-    Serial.print("Buffer length: ");
-    Serial.println(bufLength);
-#endif
+    // if (bufLength > 100)
+    // {
+    //     bufLength = 100;
+    // }
+
+    VARIO_SQL_DEBUG_PRINT("Buffer length: ");
+    VARIO_SQL_DEBUG_PRINTLN(bufLength);
 
     char tBuf[bufLength];
 
@@ -195,10 +192,8 @@ uint16_t VarioSqlFlightHelper::readData(uint8_t *buffer, size_t maxLength)
         memcpy(buffer, tBuf, nb);
     }
 
-#ifdef SQL_DEBUG
-    Serial.print("return nb ");
-    Serial.println(nb);
-#endif
+    VARIO_SQL_DEBUG_PRINT("return nb ");
+    VARIO_SQL_DEBUG_PRINTLN(nb);
 
     return nb;
 }

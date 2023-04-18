@@ -2,7 +2,7 @@
 #include "VarioDebug/VarioDebug.h"
 
 #define PERIOD_WIND_CALCULATION 5000 // 5s
-#define IS_FROM_TEST
+// #define IS_FROM_TEST
 #if defined(IS_FROM_TEST)
 #include "windTestData.h"
 static uint16_t indTest = 0;
@@ -88,7 +88,12 @@ void VarioWind::addPoint(double lat, double lon, uint32_t timestamp)
     // Serial.print(", timestamp:");
     // Serial.println(timestamp);
 #endif
-
+    Serial.print("lat GPS:");
+    Serial.print(lat, 8);
+    Serial.print(", lonIGC:");
+    Serial.print(lon, 8);
+    Serial.print(", timestamp:");
+    Serial.println(timestamp);
     circleFit->addPoint(lat, lon, timestamp);
 }
 

@@ -21,6 +21,8 @@ boolean VarioManager::init()
     VARIO_PROG_DEBUG_PRINTLN("vm init");
     VARIO_PROG_DEBUG_TRACE();
 
+    VARIO_MEMORY_DEBUG_PRINTLN("Free heap vm init");
+    VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
     varioBeeper->init(5);
 
     if (params->P_BEEP_VARIOBEGIN->getValue())
@@ -103,6 +105,9 @@ boolean VarioManager::init()
 
     launchTimers();
 
+    VARIO_MEMORY_DEBUG_PRINTLN("Free heap FIN vm init");
+    VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
+
     return true;
 }
 
@@ -171,6 +176,8 @@ void VarioManager::onSignalReceived(uint8_t _val)
     {
     case WIFI_START_ASKED:
         VARIO_WIFI_DEBUG_PRINTLN("Démarrage du wifi");
+        VARIO_MEMORY_DEBUG_PRINTLN("Free Démarrage du wifi");
+        VARIO_MEMORY_DEBUG_PRINTLN(ESP.getFreeHeap());
         varioWifi = new VarioWifi();
         varioWifi->startTask();
         break;
@@ -188,8 +195,7 @@ void VarioManager::onSignalReceived(uint8_t _val)
         varioDisplay->setMinTimeRefresh(1000);
         variometer = new Variometer(varioBeeper, varioSD);
         fc.registerObserver(this);
-        
-        
+
         varioWind = new VarioWind();
         aglManager = new AglManager();
         aglManager->init();

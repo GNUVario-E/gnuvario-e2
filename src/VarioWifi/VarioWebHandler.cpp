@@ -158,6 +158,8 @@ AsyncResponseStream *VarioWebHandler::handlePrintDirectory(AsyncWebServerRequest
 void VarioWebHandler::printDirectoryRecurse(AsyncResponseStream *response, const char *path, boolean isRecursive)
 /***********************************/
 {
+    Serial.print("printDirectoryRecurse");
+    Serial.println(path);
 
     File dir;
     dir = SD.open(path, FILE_READ);

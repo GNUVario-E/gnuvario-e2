@@ -16,7 +16,6 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     volumeTextWidget->setIsBorder(data.volumeText.isborder);
     volumeTextWidget->setText("Volume");
 
-
     textWidget1 = new TextWidget(_varioLanguage, data.txt1.altWidgetIndex, data.txt1.x, data.txt1.y, data.txt1.w, data.txt1.h);
     textWidget1->setIsActif(data.txt1.isactif);
     textWidget1->setIsBorder(data.txt1.isborder);
@@ -117,6 +116,10 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     circleWidget->setIsActif(data.circle.isactif);
     circleWidget->setIsBorder(data.circle.isborder);
 
+    windGWidget = new WindGWidget(_varioLanguage, data.windg.altWidgetIndex, data.windg.x, data.windg.y, data.windg.w, data.windg.h);
+    windGWidget->setIsActif(data.windg.isactif);
+    windGWidget->setIsBorder(data.windg.isborder);
+
     tabWidgets[nb_widgets++] = logoWidget;
     tabWidgets[nb_widgets++] = textWidget1;
     tabWidgets[nb_widgets++] = textWidget2;
@@ -141,6 +144,7 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     tabWidgets[nb_widgets++] = circleWidget;
     tabWidgets[nb_widgets++] = volumeIconWidget;
     tabWidgets[nb_widgets++] = volumeTextWidget;
+    tabWidgets[nb_widgets++] = windGWidget;
 }
 
 uint8_t VarioScreen::getNbWidgets()
@@ -280,4 +284,9 @@ WindWidget *VarioScreen::getWindWidget()
 CircleWidget *VarioScreen::getCircleWidget()
 {
     return circleWidget;
+}
+
+WindGWidget *VarioScreen::getWindGWidget()
+{
+    return windGWidget;
 }

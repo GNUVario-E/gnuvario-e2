@@ -224,6 +224,7 @@ Circle SimpleCircleFit::computeFromVectors()
     {
 
         // not enough points or points are colinears
+        result.s = 99.0;
         return result;
     }
 

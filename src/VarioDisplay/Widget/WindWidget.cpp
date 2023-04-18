@@ -1,12 +1,16 @@
 #include "WindWidget.h"
+#include "VarioTool/VarioTool.h"
 
 bool WindWidget::isRefreshNeeded(uint32_t lastDisplayTime)
 {
+    char bearingTxt[3];
+
     if (fc.getWindTimestamp() > getTimeout())
     {
         if ((fc.getWindSpeed() != oldSpeed) || (fc.getWindHeading() != oldHeading) || (fc.getWindMeanSpeed() != oldMeanSpeed))
         {
-            sprintf(localText, "%d km/h %d° %d km/h", fc.getWindSpeed(), fc.getWindHeading(), fc.getWindSpeed());
+            VarioTool::bearingToOrdinal2c(bearingTxt, fc.getWindHeading());
+            sprintf(localText, "%d km/h %s %d km/h", fc.getWindSpeed(), bearingTxt, fc.getWindMeanSpeed());
 
             setText(localText);
             oldSpeed = fc.getWindSpeed();

@@ -38,6 +38,7 @@ void VarioGPS::task()
 {
     int c;
     lastCharProcessedTime = millis();
+    uint8_t nbSentence = 0;
     while (1)
     {
         // This sketch displays information every time a new sentence is correctly encoded.
@@ -63,12 +64,23 @@ void VarioGPS::task()
                 // VARIO_GPS_DEBUG_PRINTLN("");
                 // VARIO_GPS_DEBUG_PRINTLN("---------------------------------------------");
 
-                sendSentenceToFC();
+                if (nbSentence < 10)
+                {
+                    // ignore 10 first sentences
+                    nbSentence++;
+                    // vidage du buffer
+                    sentenceBuffer.clear();
+                    vTaskDelay(delayT10 * 2);
+                }
+                else
+                {
+                    sendSentenceToFC();
 
-                // vidage du buffer
-                sentenceBuffer.clear();
-                vTaskDelay(delayT10);
-                displayInfo();
+                    // vidage du buffer
+                    sentenceBuffer.clear();
+                    vTaskDelay(delayT10);
+                    displayInfo();
+                }
             }
 
             lastCharProcessedTime = millis();

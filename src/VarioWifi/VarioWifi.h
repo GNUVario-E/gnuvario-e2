@@ -21,7 +21,7 @@ private:
     TaskHandle_t _taskVarioWifiHandle = NULL;
     static void startTaskImpl(void *);
     void task();
-    bool connectToWifi();
+    bool connectToWifi(bool withGnuVarioSSID);
     bool isIndexFileExist();
     void setClock(void);
     bool checkDbVersion();

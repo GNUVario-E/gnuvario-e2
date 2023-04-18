@@ -104,6 +104,30 @@ void CircleWidget::addToBuffer(GxEPD2_GFX &_display)
         // cercle 50km/h
         _display.drawCircle(topx + w2, topy + h2, (int16_t)50 * coef, GxEPD_BLACK);
     }
+
+    if (maxValue > 60)
+    {
+        // cercle 60km/h
+        _display.drawCircle(topx + w2, topy + h2, (int16_t)60 * coef, GxEPD_BLACK);
+    }
+
+    if (maxValue > 70)
+    {
+        // cercle 70km/h
+        _display.drawCircle(topx + w2, topy + h2, (int16_t)70 * coef, GxEPD_BLACK);
+    }
+
+    if (maxValue > 80)
+    {
+        // cercle 80km/h
+        _display.drawCircle(topx + w2, topy + h2, (int16_t)80 * coef, GxEPD_BLACK);
+    }
+
+    if (maxValue > 90)
+    {
+        // cercle 90km/h
+        _display.drawCircle(topx + w2, topy + h2, (int16_t)90 * coef, GxEPD_BLACK);
+    }
 }
 
 void CircleWidget::drawThickLine(GxEPD2_GFX &_display, int x1, int y1, int x2, int y2, int thickness, uint16_t color)
