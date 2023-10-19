@@ -117,6 +117,10 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     circleWidget->setIsActif(data.circle.isactif);
     circleWidget->setIsBorder(data.circle.isborder);
 
+    temperatureWidget = new TemperatureWidget(_varioLanguage, data.temp.altWidgetIndex, data.temp.x, data.temp.y, data.temp.w, data.temp.h);
+    temperatureWidget->setIsActif(data.temp.isactif);
+    temperatureWidget->setIsBorder(data.temp.isborder);
+
     tabWidgets[nb_widgets++] = logoWidget;
     tabWidgets[nb_widgets++] = textWidget1;
     tabWidgets[nb_widgets++] = textWidget2;
@@ -141,6 +145,7 @@ VarioScreen::VarioScreen(ScreenData data, VarioLanguage *_varioLanguage)
     tabWidgets[nb_widgets++] = circleWidget;
     tabWidgets[nb_widgets++] = volumeIconWidget;
     tabWidgets[nb_widgets++] = volumeTextWidget;
+    tabWidgets[nb_widgets++] = temperatureWidget;
 }
 
 uint8_t VarioScreen::getNbWidgets()
@@ -280,4 +285,9 @@ WindWidget *VarioScreen::getWindWidget()
 CircleWidget *VarioScreen::getCircleWidget()
 {
     return circleWidget;
+}
+
+TemperatureWidget *VarioScreen::getTemperatureWidget()
+{
+    return temperatureWidget;
 }

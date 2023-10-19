@@ -38,6 +38,7 @@
 #define TITRE_UPDATEWWW 29
 #define TITRE_ALTIGPS 30
 #define TITRE_WIND 31
+#define TITRE_TEMP 32
 
 #define MAX_CAR_TITRE_TIME 15
 #define MAX_CAR_TITRE_TDV 15
@@ -71,6 +72,7 @@
 #define MAX_CAR_TITRE_STAT_SPEED 10
 #define MAX_CAR_TITRE_UPDATEWWW 12
 #define MAX_CAR_TITRE_WIND 10
+#define MAX_CAR_TITRE_TEMP 12
 
 
 class VarioLanguage

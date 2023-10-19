@@ -29,6 +29,7 @@ struct vario_data
     int16_t bearing;
     char bearingTxt[3];
     uint32_t bearingTimestamp = 0;
+    float_t temperature = 0.0;
 };
 
 struct wifi_data
@@ -181,6 +182,9 @@ public:
     int16_t getVarioBearing();
     char *getVarioBearingTxt();
     uint32_t getVarioBearingTimestamp();
+
+    void setVarioTemperature(float_t temperature);
+    float_t getVarioTemperature();
 
     // WIFI
     void setWifiConnected(bool connected);

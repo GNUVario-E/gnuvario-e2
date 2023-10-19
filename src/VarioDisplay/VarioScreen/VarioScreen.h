@@ -23,6 +23,7 @@
 #include "VarioDisplay/Widget/CircleWidget.h"
 #include "VarioDisplay/Widget/VolumeIconWidget.h"
 #include "VarioDisplay/Widget/VolumeTextWidget.h"
+#include "VarioDisplay/Widget/TemperatureWidget.h"
 #include "VarioLanguage/VarioLanguage.h"
 #include <VarioDisplay/VarioScreen/ScreenData.h>
 
@@ -56,6 +57,7 @@ private:
     CircleWidget *circleWidget;
     VolumeIconWidget *volumeIconWidget;
     TextWidget *volumeTextWidget;
+    TemperatureWidget *temperatureWidget;
 
 protected:
 public:
@@ -89,4 +91,5 @@ public:
     CircleWidget *getCircleWidget();
     VolumeIconWidget *getVolumeIconWidget();
     TextWidget *getVolumeTextWidget();
+    TemperatureWidget *getTemperatureWidget();
 };

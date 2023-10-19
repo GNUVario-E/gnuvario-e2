@@ -33,6 +33,7 @@ void Variometer::task()
     double calibratedAlti;
     bool lastSentence;
     double firstAlti;
+    double temp;
 
     firstAlti = preTaskInitFirstAlti();
     varioHisto->init(firstAlti, millis());
@@ -104,9 +105,12 @@ void Variometer::task()
             VarioTool::bearingToOrdinal2c(bearingTxt, bearing);
             fc.setVarioBearing(bearing, bearingTxt, millis());
 
-            VARIO_DATA_DEBUG_PRINT("Bearingtxt :");
+            VARIO_DATA_DEBUG_PRINT("Bearingtxt: ");
             VARIO_DATA_DEBUG_PRINTLN(bearingTxt);
         }
+
+        temp = varioImu->getTemp();
+        fc.setVarioTemperature(temp);
 
         // give time to other tasks
         vTaskDelay(delayT10);

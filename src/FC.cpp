@@ -177,6 +177,14 @@ uint32_t FC::getVarioBearingTimestamp()
     return fcdata.vario.bearingTimestamp;
 }
 
+float_t FC::getVarioTemperature() {
+    return fcdata.vario.temperature;
+}
+
+void FC::setVarioTemperature(float_t temperature) {
+    fcdata.vario.temperature = temperature;
+}
+
 // WIFI
 void FC::setWifiConnected(bool connected)
 {
